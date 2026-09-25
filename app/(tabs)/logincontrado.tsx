@@ -1,3 +1,4 @@
+// app/login.tsx
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -5,7 +6,6 @@ import { useState } from 'react';
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
-  const [cnpj, setCnpj] = useState('');
   const [senha, setSenha] = useState('');
 
   const logar = () => {
@@ -15,7 +15,7 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Quero contratar</Text>
+      <Text style={styles.titulo}>Quero ser contratado</Text>
 
       <View style={styles.card}>
         {/* no lugar da logo, use o componente Image quando tiver o arquivo */}
@@ -23,9 +23,6 @@ export default function Login() {
 
         <Text style={styles.label}>E-mail:</Text>
         <TextInput style={styles.input} value={email} onChangeText={setEmail} />
-
-        <Text style={styles.label}>CNPJ:</Text>
-        <TextInput style={styles.input} value={cnpj} onChangeText={setCnpj} />
 
         <Text style={styles.label}>Senha:</Text>
         <TextInput
@@ -49,8 +46,8 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5BE35', padding: 40, justifyContent: 'center' },
-  titulo: { color: '#7B2FF7', fontSize: 22, fontWeight: 'bold', textAlign: 'center', padding: 8 },
+  container: { flex: 1, backgroundColor: '#7B2FF7', padding: 40, justifyContent: 'center' },
+  titulo: { color: '#F5BE35', fontSize: 22, fontWeight: 'bold', textAlign: 'center', padding: 8 },
   card: {
     backgroundColor: '#fff',
     padding: 24,
@@ -64,8 +61,8 @@ const styles = StyleSheet.create({
   logo: { color: '#7B2FF7', fontSize: 40, fontWeight: 'bold', textAlign: 'center', padding: 8 },
   label: { color: '#111', fontSize: 16, paddingTop: 8, paddingBottom: 4 },
   input: { backgroundColor: '#F0F0F0', padding: 12, borderRadius: 12, fontSize: 16 },
-  botao: { backgroundColor: '#7B2FF7', padding: 12, borderRadius: 30, marginTop: 20 },
-  txtBotao: { color: '#fff', fontSize: 22, fontWeight: 'bold', textAlign: 'center' },
+  botao: { backgroundColor: '#F5BE35', padding: 12, borderRadius: 30, marginTop: 20 },
+  txtBotao: { color: '#000000', fontSize: 22, fontWeight: 'bold', textAlign: 'center' },
   rodape: { color: '#fff', fontSize: 13, textAlign: 'center', padding: 16 },
-  link: { color: '#7B2FF7', fontWeight: 'bold' },
+  link: { color: '#F5BE35', fontWeight: 'bold' },
 });
