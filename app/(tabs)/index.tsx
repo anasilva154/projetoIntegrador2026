@@ -1,11 +1,16 @@
 // app/index.tsx
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 
 export default function Bemvindo() {
   return (
     <View style={styles.container}>
-      {/* espaço onde fica a ilustração */}
+      <Image
+        source={require('../../assets/images/vooalogin-removebg-preview.png')}
+        style={styles.imagem}
+        resizeMode="contain"
+      />
+
       <View style={styles.espaco} />
 
       <Text style={styles.titulo}>Bem-vindo</Text>
@@ -28,6 +33,7 @@ export default function Bemvindo() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#7B2FF7', padding: 40 },
+  imagem: { width: '100%', height: 380, marginTop: 40 },
   espaco: { flex: 1 },
   titulo: { color: '#F7C32E', fontSize: 20, fontWeight: 'bold', padding: 4 },
   texto: { color: '#fff', fontSize: 15, padding: 4 },
@@ -36,10 +42,10 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 48,
     borderRadius: 30,
-    alignSelf: 'center', // botão acompanha o tamanho do texto
-    marginTop: 24,       // espaço entre o texto acima e o botão
+    alignSelf: 'center',
+    marginTop: 24,
   },
-  txtBotao: { color: '#111', fontSize: 22, fontWeight: 'bold', textAlign: 'center' },
+  txtBotao: { color: '#ffffff', fontSize: 22, fontWeight: 'bold', textAlign: 'center' },
   rodape: { color: '#fff', fontSize: 13, textAlign: 'center', padding: 16 },
   link: { fontWeight: 'bold' },
 });

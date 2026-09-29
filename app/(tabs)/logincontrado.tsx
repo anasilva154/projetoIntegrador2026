@@ -1,5 +1,5 @@
 // app/login.tsx
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable, Image, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 
@@ -7,9 +7,21 @@ export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
 
   const logar = () => {
-    // aqui entra a validação do login com email e senha
+    if (email.trim() === '' || senha.trim() === '') {
+      setErro('Preencha todos os campos.');
+      return;
+    }
+
+    // aqui entra a validação de verdade com o servidor
+    if (email !== 'teste@vooa.com' || senha !== '123456') {
+      setErro('E-mail ou senha incorretos.');
+      return;
+    }
+
+    setErro('');
     router.replace('/perfil'); // troca de tela sem poder voltar
   };
 
@@ -18,8 +30,11 @@ export default function Login() {
       <Text style={styles.titulo}>Quero ser contratado</Text>
 
       <View style={styles.card}>
-        {/* no lugar da logo, use o componente Image quando tiver o arquivo */}
-        <Text style={styles.logo}>vooa</Text>
+        <Image
+          source={require('../../assets/images/vooalogo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
 
         <Text style={styles.label}>E-mail:</Text>
         <TextInput style={styles.input} value={email} onChangeText={setEmail} />
@@ -32,9 +47,18 @@ export default function Login() {
           secureTextEntry={true}
         />
 
+        {/* Link com asChild: o Pressable vira o elemento clicável */}
+        <Link href="/esqueci-senha" asChild>
+          <Pressable>
+            <Text style={styles.esqueciSenha}>Esqueceu a senha?</Text>
+          </Pressable>
+        </Link>
+
         <Pressable style={styles.botao} onPress={logar}>
           <Text style={styles.txtBotao}>Logar</Text>
         </Pressable>
+
+        {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
       </View>
 
       <Text style={styles.rodape}>
@@ -58,11 +82,13 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     shadowOffset: { width: 4, height: 4 },
   },
-  logo: { color: '#7B2FF7', fontSize: 40, fontWeight: 'bold', textAlign: 'center', padding: 8 },
+  logo: { width: '100%', height: 80, marginBottom: 3, alignSelf: 'center' },
   label: { color: '#111', fontSize: 16, paddingTop: 8, paddingBottom: 4 },
   input: { backgroundColor: '#F0F0F0', padding: 12, borderRadius: 12, fontSize: 16 },
+  esqueciSenha: { color: '#000000', fontSize: 11, fontWeight: 'bold', textAlign: 'left', marginTop: 8 },
+  erro: { color: '#C0392B', fontSize: 11, textAlign: 'center', marginTop: 12 },
   botao: { backgroundColor: '#F5BE35', padding: 12, borderRadius: 30, marginTop: 20 },
-  txtBotao: { color: '#000000', fontSize: 22, fontWeight: 'bold', textAlign: 'center' },
+  txtBotao: { color: '#ffffff', fontSize: 22, fontWeight: 'bold', textAlign: 'center' },
   rodape: { color: '#fff', fontSize: 13, textAlign: 'center', padding: 16 },
   link: { color: '#F5BE35', fontWeight: 'bold' },
 });
