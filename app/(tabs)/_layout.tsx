@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform, StyleSheet, Text, View } from "react-native";
-import InputBusca from "../components/inputBusca";
+import InputBusca from "../../components/inputBusca";
 
 export default function TabLayout() {
   return (
