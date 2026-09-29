@@ -33,7 +33,7 @@ export default function Bemvindo() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#7B2FF7', padding: 40 },
-  imagem: { width: '100%', height: 380, marginTop: 40 },
+  imagem: { width: '100%', height: 400, marginTop: 40 },
   espaco: { flex: 1 },
   titulo: { color: '#F7C32E', fontSize: 20, fontWeight: 'bold', padding: 4 },
   texto: { color: '#fff', fontSize: 15, padding: 4 },
