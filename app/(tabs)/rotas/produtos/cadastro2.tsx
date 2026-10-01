@@ -98,16 +98,17 @@ export default function Cadastro1() {
 const cores = {
   roxo: '#f2be35',
   amarelo: '#7B2FF7',
-  cardCinza: '#EBEBEB',
+  cardCinza: '#D9D9D9',
   inputCinza: '#F8F8F8',
   texto: '#222222',
+  topoCinza: '#D9D9D9',
   branco: '#FFFFFF',
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: cores.amarelo,
+    backgroundColor: cores.topoCinza,
   },
   conteudo: {
     flexGrow: 1,
@@ -118,10 +119,10 @@ const styles = StyleSheet.create({
   },
   titulo: {
     color: cores.roxo,
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: 28,
+    fontWeight: '800',
     textAlign: 'center',
-    marginBottom: 14,
+    marginBottom: 18,
   },
   card: {
     width: '75%',
@@ -132,9 +133,11 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   logo: {
-    width: '100%',
-    height: 70,
-    marginBottom: 6,
+    width: 220,
+    height: 110,
+    alignSelf: 'flex-start',
+    marginLeft: 18,
+    marginBottom: 14,
   },
   campo: {
     width: '82%',

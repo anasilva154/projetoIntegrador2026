@@ -132,9 +132,11 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   logo: {
-    width: '100%',
-    height: 70,
-    marginBottom: 6,
+    width: 220,
+    height: 110,
+    alignSelf: 'flex-start',
+    marginLeft: 18,
+    marginBottom: 12,
   },
   campo: {
     width: '82%',

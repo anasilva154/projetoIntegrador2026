@@ -117,11 +117,13 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 10,
   },
- logo: {
-  width: '100%',
-  height: 90,
-  marginBottom: 0,
-},
+  logo: {
+    width: 220,
+    height: 110,
+    alignSelf: 'flex-start',
+    marginLeft: 18,
+    marginBottom: 8,
+  },
   botao: {
     width: '70%',
     height: 44,
