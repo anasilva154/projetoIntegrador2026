@@ -96,8 +96,8 @@ export default function Cadastro1() {
 }
 
 const cores = {
-  roxo: '#f2be35',
-  amarelo: '#7B2FF7',
+  roxo: '#7B2FF7',
+  amarelo: '#f2be35',
   cardCinza: '#EBEBEB',
   inputCinza: '#F8F8F8',
   texto: '#222222',

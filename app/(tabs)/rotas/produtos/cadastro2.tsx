@@ -30,7 +30,7 @@ export default function Cadastro1() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.titulo}>Cadastro para Empresa</Text>
+        <Text style={styles.titulo}>Cadastro para Pessoa Física</Text>
 
         <View style={styles.card}>
           <Image
@@ -50,7 +50,7 @@ export default function Cadastro1() {
           </View>
 
           <View style={styles.campo}>
-            <Text style={styles.label}>CNPJ:</Text>
+            <Text style={styles.label}>CPF:</Text>
             <TextInput
               style={styles.input}
               value={cnpj}
