@@ -76,11 +76,11 @@ export default function Inicio() {
 
       {/* busca */}
       <View style={styles.busca}>
-        <Ionicons name="search-outline" size={22} color={cores.branco} />
+        <Ionicons name="search-outline" size={22} color={cores.texto} />
         <TextInput
           style={styles.buscaInput}
           placeholder="Buscar vaga ou área..."
-          placeholderTextColor="rgba(255,255,255,0.8)"
+          placeholderTextColor={cores.texto}
           value={busca}
           onChangeText={setBusca}
           autoCorrect={false}
@@ -121,7 +121,11 @@ export default function Inicio() {
           resizeMode="contain"
         />
         <View style={styles.perfil}>
-          <Ionicons name="person" size={24} color={cores.branco} />
+          <Image
+            source={require('../../assets/images/do-utilizador.png')}
+            style={styles.perfilIcone}
+            resizeMode="contain"
+          />
         </View>
       </View>
 
@@ -144,7 +148,11 @@ export default function Inicio() {
               onPress={() => router.push(`/candidato/${item.id}`)}
             >
               <View style={styles.avatar}>
-                <Ionicons name="briefcase-outline" size={22} color={cores.preto} />
+                <Image
+                  source={require('../../assets/images/envelope.png')}
+                  style={styles.envelope}
+                  resizeMode="contain"
+                />
               </View>
 
               <View style={styles.info}>
@@ -165,7 +173,7 @@ export default function Inicio() {
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
 
-   topo: {
+  topo: {
     height: 56,
     backgroundColor: '#fff',
     flexDirection: 'row',
@@ -175,14 +183,8 @@ const styles = StyleSheet.create({
   },
 
   logo: { width: 80, height: 100, marginTop: 10 },
-    perfil: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: cores.roxoVibrante,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  
+  perfilIcone: { width: 40, height: 27 },
 
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo, overflow: 'hidden' },
 
@@ -195,14 +197,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: cores.vidro,
+    backgroundColor: cores.branco,
     borderRadius: 20,
     paddingHorizontal: 16,
     height: 52,
     marginHorizontal: 20,
     marginTop: 20,
   },
-  buscaInput: { flex: 1, fontSize: 15, color: cores.branco },
+  buscaInput: { flex: 1, fontSize: 15, color: cores.titulo },
 
   chips: { paddingHorizontal: 20, gap: 8, paddingTop: 16 },
   chip: {
@@ -211,9 +213,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: cores.vidro,
   },
-  chipAtivo: { backgroundColor: cores.branco },
+  chipAtivo: { backgroundColor: cores.amarelo },
   chipTexto: { fontSize: 14, color: cores.branco, fontWeight: '600' },
-  chipTextoAtivo: { color: cores.roxoVibrante, fontWeight: '800' },
+  chipTextoAtivo: { color: cores.titulo, fontWeight: '800' },
 
   item: {
     flexDirection: 'row',
@@ -232,6 +234,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  envelope: { width: 26, height: 26 },
   info: { flex: 1, gap: 2 },
   nome: { fontSize: 16, fontWeight: '800', color: cores.titulo },
   cargo: { fontSize: 14, color: cores.texto },

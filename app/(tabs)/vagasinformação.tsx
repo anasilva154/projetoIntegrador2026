@@ -57,7 +57,11 @@ export default function Vaga() {
           }}
           hitSlop={10}
         >
-          <Ionicons name="person-outline" size={20} color="#000" />
+          <Image
+            source={require('../../assets/images/do-utilizador.png')}
+            style={styles.perfilIcone}
+            resizeMode="contain"
+          />
         </Pressable>
       </View>
 
@@ -120,11 +124,13 @@ export default function Vaga() {
         </View>
       </ScrollView>
 
-      {/* Botão de voltar: círculo roxo por fora, anel branco por dentro */}
-      <Pressable style={styles.botaoVoltar} onPress={() => router.back()}>
-        <View style={styles.anelVoltar}>
-          <Ionicons name="arrow-back" size={22} color="#fff" />
-        </View>
+      {/* Botão de voltar: círculo roxo com sombra e ícone PNG por cima */}
+      <Pressable style={styles.botaoVoltar} onPress={() => router.back()} hitSlop={10}>
+        <Image
+          source={require('../../assets/images/voltar.png')}
+          style={styles.voltarIcone}
+          resizeMode="contain"
+        />
       </Pressable>
     </View>
   );
@@ -142,14 +148,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   logoHeader: { width: 80, height: 100, marginTop: 10 },
+
   botaoPerfil: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: '#7B2FF7',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  perfilIcone: { width: 40, height: 27 },
 
   conteudo: { flexGrow: 1, paddingHorizontal: 12, paddingTop: 12, paddingBottom: 12 },
 
@@ -214,7 +218,7 @@ const styles = StyleSheet.create({
   },
   txtBotao: { fontSize: 17, fontWeight: 'bold', color: '#000' },
 
-  // círculo externo roxo, sem borda, com sombra
+  // círculo roxo com sombra (um pouco maior que o ícone)
   botaoVoltar: {
     position: 'absolute',
     bottom: 50,
@@ -225,21 +229,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#7B2FF7',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 5, // espaço entre a borda externa e o anel branco
-    elevation: 8, // sombra no Android
     shadowColor: '#000', // sombra no iOS
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.35,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 4 },
+    elevation: 8, // sombra no Android
   },
-  // anel branco por dentro, sem preencher o fundo
-  anelVoltar: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  // ícone maior (antes 40x40)
+  voltarIcone: { width: 48, height: 48 },
 });
