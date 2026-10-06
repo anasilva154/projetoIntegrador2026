@@ -99,7 +99,11 @@ export default function Vaga() {
 
           <View style={styles.caixaValores}>
             <View style={styles.valorBloco}>
-              <Ionicons name="cash-outline" size={24} color="#000" />
+              <Image
+                source={require('../../assets/images/salario.png')}
+                style={styles.iconeSalario}
+                resizeMode="contain"
+              />
               <View>
                 <Text style={styles.valorLabel}>Salário</Text>
                 <Text style={styles.valorTexto}>{vaga.salario}</Text>
@@ -107,7 +111,11 @@ export default function Vaga() {
             </View>
             <View style={styles.divisorVertical} />
             <View style={styles.valorBloco}>
-              <Ionicons name="time-outline" size={24} color="#000" />
+              <Image
+                source={require('../../assets/images/cargahoraria.png')}
+                style={styles.iconeCarga}
+                resizeMode="contain"
+              />
               <View>
                 <Text style={styles.valorLabel}>Carga horária</Text>
                 <Text style={styles.valorTexto}>{vaga.carga}</Text>
@@ -203,6 +211,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   valorBloco: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconeSalario: { width: 20, height: 20 },
+  iconeCarga: { width: 20, height: 20 },
   valorLabel: { fontSize: 11, color: '#000' },
   valorTexto: { fontSize: 13, fontWeight: 'bold', color: '#000' },
   divisorVertical: { width: 1, height: 32, backgroundColor: '#D9D9D9', marginHorizontal: 8 },

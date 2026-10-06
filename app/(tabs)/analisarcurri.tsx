@@ -18,6 +18,7 @@ const cores = {
   roxo: '#6C3AEA',
   cinzaClaro: '#EDEDED',
   vidro: 'rgba(255,255,255,0.18)',
+  amarelo: '#FFC83D',
   titulo: '#25164F',
   texto: '#6B6B80',
   branco: '#FFFFFF',
@@ -61,11 +62,8 @@ export default function Candidatos() {
 
   const cabecalho = (
     <View>
-      {/* voltar + título */}
+      {/* título */}
       <View style={styles.linhaTitulo}>
-        <Pressable style={styles.botaoVoltar} onPress={() => router.back()} hitSlop={10}>
-          <Ionicons name="arrow-back" size={24} color={cores.branco} />
-        </Pressable>
         <Text style={styles.tituloTela}>Candidatos</Text>
       </View>
 
@@ -81,13 +79,13 @@ export default function Candidatos() {
         <Text style={styles.quantidade}>{candidatos.length} candidatos</Text>
       </View>
 
-      {/* busca */}
+      {/* busca (branca) */}
       <View style={styles.busca}>
-        <Ionicons name="search-outline" size={24} color={cores.branco} />
+        <Ionicons name="search-outline" size={24} color={cores.texto} />
         <TextInput
           style={styles.buscaInput}
           placeholder="Buscar candidato..."
-          placeholderTextColor="rgba(255,255,255,0.75)"
+          placeholderTextColor={cores.texto}
           value={busca}
           onChangeText={setBusca}
           autoCorrect={false}
@@ -130,7 +128,7 @@ export default function Candidatos() {
           ListHeaderComponent={cabecalho}
           ListEmptyComponent={<Text style={styles.vazio}>Nenhum candidato encontrado.</Text>}
           ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
-          contentContainerStyle={{ paddingBottom: 24 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
@@ -155,6 +153,15 @@ export default function Candidatos() {
           )}
         />
       </View>
+
+      {/* Botão de voltar: círculo roxo com sombra e ícone PNG por cima */}
+      <Pressable style={styles.botaoVoltar} onPress={() => router.back()} hitSlop={10}>
+        <Image
+          source={require('../../assets/images/voltar.png')}
+          style={styles.voltarIcone}
+          resizeMode="contain"
+        />
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -178,21 +185,10 @@ const styles = StyleSheet.create({
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo },
 
   linhaTitulo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 22,
     paddingHorizontal: 20,
     paddingTop: 20,
   },
-  botaoVoltar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: cores.vidro,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tituloTela: { fontSize: 28, fontWeight: '800', color: cores.branco },
+  tituloTela: { fontSize: 28, fontWeight: '800', color: cores.amarelo },
 
   blocoVaga: { paddingHorizontal: 20, marginTop: 22, gap: 4 },
   tituloVaga: { fontSize: 28, fontWeight: '800', color: cores.branco },
@@ -211,14 +207,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    backgroundColor: cores.vidro,
+    backgroundColor: cores.branco,
     borderRadius: 20,
     paddingHorizontal: 18,
     height: 52,
     marginHorizontal: 20,
     marginTop: 20,
   },
-  buscaInput: { flex: 1, fontSize: 16, color: cores.branco },
+  buscaInput: { flex: 1, fontSize: 16, color: cores.titulo },
 
   card: {
     flexDirection: 'row',
@@ -243,4 +239,23 @@ const styles = StyleSheet.create({
   detalhe: { fontSize: 15, color: cores.texto },
 
   vazio: { textAlign: 'center', color: cores.branco, padding: 32 },
+
+  // círculo roxo com sombra (igual ao da tela da vaga)
+  botaoVoltar: {
+    position: 'absolute',
+    bottom: 50,
+    left: 6,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#7B2FF7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000', // sombra no iOS
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8, // sombra no Android
+  },
+  voltarIcone: { width: 48, height: 48 },
 });
