@@ -23,7 +23,7 @@ export default function Cadastro1() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={cores.amarelo} />
+      <StatusBar barStyle="light-content" backgroundColor={cores.roxo} />
 
       <ScrollView
         contentContainerStyle={styles.conteudo}
@@ -96,19 +96,18 @@ export default function Cadastro1() {
 }
 
 const cores = {
-  roxo: '#f2be35',
-  amarelo: '#7B2FF7',
-  cardCinza: '#D9D9D9',
+  roxo: '#7B2FF7',
+  amarelo: '#f2be35',
+  cardBranco: '#FFFFFF',
   inputCinza: '#F8F8F8',
   texto: '#222222',
-  topoCinza: '#D9D9D9',
   branco: '#FFFFFF',
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: cores.topoCinza,
+    backgroundColor: cores.roxo,
   },
   conteudo: {
     flexGrow: 1,
@@ -118,7 +117,7 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   titulo: {
-    color: cores.roxo,
+    color: cores.branco,
     fontSize: 28,
     fontWeight: '800',
     textAlign: 'center',
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '75%',
-    backgroundColor: cores.cardCinza,
+    backgroundColor: cores.cardBranco,
     borderRadius: 32,
     alignItems: 'center',
     paddingTop: 20,
@@ -135,8 +134,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 220,
     height: 110,
-    alignSelf: 'flex-start',
-    marginLeft: 18,
+    alignSelf: 'center',
     marginBottom: 14,
   },
   campo: {

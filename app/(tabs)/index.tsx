@@ -120,8 +120,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 220,
     height: 110,
-    alignSelf: 'flex-start',
-    marginLeft: 18,
+    alignSelf: 'center',
     marginBottom: 8,
   },
   botao: {
