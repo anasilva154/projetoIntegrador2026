@@ -1,36 +1,42 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import { router, Tabs } from "expo-router";
+import { router, Tabs, usePathname } from "expo-router";
 import { Platform, Pressable, StyleSheet, View, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabLayout() {
+  const pathname = usePathname();
+  const mostrarTopo = pathname !== "/" && pathname !== "/index";
+
   return (
     <View style={styles.tela}>
       <StatusBar style="dark" />
-      <SafeAreaView style={styles.areaTopo} edges={["top"]}>
-        <View style={styles.topo}>
-          <Image
-            source={require("../../assets/vooalogo.png")}
-            style={styles.logo}
-            resizeMode="contain"
-            accessibilityLabel="Vooa"
-          />
-          <Pressable
-            style={styles.botaoPerfil}
-            onPress={() => router.navigate("/perfil")}
-            accessibilityRole="button"
-            accessibilityLabel="Abrir perfil"
-            hitSlop={10}
-          >
-            <Ionicons
-              name="person-circle-outline"
-              size={27}
-              color="#7B2CFF"
+      {mostrarTopo && (
+        <SafeAreaView style={styles.areaTopo} edges={["top"]}>
+          <View style={styles.topo}>
+            <Image
+              source={require("../../assets/vooalogo.png")}
+              style={styles.logo}
+              resizeMode="contain"
+              accessibilityLabel="Vooa"
             />
-          </Pressable>
-        </View>
-      </SafeAreaView>
+            <Pressable
+              style={styles.botaoPerfil}
+              onPress={() => router.navigate("/perfil")}
+              accessibilityRole="button"
+              accessibilityLabel="Abrir perfil"
+              hitSlop={10}
+            >
+              <Image
+                source={require("../../assets/do-utilizador 1.png")}
+                style={styles.iconePerfil}
+                resizeMode="contain"
+                accessibilityLabel="Perfil"
+              />
+            </Pressable>
+          </View>
+        </SafeAreaView>
+      )}
 
       <Tabs
         screenOptions={{
@@ -66,6 +72,14 @@ export default function TabLayout() {
         />
 
         <Tabs.Screen name="perfil" />
+
+        <Tabs.Screen
+          name="pdfcurriculo"
+          options={{
+              
+            tabBarStyle: { display: "none" },
+          }}
+        />
 
         <Tabs.Screen
           name="rotas/busca/[query]"
@@ -112,5 +126,9 @@ const styles = StyleSheet.create({
     height: 27,
     alignItems: "center",
     justifyContent: "center",
+  },
+  iconePerfil: {
+    width: 27,
+    height: 27,
   },
 });

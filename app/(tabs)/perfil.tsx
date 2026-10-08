@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: ROXO,
-    paddingTop: 50,
+    paddingTop: 30,
     paddingHorizontal: 20,
   },
 cabeçalho: {

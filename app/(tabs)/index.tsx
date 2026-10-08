@@ -1,6 +1,5 @@
 import { FlatList, View, Text, Pressable, Image, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
 const dados = [
   {
@@ -28,7 +27,6 @@ function Rodape() {
       <Link href="/buscar" asChild>
         <Pressable style={styles.botao}>
           <Text style={styles.botaoTexto}>Começar</Text>
-          <Ionicons name="arrow-forward" size={24} color="#2A0A8F" />
         </Pressable>
       </Link>
 
@@ -70,7 +68,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#6842f1',
-    paddingTop: 40,
+    paddingTop: 20,
     paddingHorizontal: 24,
   },
   imagem: {
