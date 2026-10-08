@@ -470,7 +470,15 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingHorizontal: 20,
   },
-
+cabeçalho: {
+    height: 56,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+  },
+  
   // Header
   header: {
     flexDirection: 'row',
@@ -498,7 +506,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 
-  // Topo
+  // Topo do card 
   topo: {
     alignItems: 'center',
     marginBottom: 20,
@@ -507,7 +515,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: AMARELO,
+    backgroundColor: '#E3D3FF',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,

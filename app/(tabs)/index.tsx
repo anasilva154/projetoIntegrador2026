@@ -1,4 +1,3 @@
-// app/index.tsx
 import { FlatList, View, Text, Pressable, Image, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';

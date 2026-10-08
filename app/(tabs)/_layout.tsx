@@ -1,97 +1,116 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
-import { Platform, StyleSheet, Text, View } from "react-native";
-import InputBusca from "../components/inputBusca";
+import { StatusBar } from "expo-status-bar";
+import { router, Tabs } from "expo-router";
+import { Platform, Pressable, StyleSheet, View, Image } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: true,
-        headerTitleAlign: "left",
-        headerTitle: (props) => (
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerTitleText}>{props.children}</Text>
-            <View style={styles.inputContainer}>
-              <InputBusca placeholder="Buscar..." />
-            </View>
-          </View>
-        ),
-        headerStyle: {
-          backgroundColor: "rgb(93, 0, 7)",
-          height: Platform.OS === "ios" ? 100 : 75,
-          elevation: 0,
-          shadowOpacity: 0,
-          borderBottomWidth: 1,
-          borderBottomColor: "rgb(37, 6, 6)",
-        },
-        tabBarActiveTintColor: "#007AFF",
-        tabBarInactiveTintColor: "#8E8E93",
-        tabBarStyle: {
-          backgroundColor: "rgb(9, 9, 94)",
-          borderTopWidth: 1,
-          borderTopColor: "#F0F0F0",
-          height: Platform.OS === "ios" ? 88 : 64,
-          paddingBottom: Platform.OS === "ios" ? 30 : 80,
-          paddingTop: 10,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "500",
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Projeto integrador!",
-          tabBarIcon: ({ color, focused }) => (
+    <View style={styles.tela}>
+      <StatusBar style="dark" />
+      <SafeAreaView style={styles.areaTopo} edges={["top"]}>
+        <View style={styles.topo}>
+          <Image
+            source={require("../../assets/vooalogo.png")}
+            style={styles.logo}
+            resizeMode="contain"
+            accessibilityLabel="Vooa"
+          />
+          <Pressable
+            style={styles.botaoPerfil}
+            onPress={() => router.navigate("/perfil")}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir perfil"
+            hitSlop={10}
+          >
             <Ionicons
-              name={focused ? "link" : "eye"}
-              size={24}
-              color={color}
+              name="person-circle-outline"
+              size={27}
+              color="#7B2CFF"
             />
-          ),
-        }}
-      />
+          </Pressable>
+        </View>
+      </SafeAreaView>
 
-      {/* Rota de Busca dentro das abas (oculta do menu inferior com href: null) */}
-      <Tabs.Screen
-        name="rotas/busca/[query]"
-        options={{
-          title: "Busca",
-          href: null,
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: "#007AFF",
+          tabBarInactiveTintColor: "#8E8E93",
+          tabBarStyle: {
+            backgroundColor: "rgb(9, 9, 94)",
+            borderTopWidth: 1,
+            borderTopColor: "#F0F0F0",
+            height: Platform.OS === "ios" ? 88 : 64,
+            paddingBottom: Platform.OS === "ios" ? 30 : 80,
+            paddingTop: 10,
+          },
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: "500",
+          },
         }}
-      />
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Projeto integrador!",
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? "link" : "eye"}
+                size={24}
+                color={color}
+              />
+            ),
+          }}
+        />
 
-      {/* Rota de Produtos dentro das abas (oculta do menu inferior com href: null) */}
-      <Tabs.Screen
-        name="rotas/produtos/[id]"
-        options={{
-          title: "Produto",
-          href: null,
-        }}
-      />
-    </Tabs>
+        <Tabs.Screen name="perfil" />
+
+        <Tabs.Screen
+          name="rotas/busca/[query]"
+          options={{
+            title: "Busca",
+            href: null,
+          }}
+        />
+
+        <Tabs.Screen
+          name="rotas/produtos/[id]"
+          options={{
+            title: "Produto",
+            href: null,
+          }}
+        />
+      </Tabs>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headerContainer: {
+  tela: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  areaTopo: {
+    backgroundColor: "#FFFFFF",
+  },
+  topo: {
+    height: 56,
+    backgroundColor: "#FFFFFF",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "100%",
-    paddingRight: 16,
-    gap: 12,
+    paddingHorizontal: 14,
   },
-  headerTitleText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-    flexShrink: 1,
+  logo: {
+    width: 80,
+    height: 40,
   },
-  inputContainer: {
-    flex: 1,
+  botaoPerfil: {
+    width: 40,
+    height: 27,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
