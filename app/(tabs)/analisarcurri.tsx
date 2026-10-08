@@ -22,6 +22,7 @@ const cores = {
   titulo: '#25164F',
   texto: '#6B6B80',
   branco: '#FFFFFF',
+  preto: '#000000',
 };
 
 /* ---------- dados de exemplo ---------- */
@@ -33,15 +34,13 @@ const vaga = {
 type Candidato = {
   id: string;
   nome: string;
-  escolaridade: string;
-  cidade: string;
 };
 
 const candidatos: Candidato[] = [
-  { id: '1', nome: 'Ana Beatriz', escolaridade: 'Ensino Médio', cidade: 'Criciúma, SC' },
-  { id: '2', nome: 'João Pedro', escolaridade: 'Ensino Médio', cidade: 'Içara, SC' },
-  { id: '3', nome: 'Maria Clara', escolaridade: 'Administração', cidade: 'Criciúma, SC' },
-  { id: '4', nome: 'Lucas Ferreira', escolaridade: 'Ensino Médio', cidade: 'Forquilhinha, SC' },
+  { id: '1', nome: 'Ana Beatriz' },
+  { id: '2', nome: 'João Pedro' },
+  { id: '3', nome: 'Maria Clara' },
+  { id: '4', nome: 'Lucas Ferreira' },
 ];
 
 /* ---------- tela ---------- */
@@ -52,19 +51,16 @@ export default function Candidatos() {
   const listaFiltrada = useMemo(() => {
     const termo = busca.trim().toLowerCase();
     if (termo === '') return candidatos;
-    return candidatos.filter(
-      (c) =>
-        c.nome.toLowerCase().includes(termo) ||
-        c.escolaridade.toLowerCase().includes(termo) ||
-        c.cidade.toLowerCase().includes(termo)
-    );
+    return candidatos.filter((c) => c.nome.toLowerCase().includes(termo));
   }, [busca]);
 
   const cabecalho = (
     <View>
-      {/* título */}
+      {/* título (com fundo arredondado amarelo) */}
       <View style={styles.linhaTitulo}>
-        <Text style={styles.tituloTela}>Candidatos</Text>
+        <View style={styles.seloTitulo}>
+          <Text style={styles.tituloTela}>Candidatos</Text>
+        </View>
       </View>
 
       {/* vaga */}
@@ -139,13 +135,23 @@ export default function Candidatos() {
               }}
             >
               <View style={styles.avatar}>
-                <Ionicons name="person-outline" size={34} color={cores.titulo} />
+                <Image
+                  source={require('../../assets/images/iconeperfil.png')}
+                  style={styles.avatarIcone}
+                  resizeMode="contain"
+                />
               </View>
 
               <View style={styles.info}>
                 <Text style={styles.nome}>{item.nome}</Text>
-                <Text style={styles.detalhe}>{item.escolaridade}</Text>
-                <Text style={styles.detalhe}>{item.cidade}</Text>
+                <View style={styles.linhaCurriculo}>
+                  <Image
+                    source={require('../../assets/images/pdf.png')}
+                    style={styles.pdfIcone}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.textoCurriculo}>Enviou currículo</Text>
+                </View>
               </View>
 
               <Ionicons name="chevron-forward" size={24} color={cores.titulo} />
@@ -188,7 +194,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
   },
-  tituloTela: { fontSize: 28, fontWeight: '800', color: cores.amarelo },
+  // fundo arredondado amarelo
+  seloTitulo: {
+    alignSelf: 'flex-start',
+    backgroundColor: cores.amarelo,
+    borderRadius: 999,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+  },
+  tituloTela: { fontSize: 18, fontWeight: '800', color: cores.preto },
 
   blocoVaga: { paddingHorizontal: 20, marginTop: 22, gap: 4 },
   tituloVaga: { fontSize: 28, fontWeight: '800', color: cores.branco },
@@ -234,9 +248,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  info: { flex: 1, gap: 2 },
+  avatarIcone: { width: 36, height: 36 },
+  info: { flex: 1, gap: 4 },
   nome: { fontSize: 18, fontWeight: '800', color: cores.titulo },
-  detalhe: { fontSize: 15, color: cores.texto },
+  linhaCurriculo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  pdfIcone: { width: 20, height: 20 },
+  textoCurriculo: { fontSize: 15, fontWeight: '600', color: cores.amarelo },
 
   vazio: { textAlign: 'center', color: cores.branco, padding: 32 },
 

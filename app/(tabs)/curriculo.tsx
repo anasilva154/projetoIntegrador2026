@@ -112,7 +112,7 @@ export default function Inicio() {
   );
 
   return (
-    <SafeAreaView style={styles.tela} edges={['top']}>
+    <SafeAreaView style={styles.tela} edges={['top', 'bottom']}>
       {/* barra de topo branca (fixa) */}
       <View style={styles.topo}>
         <Image
@@ -165,6 +165,42 @@ export default function Inicio() {
           )}
         />
       </View>
+
+      {/* rodapé fixo */}
+      <View style={styles.rodape}>
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => {
+            // TODO: ex: router.push('/')
+          }}
+          hitSlop={8}
+        >
+          <Ionicons name="home-outline" size={28} color={cores.titulo} />
+          <Text style={styles.textoRodape}>Início</Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => {
+            // TODO: ex: router.push('/editar')
+          }}
+          hitSlop={8}
+        >
+          <Ionicons name="create-outline" size={28} color={cores.titulo} />
+          <Text style={styles.textoRodape}>Editar</Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => {
+            // TODO: ex: router.push('/perfil')
+          }}
+          hitSlop={8}
+        >
+          <Ionicons name="person-outline" size={28} color={cores.titulo} />
+          <Text style={styles.textoRodape}>Perfil</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }
@@ -183,7 +219,7 @@ const styles = StyleSheet.create({
   },
 
   logo: { width: 80, height: 100, marginTop: 10 },
-  
+
   perfilIcone: { width: 40, height: 27 },
 
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo, overflow: 'hidden' },
@@ -240,4 +276,28 @@ const styles = StyleSheet.create({
   cargo: { fontSize: 14, color: cores.texto },
 
   vazio: { textAlign: 'center', color: cores.branco, padding: 32 },
+
+  // rodapé branco fixo com 3 botões
+  rodape: {
+    height: 70,
+    backgroundColor: cores.branco,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    shadowColor: '#000', // sombra no iOS
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: -3 },
+    elevation: 10, // sombra no Android
+  },
+  itemRodape: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+  },
+  textoRodape: { fontSize: 12, fontWeight: '700', color: cores.titulo },
 });
