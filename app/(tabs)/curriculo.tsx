@@ -9,7 +9,7 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
@@ -47,6 +47,7 @@ const areas = ['Todos', 'Tecnologia da Informação', 'Marketing', 'Administrati
 /* ---------- tela ---------- */
 export default function Inicio() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [busca, setBusca] = useState('');
   const [areaSelecionada, setAreaSelecionada] = useState('Todos');
 
@@ -112,7 +113,7 @@ export default function Inicio() {
   );
 
   return (
-    <SafeAreaView style={styles.tela} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.tela} edges={['top']}>
       {/* barra de topo branca (fixa) */}
       <View style={styles.topo}>
         <Image
@@ -166,8 +167,13 @@ export default function Inicio() {
         />
       </View>
 
-      {/* rodapé fixo */}
-      <View style={styles.rodape}>
+      {/* rodapé fixo, reto, ocupando o fim todo da tela */}
+      <View
+        style={[
+          styles.rodape,
+          { height: 56 + insets.bottom, paddingBottom: insets.bottom },
+        ]}
+      >
         <Pressable
           style={styles.itemRodape}
           onPress={() => {
@@ -175,8 +181,11 @@ export default function Inicio() {
           }}
           hitSlop={8}
         >
-          <Ionicons name="home-outline" size={28} color={cores.titulo} />
-          <Text style={styles.textoRodape}>Início</Text>
+          <Image
+            source={require('../../assets/images/inicio.png')}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
         </Pressable>
 
         <Pressable
@@ -186,8 +195,11 @@ export default function Inicio() {
           }}
           hitSlop={8}
         >
-          <Ionicons name="create-outline" size={28} color={cores.titulo} />
-          <Text style={styles.textoRodape}>Editar</Text>
+          <Image
+            source={require('../../assets/images/editar.png')}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
         </Pressable>
 
         <Pressable
@@ -197,8 +209,11 @@ export default function Inicio() {
           }}
           hitSlop={8}
         >
-          <Ionicons name="person-outline" size={28} color={cores.titulo} />
-          <Text style={styles.textoRodape}>Perfil</Text>
+          <Image
+            source={require('../../assets/images/inicioperfil.png')}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
         </Pressable>
       </View>
     </SafeAreaView>
@@ -277,27 +292,25 @@ const styles = StyleSheet.create({
 
   vazio: { textAlign: 'center', color: cores.branco, padding: 32 },
 
-  // rodapé branco fixo com 3 botões
+  // rodapé reto, linha inteira, sombra só em cima, ícones agrupados no centro
   rodape: {
-    height: 70,
     backgroundColor: cores.branco,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingHorizontal: 10,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    shadowColor: '#000', // sombra no iOS
+    justifyContent: 'center',
+    gap: 24, // espaço entre os botões (diminua para aproximar mais)
+    shadowColor: '#000',
     shadowOpacity: 0.12,
     shadowRadius: 8,
-    shadowOffset: { width: 0, height: -3 },
-    elevation: 10, // sombra no Android
+    shadowOffset: { width: 0, height: -4 },
+    elevation: 10,
   },
+  // largura fixa: o espaçamento é igual entre todos
   itemRodape: {
-    flex: 1,
+    width: 64,
+    height: 56,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 2,
   },
-  textoRodape: { fontSize: 12, fontWeight: '700', color: cores.titulo },
+  iconeRodape: { width: 22, height: 22 },
 });

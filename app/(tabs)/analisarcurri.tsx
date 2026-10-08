@@ -71,7 +71,11 @@ export default function Candidatos() {
 
       {/* quantidade */}
       <View style={styles.linhaQuantidade}>
-        <Ionicons name="people" size={28} color={cores.branco} />
+        <Image
+          source={require('../../assets/images/candidatos.png')}
+          style={styles.quantidadeIcone}
+          resizeMode="contain"
+        />
         <Text style={styles.quantidade}>{candidatos.length} candidatos</Text>
       </View>
 
@@ -215,6 +219,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 28,
   },
+  quantidadeIcone: { width: 28, height: 28 },
   quantidade: { fontSize: 18, fontWeight: '700', color: cores.branco },
 
   busca: {
