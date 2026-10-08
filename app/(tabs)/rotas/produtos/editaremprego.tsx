@@ -244,7 +244,12 @@ export default function Vagas() {
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.cardCorpo}>
-              <View style={styles.cardInfo}>
+              <Pressable
+                style={styles.cardInfo}
+                onPress={() => abrirDetalhes(item)}
+                accessibilityRole="button"
+                accessibilityLabel={`Ver detalhes de ${item.titulo}`}
+              >
                 <Text style={styles.cardTitulo}>{item.titulo}</Text>
                 <Text style={styles.cardEmpresa}>{item.empresa}</Text>
 
@@ -257,7 +262,7 @@ export default function Vagas() {
                   <Ionicons name="people-outline" size={16} color="#B77900" />
                   <Text style={styles.cardDetalhe}>{textoVagas(item.quantidade)}</Text>
                 </View>
-              </View>
+              </Pressable>
 
               <View style={styles.cardAcoes}>
                 <Pressable style={styles.botaoRemover} onPress={() => excluirVaga(item.id)}>
