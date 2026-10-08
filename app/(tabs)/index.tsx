@@ -25,11 +25,13 @@ export default function Inicio() {
             titulo="vagas de emprego"
             cor="#F2BE35"
             onPress={() => router.push('/vagas')}
+            size="200"
           />
           <Botao
             titulo="cursos"
             cor="#6A2BC7"
             onPress={() => router.push('/cursos')}
+            size="200"
           />
         </View>
       </View>

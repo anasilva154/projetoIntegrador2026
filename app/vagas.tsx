@@ -38,8 +38,9 @@ export default function Vagas() {
         )}
         contentContainerStyle={styles.lista}
       />
-
-      <Botao titulo="voltar" cor="#6A2BC7" onPress={() => router.back()} />
+      <View style={{ alignItems: 'center', margin: 16 }}>
+        <Botao titulo="voltar" cor="#6A2BC7" onPress={() => router.back()} size="100" />
+      </View>
     </View>
   );
 }
