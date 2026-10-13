@@ -31,16 +31,6 @@ const cores = {
 const LIMITE_MB = 5;
 const LIMITE_MENSAGEM = 500;
 
-/* ---------- máscara de telefone: (99) 99999-9999 ---------- */
-function mascararTelefone(valor: string) {
-  const n = valor.replace(/\D/g, '').slice(0, 11);
-  if (n.length === 0) return '';
-  if (n.length <= 2) return `(${n}`;
-  if (n.length <= 6) return `(${n.slice(0, 2)}) ${n.slice(2)}`;
-  if (n.length <= 10) return `(${n.slice(0, 2)}) ${n.slice(2, 6)}-${n.slice(6)}`;
-  return `(${n.slice(0, 2)}) ${n.slice(2, 7)}-${n.slice(7)}`;
-}
-
 /* ---------- tela ---------- */
 export default function Candidatar() {
   const router = useRouter();
@@ -99,24 +89,12 @@ export default function Candidatar() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.cartao}>
-            {/* voltar */}
-            <Pressable style={styles.voltar} onPress={() => router.back()} hitSlop={8}>
-              <Ionicons name="arrow-back" size={20} color={cores.roxo} />
-              <Text style={styles.voltarTexto}>Voltar</Text>
-            </Pressable>
-
             {/* título */}
             <View style={styles.cabecalho}>
-              <View style={styles.cabecalhoIcone}>
-                <Ionicons name="document-text-outline" size={30} color={cores.branco} />
-              </View>
-              <View style={styles.cabecalhoTextos}>
-                <Text style={styles.titulo}>Candidatar-se</Text>
-                <Text style={styles.subtitulo}>
-                  Preencha seus dados e anexe o seu currículo em PDF para se candidatar a esta
-                  vaga.
-                </Text>
-              </View>
+              <Text style={styles.titulo}>Candidatar-se</Text>
+              <Text style={styles.subtitulo}>
+                Preencha seus dados e anexe o seu currículo em PDF para se candidatar a esta vaga.
+              </Text>
             </View>
 
             {/* nome */}
@@ -156,10 +134,10 @@ export default function Candidatar() {
                 </Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="(  ) _____-_____"
+                  placeholder="Digite seu telefone"
                   placeholderTextColor={cores.texto}
                   value={telefone}
-                  onChangeText={(t) => setTelefone(mascararTelefone(t))}
+                  onChangeText={setTelefone}
                   keyboardType="phone-pad"
                 />
               </View>
@@ -176,18 +154,18 @@ export default function Candidatar() {
                   placeholder="Digite sua idade"
                   placeholderTextColor={cores.texto}
                   value={idade}
-                  onChangeText={(t) => setIdade(t.replace(/\D/g, '').slice(0, 2))}
+                  onChangeText={setIdade}
                   keyboardType="number-pad"
                 />
               </View>
 
               <View style={styles.coluna}>
                 <Text style={styles.rotulo}>
-                  Cidade onde mora <Text style={styles.obrigatorio}>*</Text>
+                  Bairro onde mora <Text style={styles.obrigatorio}>*</Text>
                 </Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Digite sua cidade"
+                  placeholder="Digite seu bairro"
                   placeholderTextColor={cores.texto}
                   value={cidade}
                   onChangeText={setCidade}
@@ -234,6 +212,15 @@ export default function Candidatar() {
             </Pressable>
           </View>
         </ScrollView>
+
+        {/* botão de voltar flutuante, no canto inferior esquerdo */}
+        <Pressable style={styles.botaoVoltar} onPress={() => router.back()} hitSlop={8}>
+          <Image
+            source={require('../../assets/images/voltar.png')}
+            style={styles.iconeVoltar}
+            resizeMode="contain"
+          />
+        </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -255,7 +242,7 @@ const styles = StyleSheet.create({
   perfilIcone: { width: 40, height: 27 },
 
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo },
-  scroll: { padding: 16, paddingBottom: 24 },
+  scroll: { padding: 16, paddingBottom: 96 },
 
   cartao: {
     backgroundColor: cores.branco,
@@ -263,27 +250,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  voltar: { flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start' },
-  voltarTexto: { fontSize: 15, fontWeight: '700', color: cores.roxo },
-
-  cabecalho: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  cabecalhoIcone: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#9B6BFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cabecalhoTextos: { flex: 1 },
-  titulo: { fontSize: 26, fontWeight: '800', color: cores.titulo },
-  subtitulo: { fontSize: 13, color: cores.texto, lineHeight: 18, marginTop: 2 },
+  cabecalho: { marginBottom: 8 },
+  titulo: { fontSize: 26, fontWeight: '800', color: cores.amarelo },
+  subtitulo: { fontSize: 13, color: cores.texto, lineHeight: 18, marginTop: 4 },
 
   rotulo: {
     fontSize: 14,
@@ -337,4 +306,24 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   botaoTexto: { fontSize: 16, fontWeight: '800', color: cores.titulo },
+
+  // botão de voltar: círculo roxo com o PNG preenchendo, fixo no canto inferior esquerdo
+  botaoVoltar: {
+    position: 'absolute',
+    left: 6,
+    bottom: 50,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: cores.roxo,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000', // sombra no iOS
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8, // sombra no Android
+  },
+  iconeVoltar: { width: 48, height: 48 },
 });
