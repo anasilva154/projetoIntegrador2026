@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#7B2FF7',
+    backgroundColor: '#F7C32E',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000', // sombra no iOS
