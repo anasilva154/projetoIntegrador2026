@@ -208,12 +208,12 @@ const styles = StyleSheet.create({
   },
 
   botaoVoltar: {
-    position: 'absolute',
-    left: 10,
-    bottom: 12,
-    width: 48,
-    height: 48,
-    borderRadius: 31,
+   position: 'absolute',
+    left: 6,
+    bottom: 50,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: '#FFC83D',
     alignItems: 'center',
     justifyContent: 'center',
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   iconeVoltar: {
-    width: 32,
-    height: 32,
+    width: 48,
+    height: 48,
   },
 });
