@@ -152,9 +152,10 @@ const styles = StyleSheet.create({
   },
   imagemRecrutamento: {
     width: "100%",
-    // aspectRatio: 2 / 3,
+    flexGrow: 1,
     alignSelf: "center",
     borderRadius: 20,
+    marginTop: 0,
     marginBottom: 0,
   },
   pdfIcone: {

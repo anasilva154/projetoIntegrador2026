@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
    CORES (as mesmas da tela de cadastro)
 ------------------------------------------------------------------ */
 const ROXO = '#7B2CFF';
+const ROXO_FUNDO = '#8B45FF';
 const AMARELO = '#FFC700';
 const CINZA_CARD = '#EBEBEB';
 const CINZA_INPUT = '#F8F8F8';
@@ -34,19 +35,6 @@ const ESCOLARIDADES = [
   'Superior completo',
 ];
 
-const CARGOS = [
-  'Atendente',
-  'Auxiliar administrativo',
-  'Caixa',
-  'Cozinheiro',
-  'Estoquista',
-  'Motorista',
-  'Porteiro',
-  'Recepcionista',
-  'Vendedor',
-  'Auxiliar de limpeza',
-];
-
 /* ------------------------------------------------------------------
    TIPOS
 ------------------------------------------------------------------ */
@@ -56,7 +44,6 @@ type Perfil = {
   telefone: string;
   email: string;
   escolaridade: string;
-  cargos: string[]; // é por este array que a empresa vai filtrar
 };
 
 type ChaveTexto = 'nome' | 'cpf' | 'telefone' | 'email';
@@ -117,7 +104,7 @@ type AvatarProps = {
 function Avatar({ editando }: AvatarProps) {
   return (
     <View style={styles.avatar}>
-      <Ionicons name="person" size={52} color={ROXO} />
+      <Ionicons name="person" size={52} color="#808080" />
 
       {editando && (
         <View style={styles.avatarCamera}>
@@ -173,7 +160,7 @@ function Divisor() {
   return <View style={styles.divisor} />;
 }
 
-// Bolinha selecionável (usada em escolaridade e cargos)
+// Bolinha selecionável usada em escolaridade
 type ChipProps = {
   texto: string;
   ativo: boolean;
@@ -260,12 +247,11 @@ export default function PerfilScreen() {
 
   // perfil = dados salvos | rascunho = o que está sendo editado
   const [perfil, setPerfil] = useState<Perfil>({
-    nome: 'Maria Souza Lima',
+    nome: 'nome da pessoa',
     cpf: '123.456.789-00',
     telefone: '(48) 99999-0000',
-    email: 'maria.lima@voou.com',
+    email: 'email.pessoa@voou.com',
     escolaridade: 'Médio completo',
-    cargos: ['Atendente', 'Recepcionista'],
   });
   const [rascunho, setRascunho] = useState<Perfil>(perfil);
   const [editando, setEditando] = useState(false);
@@ -287,7 +273,6 @@ export default function PerfilScreen() {
   const salvar = () => {
     setPerfil(rascunho);
     setEditando(false);
-    // aqui você enviaria rascunho.cargos e o resto para a API
   };
 
   const atualizarTexto = (chave: ChaveTexto, texto: string) => {
@@ -296,16 +281,6 @@ export default function PerfilScreen() {
 
   const escolherEscolaridade = (opcao: string) => {
     setRascunho((r) => ({ ...r, escolaridade: opcao }));
-  };
-
-  // Marca ou desmarca um cargo
-  const alternarCargo = (cargo: string) => {
-    setRascunho((r) => ({
-      ...r,
-      cargos: r.cargos.includes(cargo)
-        ? r.cargos.filter((c) => c !== cargo)
-        : [...r.cargos, cargo],
-    }));
   };
 
   /* ---------- data da FlatList ---------- */
@@ -364,10 +339,6 @@ export default function PerfilScreen() {
 
       <Text style={styles.nome}>{atual.nome}</Text>
 
-      <View style={styles.selo}>
-        <Ionicons name="search" size={14} color={ROXO} />
-        <Text style={styles.seloTexto}>Procurando emprego</Text>
-      </View>
 
       {!editando && (
         <Pressable
@@ -399,18 +370,6 @@ export default function PerfilScreen() {
           editando={editando}
           vazio="Nenhum nível informado"
           onToggle={escolherEscolaridade}
-        />
-      </Secao>
-
-      <Divisor />
-
-      <Secao titulo="Cargos que procuro" icone="briefcase">
-        <ListaChips
-          opcoes={CARGOS}
-          selecionados={atual.cargos}
-          editando={editando}
-          vazio="Nenhum cargo selecionado"
-          onToggle={alternarCargo}
         />
       </Secao>
 
@@ -466,7 +425,7 @@ const styles = StyleSheet.create({
   // flex: 1 para a tela (e a lista) aparecerem
   container: {
     flex: 1,
-    backgroundColor: ROXO,
+    backgroundColor: ROXO_FUNDO,
     paddingTop: 30,
     paddingHorizontal: 20,
   },
@@ -515,7 +474,7 @@ cabeçalho: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#E3D3FF',
+    backgroundColor: '#E0E0E0',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
@@ -527,7 +486,7 @@ cabeçalho: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: ROXO,
+    backgroundColor: AMARELO,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
@@ -538,6 +497,7 @@ cabeçalho: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 12,
   },
   selo: {
     flexDirection: 'row',
@@ -625,15 +585,15 @@ cabeçalho: {
     borderColor: '#D6D6D6',
   },
   chipAtivo: {
-    backgroundColor: ROXO,
-    borderColor: ROXO,
+    backgroundColor: CINZA_INPUT,
+    borderColor: AMARELO,
   },
   chipTexto: {
     color: TEXTO,
     fontSize: 14,
   },
   chipTextoAtivo: {
-    color: '#fff',
+    color: TEXTO,
     fontWeight: '600',
   },
   vazio: {
