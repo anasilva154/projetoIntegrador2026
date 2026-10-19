@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import {
   FlatList,
   Image,
@@ -97,8 +96,6 @@ function textoVagas(n: number) {
 }
 
 export default function Vagas() {
-  const router = useRouter();
-
   const [vagas, setVagas] = useState<Item[]>(VAGAS_INICIAIS);
   const [busca, setBusca] = useState("");
 
@@ -164,13 +161,6 @@ export default function Vagas() {
 
   function excluirVaga(id: number) {
     setVagas(vagas.filter((v) => v.id !== id));
-  }
-
-  function abrirDetalhes(item: Item) {
-    router.push({
-      pathname: "/rotas/produtos/detalhes",
-      params: { dados: JSON.stringify(item) },
-    });
   }
 
   function campo(chave: CampoTexto, placeholder: string, props: TextInputProps = {}) {
@@ -244,12 +234,7 @@ export default function Vagas() {
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.cardCorpo}>
-              <Pressable
-                style={styles.cardInfo}
-                onPress={() => abrirDetalhes(item)}
-                accessibilityRole="button"
-                accessibilityLabel={`Ver detalhes de ${item.titulo}`}
-              >
+              <View style={styles.cardInfo}>
                 <Text style={styles.cardTitulo}>{item.titulo}</Text>
                 <Text style={styles.cardEmpresa}>{item.empresa}</Text>
 
@@ -262,7 +247,7 @@ export default function Vagas() {
                   <Ionicons name="people-outline" size={16} color="#B77900" />
                   <Text style={styles.cardDetalhe}>{textoVagas(item.quantidade)}</Text>
                 </View>
-              </Pressable>
+              </View>
 
               <View style={styles.cardAcoes}>
                 <Pressable style={styles.botaoRemover} onPress={() => excluirVaga(item.id)}>
@@ -277,14 +262,6 @@ export default function Vagas() {
               </View>
             </View>
 
-            <Pressable
-              style={styles.cardSeta}
-              hitSlop={12}
-              onPress={() => abrirDetalhes(item)}
-              accessibilityLabel="Ver detalhes"
-            >
-              <Ionicons name="chevron-forward" size={20} color={ROXO} />
-            </Pressable>
           </View>
         )}
       />
@@ -562,11 +539,6 @@ const styles = StyleSheet.create({
     color: VERMELHO,
     fontWeight: "700",
     fontSize: 12,
-  },
-  cardSeta: {
-    position: "absolute",
-    right: 12,
-    bottom: 14,
   },
 
   /* Modais */
