@@ -18,7 +18,7 @@ export default function Cursos() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.titulo}>{item.titulo} - {item.salario}</Text>
+            <Text style={styles.titulo}>{item.titulo} - {item.valor}</Text>
               <View style={styles.cardSubtitulo}>
                 <FlatList
                   data={item.topicos}
@@ -39,7 +39,9 @@ export default function Cursos() {
         contentContainerStyle={styles.lista}
       />
 
-      <Botao titulo="voltar" cor="#6A2BC7" onPress={() => router.back()} />
+     <View style={{ alignItems: 'center', margin: 16 }}>
+        <Botao titulo="voltar" cor="#6A2BC7" onPress={() => router.back()} size="100" />
+      </View>
     </View>
   );
 }
@@ -47,13 +49,13 @@ export default function Cursos() {
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: '#7B2CF9' },
   lista: { padding: 16, gap: 8 },
-  card: { backgroundColor: '#FFFFFF', borderRadius: 8, padding: 16 },
+  card: { backgroundColor: '#FFFFFF', borderRadius: 20, padding: 16 },
   titulo: { fontSize: 16, fontWeight: 'bold', color: '#7B2CF9' },
   cardSubtitulo: {
     width: '100%',
     marginTop: 8,
-    backgroundColor: '#c9c9c9',
-    borderRadius: 4,
+    backgroundColor: '#dedede',
+    borderRadius: 20,
     padding: 8,
   }
 });

@@ -48,13 +48,13 @@ export default function Vagas() {
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: '#7B2CF9' },
   lista: { padding: 16, gap: 8 },
-  card: { backgroundColor: '#FFFFFF', borderRadius: 8, padding: 16 },
+  card: { backgroundColor: '#FFFFFF', borderRadius: 20, padding: 16 },
   titulo: { fontSize: 16, fontWeight: 'bold', color: '#7B2CF9' },
   cardSubtitulo: {
     width: '100%',
     marginTop: 8,
     backgroundColor: '#c9c9c9',
-    borderRadius: 4,
+    borderRadius: 20,
     padding: 8,
   }
 });
