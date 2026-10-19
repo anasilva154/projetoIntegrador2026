@@ -96,12 +96,6 @@ export default function PdfCurriculoScreen() {
           <Ionicons name="chevron-forward" size={22} color={cores.escuro} />
         </Pressable>
 
-        <Image
-          source={require("../../assets/Recrutamento Digital em Ação.png")}
-          style={styles.imagemRecrutamento}
-          resizeMode="contain"
-          accessibilityLabel="Recrutamento Digital em Ação"
-        />
       </ScrollView>
 
       <Pressable
@@ -149,14 +143,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 16,
     marginBottom: 4,
-  },
-  imagemRecrutamento: {
-    width: "100%",
-    flexGrow: 1,
-    alignSelf: "center",
-    borderRadius: 20,
-    marginTop: 0,
-    marginBottom: 0,
   },
   pdfIcone: {
     width: 44,

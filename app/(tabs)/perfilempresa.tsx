@@ -11,6 +11,7 @@ import {
   KeyboardTypeOptions,
   Linking,
   Alert,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,7 +24,6 @@ const AMARELO = '#FFC700';
 const CINZA_CARD = '#EBEBEB';
 const CINZA_INPUT = '#F8F8F8';
 const TEXTO = '#333333';
-const AVALIACAO_EMPRESA = '4,8';
 const LOCALIZACAO_EMPRESA =
   'Rua Exemplo, 123, próximo ao Senac, Criciúma - SC';
 
@@ -53,23 +53,17 @@ type ItemCampo = {
    (depois você pode mover cada um para a pasta components/)
 ------------------------------------------------------------------ */
 
-// Header: voltar + título + lápis (vira X quando está editando)
+// Header: título + lápis (vira X quando está editando)
 type HeaderProps = {
   titulo: string;
   editando: boolean;
-  onVoltar: () => void;
   onEditar: () => void;
 };
 
-function Header({ titulo, editando, onVoltar, onEditar }: HeaderProps) {
+function Header({ titulo, editando, onEditar }: HeaderProps) {
   return (
     <View style={styles.header}>
-      <View style={styles.headerEsquerda}>
-        <Pressable onPress={onVoltar}>
-          <Ionicons name="arrow-back" size={24} color={ROXO} />
-        </Pressable>
-        <Text style={styles.headerTitulo}>{titulo}</Text>
-      </View>
+      <Text style={styles.headerTitulo}>{titulo}</Text>
 
       <Pressable onPress={onEditar}>
         <Ionicons
@@ -109,6 +103,8 @@ type CampoProps = {
   teclado: KeyboardTypeOptions;
   editando: boolean;
   onChangeText: (texto: string) => void;
+  mostrarCnpj: boolean;
+  onToggleCnpj: () => void;
 };
 
 function Campo({
@@ -118,6 +114,8 @@ function Campo({
   teclado,
   editando,
   onChangeText,
+  mostrarCnpj,
+  onToggleCnpj,
 }: CampoProps) {
   return (
     <View style={styles.campo}>
@@ -137,6 +135,20 @@ function Campo({
           <Text style={styles.valor}>{valor}</Text>
         )}
       </View>
+      {rotulo === 'CNPJ' && !editando && (
+        <Pressable
+          onPress={onToggleCnpj}
+          accessibilityRole="button"
+          accessibilityLabel={mostrarCnpj ? 'Ocultar CNPJ' : 'Mostrar CNPJ'}
+          hitSlop={10}
+        >
+          <Ionicons
+            name={mostrarCnpj ? 'eye-off' : 'eye'}
+            size={20}
+            color={ROXO}
+          />
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -241,6 +253,8 @@ export default function PerfilScreen() {
       teclado={item.teclado}
       editando={editando}
       onChangeText={(texto) => atualizarTexto(item.chave, texto)}
+      mostrarCnpj={mostrarCnpj}
+      onToggleCnpj={() => setMostrarCnpj((valorAtual) => !valorAtual)}
     />
   );
 
@@ -250,36 +264,6 @@ export default function PerfilScreen() {
       <Avatar editando={editando} />
 
       <Text style={styles.nome}>{atual.nome}</Text>
-
-      <View
-        style={styles.avaliacao}
-        accessibilityLabel={`Avaliação da empresa: ${AVALIACAO_EMPRESA} de 5`}
-      >
-        <View style={styles.avaliacaoEstrelas}>
-          {[1, 2, 3, 4, 5].map((estrela) => (
-            <Ionicons key={estrela} name="star" size={16} color={AMARELO} />
-          ))}
-        </View>
-        <Text style={styles.avaliacaoTexto}>
-          {AVALIACAO_EMPRESA} de 5
-        </Text>
-      </View>
-
-      {!editando && (
-        <Pressable
-          style={styles.botaoOlho}
-          onPress={() => setMostrarCnpj((valorAtual) => !valorAtual)}
-        >
-          <Ionicons
-            name={mostrarCnpj ? 'eye-off' : 'eye'}
-            size={18}
-            color={ROXO}
-          />
-          <Text style={styles.botaoOlhoTexto}>
-            {mostrarCnpj ? 'Ocultar CNPJ' : 'Mostrar CNPJ'}
-          </Text>
-        </Pressable>
-      )}
     </View>
   );
 
@@ -328,7 +312,6 @@ export default function PerfilScreen() {
       <Header
         titulo="Perfil Empresa"
         editando={editando}
-        onVoltar={() => router.back()}
         onEditar={editando ? cancelarEdicao : iniciarEdicao}
       />
 
@@ -343,6 +326,21 @@ export default function PerfilScreen() {
           keyboardShouldPersistTaps="handled"
         />
       </View>
+
+      <Pressable
+        style={styles.botaoVoltar}
+        onPress={() => router.back()}
+        accessibilityRole="button"
+        accessibilityLabel="Voltar"
+        hitSlop={10}
+      >
+        <Image
+          source={require('../../assets/voltar 1.png')}
+          style={styles.voltarIcone}
+          resizeMode="contain"
+          accessibilityLabel="Seta para voltar"
+        />
+      </Pressable>
     </View>
   );
 }
@@ -373,11 +371,6 @@ cabeçalho: {
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 20,
-  },
-  headerEsquerda: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
   },
   headerTitulo: {
     color: ROXO,
@@ -428,20 +421,6 @@ cabeçalho: {
     textAlign: 'center',
     marginBottom: 6,
   },
-  avaliacao: {
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  avaliacaoEstrelas: {
-    flexDirection: 'row',
-    gap: 2,
-  },
-  avaliacaoTexto: {
-    color: TEXTO,
-    fontSize: 13,
-    fontWeight: '600',
-    marginTop: 2,
-  },
   selo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -458,21 +437,6 @@ cabeçalho: {
     fontSize: 13,
     fontWeight: '600',
   },
-  botaoOlho: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    backgroundColor: CINZA_INPUT,
-  },
-  botaoOlhoTexto: {
-    color: ROXO,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
   // Campo
   campo: {
     flexDirection: 'row',
@@ -540,4 +504,21 @@ cabeçalho: {
     fontSize: 15,
     fontWeight: '600',
   },
+  botaoVoltar: {
+    position: 'absolute',
+    bottom: 82,
+    left: 6,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: AMARELO,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
+  },
+  voltarIcone: { width: 48, height: 48 },
 });

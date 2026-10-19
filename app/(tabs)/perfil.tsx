@@ -9,6 +9,7 @@ import {
   TextInput,
   StyleSheet,
   KeyboardTypeOptions,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,18 +25,6 @@ const CINZA_INPUT = '#F8F8F8';
 const TEXTO = '#333333';
 
 /* ------------------------------------------------------------------
-   OPÇÕES QUE O USUÁRIO PODE ESCOLHER
------------------------------------------------------------------- */
-const ESCOLARIDADES = [
-  'Fundamental incompleto',
-  'Fundamental completo',
-  'Médio incompleto',
-  'Médio completo',
-  'Superior incompleto',
-  'Superior completo',
-];
-
-/* ------------------------------------------------------------------
    TIPOS
 ------------------------------------------------------------------ */
 type Perfil = {
@@ -43,7 +32,6 @@ type Perfil = {
   cpf: string;
   telefone: string;
   email: string;
-  escolaridade: string;
 };
 
 type ChaveTexto = 'nome' | 'cpf' | 'telefone' | 'email';
@@ -57,33 +45,22 @@ type ItemCampo = {
   teclado: KeyboardTypeOptions;
 };
 
-type ItemChip = {
-  id: string;
-  ativo: boolean;
-};
-
 /* ------------------------------------------------------------------
    COMPONENTES REUTILIZÁVEIS
    (depois você pode mover cada um para a pasta components/)
 ------------------------------------------------------------------ */
 
-// Header: voltar + título + lápis (vira X quando está editando)
+// Header: título + lápis (vira X quando está editando)
 type HeaderProps = {
   titulo: string;
   editando: boolean;
-  onVoltar: () => void;
   onEditar: () => void;
 };
 
-function Header({ titulo, editando, onVoltar, onEditar }: HeaderProps) {
+function Header({ titulo, editando, onEditar }: HeaderProps) {
   return (
     <View style={styles.header}>
-      <View style={styles.headerEsquerda}>
-        <Pressable onPress={onVoltar}>
-          <Ionicons name="arrow-back" size={24} color={AMARELO} />
-        </Pressable>
-        <Text style={styles.headerTitulo}>{titulo}</Text>
-      </View>
+      <Text style={styles.headerTitulo}>{titulo}</Text>
 
       <Pressable onPress={onEditar}>
         <Ionicons
@@ -123,6 +100,8 @@ type CampoProps = {
   teclado: KeyboardTypeOptions;
   editando: boolean;
   onChangeText: (texto: string) => void;
+  mostrarCpf: boolean;
+  onToggleCpf: () => void;
 };
 
 function Campo({
@@ -132,6 +111,8 @@ function Campo({
   teclado,
   editando,
   onChangeText,
+  mostrarCpf,
+  onToggleCpf,
 }: CampoProps) {
   return (
     <View style={styles.campo}>
@@ -151,6 +132,20 @@ function Campo({
           <Text style={styles.valor}>{valor}</Text>
         )}
       </View>
+      {rotulo === 'CPF' && !editando && (
+        <Pressable
+          onPress={onToggleCpf}
+          accessibilityRole="button"
+          accessibilityLabel={mostrarCpf ? 'Ocultar CPF' : 'Mostrar CPF'}
+          hitSlop={10}
+        >
+          <Ionicons
+            name={mostrarCpf ? 'eye-off' : 'eye'}
+            size={20}
+            color={ROXO}
+          />
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -158,85 +153,6 @@ function Campo({
 // Linha fina entre os itens
 function Divisor() {
   return <View style={styles.divisor} />;
-}
-
-// Bolinha selecionável usada em escolaridade
-type ChipProps = {
-  texto: string;
-  ativo: boolean;
-  onPress?: () => void;
-};
-
-function Chip({ texto, ativo, onPress }: ChipProps) {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={!onPress}
-      style={[styles.chip, ativo && styles.chipAtivo]}
-    >
-      <Text style={[styles.chipTexto, ativo && styles.chipTextoAtivo]}>
-        {texto}
-      </Text>
-    </Pressable>
-  );
-}
-
-// Seção com título e conteúdo dentro (usa children)
-type SecaoProps = {
-  titulo: string;
-  icone: keyof typeof Ionicons.glyphMap;
-  children: React.ReactNode;
-};
-
-function Secao({ titulo, icone, children }: SecaoProps) {
-  return (
-    <View style={styles.secao}>
-      <View style={styles.secaoTitulo}>
-        <Ionicons name={icone} size={22} color={ROXO} />
-        <Text style={styles.rotulo}>{titulo}</Text>
-      </View>
-      {children}
-    </View>
-  );
-}
-
-// Lista horizontal de chips.
-// Visualizando: mostra só os escolhidos. Editando: mostra todas as opções.
-type ListaChipsProps = {
-  opcoes: string[];
-  selecionados: string[];
-  editando: boolean;
-  vazio: string;
-  onToggle: (opcao: string) => void;
-};
-
-function ListaChips({
-  opcoes,
-  selecionados,
-  editando,
-  vazio,
-  onToggle,
-}: ListaChipsProps) {
-  const dados: ItemChip[] = (editando ? opcoes : selecionados).map(
-    (texto) => ({ id: texto, ativo: selecionados.includes(texto) })
-  );
-
-  return (
-    <FlatList
-      data={dados}
-      keyExtractor={(item) => item.id}
-      horizontal={true}
-      showsHorizontalScrollIndicator={false}
-      renderItem={({ item }) => (
-        <Chip
-          texto={item.id}
-          ativo={item.ativo}
-          onPress={editando ? () => onToggle(item.id) : undefined}
-        />
-      )}
-      ListEmptyComponent={<Text style={styles.vazio}>{vazio}</Text>}
-    />
-  );
 }
 
 /* ------------------------------------------------------------------
@@ -251,7 +167,6 @@ export default function PerfilScreen() {
     cpf: '123.456.789-00',
     telefone: '(48) 99999-0000',
     email: 'email.pessoa@voou.com',
-    escolaridade: 'Médio completo',
   });
   const [rascunho, setRascunho] = useState<Perfil>(perfil);
   const [editando, setEditando] = useState(false);
@@ -277,10 +192,6 @@ export default function PerfilScreen() {
 
   const atualizarTexto = (chave: ChaveTexto, texto: string) => {
     setRascunho((r) => ({ ...r, [chave]: texto }));
-  };
-
-  const escolherEscolaridade = (opcao: string) => {
-    setRascunho((r) => ({ ...r, escolaridade: opcao }));
   };
 
   /* ---------- data da FlatList ---------- */
@@ -329,6 +240,8 @@ export default function PerfilScreen() {
       teclado={item.teclado}
       editando={editando}
       onChangeText={(texto) => atualizarTexto(item.chave, texto)}
+      mostrarCpf={mostrarCpf}
+      onToggleCpf={() => setMostrarCpf((valorAtual) => !valorAtual)}
     />
   );
 
@@ -338,23 +251,6 @@ export default function PerfilScreen() {
       <Avatar editando={editando} />
 
       <Text style={styles.nome}>{atual.nome}</Text>
-
-
-      {!editando && (
-        <Pressable
-          style={styles.botaoOlho}
-          onPress={() => setMostrarCpf((valorAtual) => !valorAtual)}
-        >
-          <Ionicons
-            name={mostrarCpf ? 'eye-off' : 'eye'}
-            size={18}
-            color={ROXO}
-          />
-          <Text style={styles.botaoOlhoTexto}>
-            {mostrarCpf ? 'Ocultar CPF' : 'Mostrar CPF'}
-          </Text>
-        </Pressable>
-      )}
     </View>
   );
 
@@ -362,16 +258,6 @@ export default function PerfilScreen() {
   const Rodape = (
     <View>
       <Divisor />
-
-      <Secao titulo="Nível de escolaridade" icone="school">
-        <ListaChips
-          opcoes={ESCOLARIDADES}
-          selecionados={atual.escolaridade ? [atual.escolaridade] : []}
-          editando={editando}
-          vazio="Nenhum nível informado"
-          onToggle={escolherEscolaridade}
-        />
-      </Secao>
 
       {editando ? (
         <View>
@@ -399,7 +285,6 @@ export default function PerfilScreen() {
       <Header
         titulo="Meu Perfil"
         editando={editando}
-        onVoltar={() => router.back()}
         onEditar={editando ? cancelarEdicao : iniciarEdicao}
       />
 
@@ -411,9 +296,24 @@ export default function PerfilScreen() {
           ListHeaderComponent={Topo}
           ListFooterComponent={Rodape}
           ItemSeparatorComponent={Divisor}
-          keyboardShouldPersistTaps="handled" // toca nos chips com o teclado aberto
+          keyboardShouldPersistTaps="handled"
         />
       </View>
+
+      <Pressable
+        style={styles.botaoVoltar}
+        onPress={() => router.back()}
+        accessibilityRole="button"
+        accessibilityLabel="Voltar"
+        hitSlop={10}
+      >
+        <Image
+          source={require('../../assets/voltar 1.png')}
+          style={styles.voltarIcone}
+          resizeMode="contain"
+          accessibilityLabel="Seta para voltar"
+        />
+      </Pressable>
     </View>
   );
 }
@@ -445,11 +345,6 @@ cabeçalho: {
     justifyContent: 'space-between',
     marginBottom: 20,
   },
-  headerEsquerda: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
   headerTitulo: {
     color: AMARELO,
     fontSize: 22,
@@ -462,7 +357,7 @@ cabeçalho: {
     backgroundColor: CINZA_CARD,
     borderRadius: 24,
     padding: 20,
-    marginBottom: 30,
+    marginBottom: 60,
   },
 
   // Topo do card 
@@ -515,21 +410,6 @@ cabeçalho: {
     fontSize: 13,
     fontWeight: '600',
   },
-  botaoOlho: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    backgroundColor: CINZA_INPUT,
-  },
-  botaoOlhoTexto: {
-    color: ROXO,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
   // Campo
   campo: {
     flexDirection: 'row',
@@ -565,49 +445,13 @@ cabeçalho: {
     backgroundColor: '#D6D6D6',
   },
 
-  // Seções com chips
-  secao: {
-    paddingVertical: 14,
-  },
-  secaoTitulo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    marginBottom: 10,
-  },
-  chip: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    marginRight: 8,
-    backgroundColor: CINZA_INPUT,
-    borderWidth: 1,
-    borderColor: '#D6D6D6',
-  },
-  chipAtivo: {
-    backgroundColor: CINZA_INPUT,
-    borderColor: AMARELO,
-  },
-  chipTexto: {
-    color: TEXTO,
-    fontSize: 14,
-  },
-  chipTextoAtivo: {
-    color: TEXTO,
-    fontWeight: '600',
-  },
-  vazio: {
-    color: '#999',
-    fontSize: 14,
-  },
-
   // Botões (mesmo estilo do botão "Cadastrar")
   botaoAmarelo: {
     backgroundColor: AMARELO,
     borderRadius: 24,
     paddingVertical: 14,
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 38,
   },
   botaoAmareloTexto: {
     color: '#fff',
@@ -623,4 +467,21 @@ cabeçalho: {
     fontSize: 15,
     fontWeight: '600',
   },
+  botaoVoltar: {
+    position: 'absolute',
+    bottom: 82,
+    left: 6,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: AMARELO,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
+  },
+  voltarIcone: { width: 48, height: 48 },
 });

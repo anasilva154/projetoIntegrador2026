@@ -73,13 +73,7 @@ export default function TabLayout() {
 
         <Tabs.Screen name="perfil" />
 
-        <Tabs.Screen
-          name="pdfcurriculo"
-          options={{
-              
-            tabBarStyle: { display: "none" },
-          }}
-        />
+        <Tabs.Screen name="pdfcurriculo" />
 
         <Tabs.Screen
           name="rotas/busca/[query]"
