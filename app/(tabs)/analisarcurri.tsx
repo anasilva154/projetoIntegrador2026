@@ -164,8 +164,8 @@ export default function Candidatos() {
         />
       </View>
 
-      {/* Botão de voltar: círculo roxo com sombra e ícone PNG por cima */}
-      <Pressable style={styles.botaoVoltar} onPress={() => router.back()} hitSlop={10}>
+      {/* Botão de voltar: leva direto para a tela de curriculo.tsx */}
+      <Pressable style={styles.botaoVoltar} onPress={() => router.push('/curriculo')} hitSlop={10}>
         <Image
           source={require('../../assets/images/voltar.png')}
           style={styles.voltarIcone}

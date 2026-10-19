@@ -125,7 +125,7 @@ export default function Vaga() {
 
           {/* View envolvendo o botão, só para garantir a centralização */}
           <View style={styles.botaoWrapper}>
-            <Pressable style={styles.botao}>
+            <Pressable style={styles.botao} onPress={() => router.push('/candidatar')}>
               <Text style={styles.txtBotao}>Candidatar-se</Text>
             </Pressable>
           </View>

@@ -63,6 +63,15 @@ export default function Inicio() {
     });
   }, [busca, areaSelecionada]);
 
+  // decide para onde cada vaga navega: a de Auxiliar Administrativo vai para analisarcurri
+   // decide para onde cada vaga navega: a de Jovem Aprendiz - Auxiliar vai para analisarcurri
+  const abrirVaga = (item: Vaga) => {
+    if (item.id === '6') {
+      router.push('/analisarcurri');
+    } else {
+      router.push(`/candidato/${item.id}`);
+    }
+  };
   const cabecalho = (
     <View>
       {/* título */}
@@ -144,10 +153,7 @@ export default function Inicio() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <Pressable
-              style={styles.item}
-              onPress={() => router.push(`/candidato/${item.id}`)}
-            >
+            <Pressable style={styles.item} onPress={() => abrirVaga(item)}>
               <View style={styles.avatar}>
                 <Image
                   source={require('../../assets/images/envelope.png')}

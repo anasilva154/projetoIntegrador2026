@@ -214,7 +214,11 @@ export default function Candidatar() {
         </ScrollView>
 
         {/* botão de voltar flutuante, no canto inferior esquerdo */}
-        <Pressable style={styles.botaoVoltar} onPress={() => router.back()} hitSlop={8}>
+        <Pressable
+          style={styles.botaoVoltar}
+          onPress={() => router.push('/vagasinformação.tsx')}
+          hitSlop={8}
+        >
           <Image
             source={require('../../assets/images/voltar.png')}
             style={styles.iconeVoltar}
