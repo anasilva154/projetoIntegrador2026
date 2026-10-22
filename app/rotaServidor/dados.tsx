@@ -1,284 +1,581 @@
 export default function DadosVagas() {
-    const vagas = [
-      { id: '1', titulo: 'Jovem Aprendiz/Auxiliar',
-        cargaHoraria: '20h semanais/Segunda a sexta, 13h às 17h',
-        salario: 'A negociar',
-        idade: '14 a 22 anos',
-        escolaridade:'Cursando ou concluído o ensino médio',
-        requisitos:'Conhecimentos básicos de informática; Boa comunicação; Responsabilidade e vontade de aprender',
-        beneficios:'Vale transporte; Vale alimentação; Seguro de vida;',
-        topicos:[
-          {descricao: '- Auxiliar na organização de documentos'},
-          {descricao: '- Apoiar a equipe nas tarefas do dia a dia'},
-          {descricao: '- Preencher planilhas e cadastrar informações'},
-          {descricao: '- Aprender novas atividades administrativas'},
-        ] },
-      { id: '2', titulo: 'Vendedor Interno', 
-        cargaHoraria: '44h semanais/Segunda a sexta, 8h às 17h48, e sábados alternados',
-        salario: 'Fixo + comissão (valor a combinar)',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo',
-        requisitos: 'Desejável experiência em atendimento ou em vendas',
-        beneficios: 'Vale transporte; Seguro de vida; Plano de saúde;',
-        topicos:[
-          {descricao: '- Atendimento ao cliente presencialmente, por telefone e por whatsapp'},
-          {descricao: '- Apresentar produtos e esclarecer dúvidas,'},
-          {descricao: '- Elaborar orçamentos e registrar pedidos'},
-          {descricao: '- Manter o cadastro de clientes atualizado'},
-          {descricao: '- Cumprir metas de vendas definidas pela empresa'},
-        ] },
-      { id: '3', titulo: 'Auxiliar de Produção', 
-        cargaHoraria: '44h semanais/Segunda a sexta, 7h30 às 17h18 (turno administrativo)',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino fundamental completo (ensino médio desejável)',
-        requisitos: 'Desejável experiência em produção ou em linha de montagem',
-        beneficios: 'Vale transporte; Vale alimentação; Seguro de vida;',
-        topicos:[
-          {descricao: '- Abastecer as linhas de produção com materiais e insumos'},
-          {descricao: '- Operar máquinas e equipamentos simples, após treinamento'},
-          {descricao: '- Realizar inspeção de qualidade nos produtos'},
-          {descricao: '- Auxiliar na embalagem e expedição dos produtos'},
-          {descricao: '- Seguir normas de segurança e higiene no ambiente de trabalho'}
-        ] },
-      { id: '4', titulo: 'Auxiliar de RH', 
-        cargaHoraria: '40h semanais/Segunda a sexta, 8h às 17h',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo (cursando graduação em RH ou Administração é um diferencial)',
-        requisitos: 'Desejável experiência em recursos humanos',
-        beneficios: 'Vale transporte',
-        topicos:[
-          {descricao: '- Apoiar o processo de recrutamento e seleção'},
-          {descricao: '- Agendar entrevistas e acompanhar candidatos'},
-          {descricao: '- Auxiliar na administração de benefícios e folha de pagamento'},
-          {descricao: '- Manter registros e arquivos atualizados'},
-          {descricao: '- Colaborar com a equipe de RH em projetos e atividades diversas'}
-        ] },
-      { id: '5', titulo: 'Auxiliar Administrativo', 
-        cargaHoraria: '44h semanais/Segunda a sexta, 8h às 17h',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo',
-        requisitos: 'Informática básica (pacote Office ou Google)',
-        beneficios:'não informado',
-        topicos:[
-          {descricao: '- Organizar e arquivar documentos físicos e digitais'},
-          {descricao: '- Atender chamadas telefônicas e responder e-mails'},
-          {descricao: '- Auxiliar na elaboração de relatórios e planilhas'},
-          {descricao: '- Controlar o estoque de materiais de escritório'},
-          {descricao: '- Apoiar a equipe em tarefas administrativas diversas'}
-        ] },
-      { id: '6', titulo: 'Fiscal de Caixa', 
-        cargaHoraria: '44h semanais/Escala 6x1, em turnos (manhã ou tarde)',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo)',
-        requisitos: 'Conhecimento básico de sistemas de PDV',
-        beneficios: 'Vale alimentação',
-        topicos:[
-          {descricao: '- Operar o caixa registrador e processar transações de vendas'},
-          {descricao: '- Verificar a autenticidade de notas e moedas'},
-          {descricao: '- Emitir recibos e notas fiscais'},
-          {descricao: '- Manter o caixa organizado e reconciliar o dinheiro no final do turno'},
-          {descricao: '- Atender clientes com cortesia e resolver problemas de pagamento'}
-        ] },
-      { id: '7', titulo: 'Repositor de Mercadorias', 
-        cargaHoraria: '44h semanais/Escala 6x1, em turnos (manhã ou tarde)',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino fundamental completo',
-        requisitos: 'Desejável experiência em supermercado ou varejo, mas não obrigatória',
-        beneficios: 'Uniforme fornecido pela empresa',
-        topicos:[
-          {descricao: ' - Repor produtos nas prateleiras e gôndolas'},
-          {descricao: '- Verificar datas de validade e organizar produtos de acordo com as normas da empresa'},
-          {descricao: '- Auxiliar na conferência de mercadorias recebidas e no controle de estoque'},
-          {descricao: '- Manter a área de trabalho limpa e organizada'},
-          {descricao: '- Atender clientes e fornecer informações sobre produtos, quando necessário'}
-        ] },
-      { id: '8', titulo: 'Empacotador', 
-        cargaHoraria: '44h semanais/Escala 6x1, em turnos (manhã ou tarde)',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino fundamental completo',
-        requisitos: 'Desejável experiência em empacotamento',
-        beneficios: 'Uniforme fornecido pela empresa',
-        topicos:[
-          {descricao: '- Empacotar produtos de forma eficiente e segura'},
-          {descricao: '- Manter a área de empacotamento limpa e organizada'},
-          {descricao: '- Auxiliar clientes com o empacotamento de suas compras, quando necessário'},
-          {descricao: '- Seguir normas de segurança e higiene no ambiente de trabalho'},
-          {descricao: '- Colaborar com a equipe para garantir um fluxo de trabalho eficiente'}
-        ] },
-      { id: '9', titulo: 'Auxiliar de Cozinha', 
-        cargaHoraria: '44h semanais/Escala 6x1, em turnos (manhã ou tarde)',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo',
-        requisitos: 'Não é necessário, a empresa treina o candidato',
-        beneficios: 'alimentação no local; Uniforme fornecido pela empresa',
-        topicos:[
-          {descricao: '- Auxiliar na preparação de alimentos, seguindo receitas e padrões de qualidade'},
-          {descricao: '- Manter a cozinha limpa e organizada, lavando utensílios e equipamentos'},
-          {descricao: '- Controlar o estoque de ingredientes e informar a necessidade de reposição'},
-          {descricao: '- Seguir normas de segurança alimentar e higiene pessoal'},
-          {descricao: '- Colaborar com a equipe para garantir um serviço eficiente e de qualidade'}
-        ] },
-      { id: '10', titulo: 'Auxiliar de Serviços Gerais', 
-        cargaHoraria: '44h semanais/Segunda a sexta, 7h30 às 17h18',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino fundamental completo (ensino médio desejável)',
-        requisitos: 'não é necessário',
-        beneficios: 'Uniforme e EPIs fornecidos pela empresa',
-        topicos:[
-          {descricao: '- Realizar limpeza e manutenção de áreas internas e externas da empresa'},
-          {descricao: '- Auxiliar na organização de materiais e equipamentos'},
-          {descricao: '- Coletar e descartar resíduos de acordo com as normas ambientais'},
-          {descricao: '- Seguir normas de segurança e higiene no ambiente de trabalho'},
-          {descricao: '- Colaborar com a equipe para garantir um ambiente limpo e seguro'}
-        ] },
-      { id: '11', titulo: 'Estagiário de TI', 
-        cargaHoraria: '20h semanais/Segunda a sexta, 9h às 12h',
-        salario: 'R$ 1.500,00 a R$ 2.000,00',
-        idade: '18 a 30 anos',
-        escolaridade: 'Cursando ou concluído ensino superior em TI, Sistemas de Informação ou áreas afins',
-        requisitos: 'Conhecimento básico em informática; Interesse por tecnologia; Boa capacidade de aprendizado',
-        beneficios: 'Vale transporte; Bolsa de estágio; Ambiente profissional',
-        topicos:[
-          {descricao: '- Auxiliar na manutenção de computadores e periféricos'},
-          {descricao: '- Instalar e configurar softwares básicos'},
-          {descricao: '- Apoiar o suporte técnico interno da empresa'},
-          {descricao: '- Registrar ocorrências e acompanhar chamados de TI'},
-          {descricao: '- Participar de treinamentos e aprender processos de suporte'}
-        ] },
-      { id: '12', titulo: 'Assistente de Marketing', 
-        cargaHoraria: '40h semanais/Segunda a sexta, 8h às 17h',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo (graduação em Marketing ou áreas afins é diferencial)',
-        requisitos: 'Boa comunicação; Criatividade; Conhecimento básico de redes sociais',
-        beneficios: 'Vale transporte; Plano de saúde; Incentivo à capacitação',
-        topicos:[
-          {descricao: '- Apoiar campanhas de marketing e divulgação'},
-          {descricao: '- Criar materiais para redes sociais e campanhas internas'},
-          {descricao: '- Organizar conteúdos e calendarização de postagens'},
-          {descricao: '- Acompanhar métricas de alcance e engajamento'},
-          {descricao: '- Auxiliar na criação de materiais promocionais'}
-        ] },
-      { id: '13', titulo: 'Telemarketing', 
-        cargaHoraria: '44h semanais/Segunda a sábado, em turno comercial',
-        salario: 'Fixo + comissão',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo',
-        requisitos: 'Boa comunicação verbal; Dinamismo; Resiliência para conversas com clientes',
-        beneficios: 'Vale transporte; Vale alimentação; Bonificação por metas',
-        topicos:[
-          {descricao: '- Realizar ligações para prospecção e fidelização de clientes'},
-          {descricao: '- Informar sobre produtos e serviços da empresa'},
-          {descricao: '- Registrar dados de clientes e atendimentos no sistema'},
-          {descricao: '- Dar suporte para vendas e fechamento de pedidos'},
-          {descricao: '- Cumprir metas diárias e mensais de atendimento'}
-        ] },
-      { id: '14', titulo: 'Garçom / Atendente de Restaurante', 
-        cargaHoraria: '44h semanais/Segunda a domingo, em escala de turnos',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo',
-        requisitos: 'Boa apresentação; Capacidade de atendimento; Experiência em restaurante é um diferencial',
-        beneficios: 'Vale alimentação; Vale transporte; Comissão por atendimento',
-        topicos:[
-          {descricao: '- Recepcionar clientes e apresentar o cardápio'},
-          {descricao: '- Anotar pedidos e encaminhar à cozinha'},
-          {descricao: '- Atender solicitações e garantir qualidade no serviço'},
-          {descricao: '- Organizar mesas e manter ambiente acolhedor'},
-          {descricao: '- Encerrar contas e prestar atendimento final ao cliente'}
-        ] },
-      { id: '15', titulo: 'Analista de Qualidade', 
-        cargaHoraria: '40h semanais/Segunda a sexta, 8h às 17h',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo (curso técnico ou superior é desejável)',
-        requisitos: 'Atenção aos detalhes; Conhecimento em normas de qualidade; Boa organização',
-        beneficios: 'Vale transporte; Plano de saúde; Incentivo à qualificação',
-        topicos:[
-          {descricao: '- Verificar se produtos ou serviços atendem aos padrões da empresa'},
-          {descricao: '- Registrar falhas, identificar causas e sugerir melhorias'},
-          {descricao: '- Acompanhar processos internos e indicadores de qualidade'},
-          {descricao: '- Participar de auditorias e inspeções técnicas'},
-          {descricao: '- Apoiar a equipe na melhoria contínua de processos'}
-        ] },
-      { id: '16', titulo: 'Assistente de Compras', 
-        cargaHoraria: '40h semanais/Segunda a sexta, 8h às 17h',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo',
-        requisitos: 'Organização; Atenção a detalhes; Conhecimento básico de Excel',
-        beneficios: 'Vale transporte; Vale alimentação; Plano de saúde',
-        topicos:[
-          {descricao: '- Registrar pedidos e acompanhar compras internas'},
-          {descricao: '- Consultar fornecedores e comparar custos'},
-          {descricao: '- Acompanhar prazos de entrega e conferência de materiais'},
-          {descricao: '- Manter controle de orçamento e documentação de compras'},
-          {descricao: '- Apoiar a área financeira e logística na organização do processo'}
-        ] },
-      { id: '17', titulo: 'Operador de Estoque', 
-        cargaHoraria: '44h semanais/Segunda a sábado, em turnos',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino fundamental completo',
-        requisitos: 'Boa organização; Atenção a detalhes; Conhecimento básico de logística',
-        beneficios: 'Vale transporte; Uniforme; Seguro de vida',
-        topicos:[
-          {descricao: '- Receber mercadorias e conferir quantidades e qualidade'},
-          {descricao: '- Organizar produtos em prateleiras, almoxarifado e áreas de armazenamento'},
-          {descricao: '- Registrar entradas, saídas e movimentações de estoque'},
-          {descricao: '- Acompanhar nível de materiais e solicitar reposição quando necessário'},
-          {descricao: '- Manter ambiente de estoque organizado e seguro'}
-        ] },
-      { id: '18', titulo: 'Cozinheiro(a) Auxiliar', 
-        cargaHoraria: '44h semanais/Turnos alternados',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo',
-        requisitos: 'Desejável experiência em cozinha; Higiene e organização',
-        beneficios: 'Vale alimentação; Uniforme; Ambiente de trabalho organizado',
-        topicos:[
-          {descricao: '- Auxiliar na preparação de ingredientes e montagem de pratos'},
-          {descricao: '- Manter a cozinha limpa, organizada e em conformidade com normas de higiene'},
-          {descricao: '- Apoiar o preparo de receitas e alimentação em grande volume'},
-          {descricao: '- Controlar estoques mínimos de ingredientes e utensílios'},
-          {descricao: '- Colaborar com a equipe para garantir rapidez e qualidade no serviço'}
-        ] },
-      { id: '19', titulo: 'Secretária / Recepcionista', 
-        cargaHoraria: '40h semanais/Segunda a sexta, 8h às 17h',
-        salario: 'A combinar',
-        idade: '18 a 65 anos',
-        escolaridade: 'Ensino médio completo',
-        requisitos: 'Atendimento ao público; Organização; Conhecimento em informática básica',
-        beneficios: 'Vale transporte; Plano de saúde; Ambiente profissional',
-        topicos:[
-          {descricao: '- Atender telefonemas e receber clientes com cordialidade'},
-          {descricao: '- Organizar agenda, reuniões e documentos da empresa'},
-          {descricao: '- Apoiar a rotina administrativa e agendar compromissos'},
-          {descricao: '- Manter arquivos e cadastros atualizados'},
-          {descricao: '- Garantir bom atendimento e suporte à equipe interna'}
-        ] },
-      { id: '20', titulo: 'Motorista Entregador', 
-        cargaHoraria: '44h semanais/Turnos variados',
-        salario: 'A combinar',
-        idade: '21 a 65 anos',
-        escolaridade: 'Ensino fundamental completo',
-        requisitos: 'CNH categoria B válida; Experiência em entregas; Conhecimento da cidade',
-        beneficios: 'Vale transporte; Vale alimentação; Seguro de vida',
-        topicos:[
-          {descricao: '- Realizar entregas de forma segura e pontual'},
-          {descricao: '- Verificar rotas, horários e documentos necessários para entrega'},
-          {descricao: '- Manter veículo limpo, organizado e em boas condições'},
-          {descricao: '- Atender clientes com educação e respeito'},
-          {descricao: '- Registrar entregas e relatar ocorrências do dia'}
-        ] },
-    ];
-    return vagas;
+  return [
+    {
+      "id": "1",
+      "titulo": "Jovem Aprendiz/Auxiliar",
+      "empresa": "Nova Geração Soluções",
+      "categoria": "Administrativo",
+      "cargaHoraria": "20h semanais/Segunda a sexta, 13h às 17h",
+      "salario": "A negociar",
+      "idade": "14 a 22 anos",
+      "escolaridade": "Cursando ou concluído o ensino médio",
+      "requisitos": "Conhecimentos básicos de informática; Boa comunicação; Responsabilidade e vontade de aprender",
+      "beneficios": "Vale transporte; Vale alimentação; Seguro de vida;",
+      "topicos": [
+        {
+          "descricao": "- Auxiliar na organização de documentos"
+        },
+        {
+          "descricao": "- Apoiar a equipe nas tarefas do dia a dia"
+        },
+        {
+          "descricao": "- Preencher planilhas e cadastrar informações"
+        },
+        {
+          "descricao": "- Aprender novas atividades administrativas"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "titulo": "Vendedor Interno",
+      "empresa": "Casa Forte Móveis",
+      "categoria": "Vendas",
+      "cargaHoraria": "44h semanais/Segunda a sexta, 8h às 17h48, e sábados alternados",
+      "salario": "Fixo + comissão (valor a combinar)",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo",
+      "requisitos": "Desejável experiência em atendimento ou em vendas",
+      "beneficios": "Vale transporte; Seguro de vida; Plano de saúde;",
+      "topicos": [
+        {
+          "descricao": "- Atendimento ao cliente presencialmente, por telefone e por whatsapp"
+        },
+        {
+          "descricao": "- Apresentar produtos e esclarecer dúvidas,"
+        },
+        {
+          "descricao": "- Elaborar orçamentos e registrar pedidos"
+        },
+        {
+          "descricao": "- Manter o cadastro de clientes atualizado"
+        },
+        {
+          "descricao": "- Cumprir metas de vendas definidas pela empresa"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "titulo": "Auxiliar de Produção",
+      "empresa": "Metalúrgica Horizonte",
+      "categoria": "Produção",
+      "cargaHoraria": "44h semanais/Segunda a sexta, 7h30 às 17h18 (turno administrativo)",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino fundamental completo (ensino médio desejável)",
+      "requisitos": "Desejável experiência em produção ou em linha de montagem",
+      "beneficios": "Vale transporte; Vale alimentação; Seguro de vida;",
+      "topicos": [
+        {
+          "descricao": "- Abastecer as linhas de produção com materiais e insumos"
+        },
+        {
+          "descricao": "- Operar máquinas e equipamentos simples, após treinamento"
+        },
+        {
+          "descricao": "- Realizar inspeção de qualidade nos produtos"
+        },
+        {
+          "descricao": "- Auxiliar na embalagem e expedição dos produtos"
+        },
+        {
+          "descricao": "- Seguir normas de segurança e higiene no ambiente de trabalho"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "titulo": "Auxiliar de RH",
+      "empresa": "Talento Certo Consultoria",
+      "categoria": "Recursos Humanos",
+      "cargaHoraria": "40h semanais/Segunda a sexta, 8h às 17h",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo (cursando graduação em RH ou Administração é um diferencial)",
+      "requisitos": "Desejável experiência em recursos humanos",
+      "beneficios": "Vale transporte",
+      "topicos": [
+        {
+          "descricao": "- Apoiar o processo de recrutamento e seleção"
+        },
+        {
+          "descricao": "- Agendar entrevistas e acompanhar candidatos"
+        },
+        {
+          "descricao": "- Auxiliar na administração de benefícios e folha de pagamento"
+        },
+        {
+          "descricao": "- Manter registros e arquivos atualizados"
+        },
+        {
+          "descricao": "- Colaborar com a equipe de RH em projetos e atividades diversas"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "titulo": "Auxiliar Administrativo",
+      "empresa": "Grupo Delta Contábil",
+      "categoria": "Administrativo",
+      "cargaHoraria": "44h semanais/Segunda a sexta, 8h às 17h",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo",
+      "requisitos": "Informática básica (pacote Office ou Google)",
+      "beneficios": "não informado",
+      "topicos": [
+        {
+          "descricao": "- Organizar e arquivar documentos físicos e digitais"
+        },
+        {
+          "descricao": "- Atender chamadas telefônicas e responder e-mails"
+        },
+        {
+          "descricao": "- Auxiliar na elaboração de relatórios e planilhas"
+        },
+        {
+          "descricao": "- Controlar o estoque de materiais de escritório"
+        },
+        {
+          "descricao": "- Apoiar a equipe em tarefas administrativas diversas"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "titulo": "Fiscal de Caixa",
+      "empresa": "Supermercado Bom Preço",
+      "categoria": "Varejo",
+      "cargaHoraria": "44h semanais/Escala 6x1, em turnos (manhã ou tarde)",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo)",
+      "requisitos": "Conhecimento básico de sistemas de PDV",
+      "beneficios": "Vale alimentação",
+      "topicos": [
+        {
+          "descricao": "- Operar o caixa registrador e processar transações de vendas"
+        },
+        {
+          "descricao": "- Verificar a autenticidade de notas e moedas"
+        },
+        {
+          "descricao": "- Emitir recibos e notas fiscais"
+        },
+        {
+          "descricao": "- Manter o caixa organizado e reconciliar o dinheiro no final do turno"
+        },
+        {
+          "descricao": "- Atender clientes com cortesia e resolver problemas de pagamento"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "titulo": "Repositor de Mercadorias",
+      "empresa": "Supermercado Bom Preço",
+      "categoria": "Varejo",
+      "cargaHoraria": "44h semanais/Escala 6x1, em turnos (manhã ou tarde)",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino fundamental completo",
+      "requisitos": "Desejável experiência em supermercado ou varejo, mas não obrigatória",
+      "beneficios": "Uniforme fornecido pela empresa",
+      "topicos": [
+        {
+          "descricao": " - Repor produtos nas prateleiras e gôndolas"
+        },
+        {
+          "descricao": "- Verificar datas de validade e organizar produtos de acordo com as normas da empresa"
+        },
+        {
+          "descricao": "- Auxiliar na conferência de mercadorias recebidas e no controle de estoque"
+        },
+        {
+          "descricao": "- Manter a área de trabalho limpa e organizada"
+        },
+        {
+          "descricao": "- Atender clientes e fornecer informações sobre produtos, quando necessário"
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "titulo": "Empacotador",
+      "empresa": "Mercado Estrela do Sul",
+      "categoria": "Varejo",
+      "cargaHoraria": "44h semanais/Escala 6x1, em turnos (manhã ou tarde)",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino fundamental completo",
+      "requisitos": "Desejável experiência em empacotamento",
+      "beneficios": "Uniforme fornecido pela empresa",
+      "topicos": [
+        {
+          "descricao": "- Empacotar produtos de forma eficiente e segura"
+        },
+        {
+          "descricao": "- Manter a área de empacotamento limpa e organizada"
+        },
+        {
+          "descricao": "- Auxiliar clientes com o empacotamento de suas compras, quando necessário"
+        },
+        {
+          "descricao": "- Seguir normas de segurança e higiene no ambiente de trabalho"
+        },
+        {
+          "descricao": "- Colaborar com a equipe para garantir um fluxo de trabalho eficiente"
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "titulo": "Auxiliar de Cozinha",
+      "empresa": "Restaurante Sabor da Serra",
+      "categoria": "Alimentação",
+      "cargaHoraria": "44h semanais/Escala 6x1, em turnos (manhã ou tarde)",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo",
+      "requisitos": "Não é necessário, a empresa treina o candidato",
+      "beneficios": "alimentação no local; Uniforme fornecido pela empresa",
+      "topicos": [
+        {
+          "descricao": "- Auxiliar na preparação de alimentos, seguindo receitas e padrões de qualidade"
+        },
+        {
+          "descricao": "- Manter a cozinha limpa e organizada, lavando utensílios e equipamentos"
+        },
+        {
+          "descricao": "- Controlar o estoque de ingredientes e informar a necessidade de reposição"
+        },
+        {
+          "descricao": "- Seguir normas de segurança alimentar e higiene pessoal"
+        },
+        {
+          "descricao": "- Colaborar com a equipe para garantir um serviço eficiente e de qualidade"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "titulo": "Auxiliar de Serviços Gerais",
+      "empresa": "Limpa Mais Conservação",
+      "categoria": "Serviços Gerais",
+      "cargaHoraria": "44h semanais/Segunda a sexta, 7h30 às 17h18",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino fundamental completo (ensino médio desejável)",
+      "requisitos": "não é necessário",
+      "beneficios": "Uniforme e EPIs fornecidos pela empresa",
+      "topicos": [
+        {
+          "descricao": "- Realizar limpeza e manutenção de áreas internas e externas da empresa"
+        },
+        {
+          "descricao": "- Auxiliar na organização de materiais e equipamentos"
+        },
+        {
+          "descricao": "- Coletar e descartar resíduos de acordo com as normas ambientais"
+        },
+        {
+          "descricao": "- Seguir normas de segurança e higiene no ambiente de trabalho"
+        },
+        {
+          "descricao": "- Colaborar com a equipe para garantir um ambiente limpo e seguro"
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "titulo": "Estagiário de TI",
+      "cargaHoraria": "20h semanais/Segunda a sexta, 9h às 12h",
+      "salario": "R$ 1.500,00 a R$ 2.000,00",
+      "idade": "18 a 30 anos",
+      "escolaridade": "Cursando ou concluído ensino superior em TI, Sistemas de Informação ou áreas afins",
+      "requisitos": "Conhecimento básico em informática; Interesse por tecnologia; Boa capacidade de aprendizado",
+      "beneficios": "Vale transporte; Bolsa de estágio; Ambiente profissional",
+      "topicos": [
+        {
+          "descricao": "- Auxiliar na manutenção de computadores e periféricos"
+        },
+        {
+          "descricao": "- Instalar e configurar softwares básicos"
+        },
+        {
+          "descricao": "- Apoiar o suporte técnico interno da empresa"
+        },
+        {
+          "descricao": "- Registrar ocorrências e acompanhar chamados de TI"
+        },
+        {
+          "descricao": "- Participar de treinamentos e aprender processos de suporte"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "12",
+      "titulo": "Assistente de Marketing",
+      "cargaHoraria": "40h semanais/Segunda a sexta, 8h às 17h",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo (graduação em Marketing ou áreas afins é diferencial)",
+      "requisitos": "Boa comunicação; Criatividade; Conhecimento básico de redes sociais",
+      "beneficios": "Vale transporte; Plano de saúde; Incentivo à capacitação",
+      "topicos": [
+        {
+          "descricao": "- Apoiar campanhas de marketing e divulgação"
+        },
+        {
+          "descricao": "- Criar materiais para redes sociais e campanhas internas"
+        },
+        {
+          "descricao": "- Organizar conteúdos e calendarização de postagens"
+        },
+        {
+          "descricao": "- Acompanhar métricas de alcance e engajamento"
+        },
+        {
+          "descricao": "- Auxiliar na criação de materiais promocionais"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "13",
+      "titulo": "Telemarketing",
+      "cargaHoraria": "44h semanais/Segunda a sábado, em turno comercial",
+      "salario": "Fixo + comissão",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo",
+      "requisitos": "Boa comunicação verbal; Dinamismo; Resiliência para conversas com clientes",
+      "beneficios": "Vale transporte; Vale alimentação; Bonificação por metas",
+      "topicos": [
+        {
+          "descricao": "- Realizar ligações para prospecção e fidelização de clientes"
+        },
+        {
+          "descricao": "- Informar sobre produtos e serviços da empresa"
+        },
+        {
+          "descricao": "- Registrar dados de clientes e atendimentos no sistema"
+        },
+        {
+          "descricao": "- Dar suporte para vendas e fechamento de pedidos"
+        },
+        {
+          "descricao": "- Cumprir metas diárias e mensais de atendimento"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "14",
+      "titulo": "Garçom / Atendente de Restaurante",
+      "cargaHoraria": "44h semanais/Segunda a domingo, em escala de turnos",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo",
+      "requisitos": "Boa apresentação; Capacidade de atendimento; Experiência em restaurante é um diferencial",
+      "beneficios": "Vale alimentação; Vale transporte; Comissão por atendimento",
+      "topicos": [
+        {
+          "descricao": "- Recepcionar clientes e apresentar o cardápio"
+        },
+        {
+          "descricao": "- Anotar pedidos e encaminhar à cozinha"
+        },
+        {
+          "descricao": "- Atender solicitações e garantir qualidade no serviço"
+        },
+        {
+          "descricao": "- Organizar mesas e manter ambiente acolhedor"
+        },
+        {
+          "descricao": "- Encerrar contas e prestar atendimento final ao cliente"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "15",
+      "titulo": "Analista de Qualidade",
+      "cargaHoraria": "40h semanais/Segunda a sexta, 8h às 17h",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo (curso técnico ou superior é desejável)",
+      "requisitos": "Atenção aos detalhes; Conhecimento em normas de qualidade; Boa organização",
+      "beneficios": "Vale transporte; Plano de saúde; Incentivo à qualificação",
+      "topicos": [
+        {
+          "descricao": "- Verificar se produtos ou serviços atendem aos padrões da empresa"
+        },
+        {
+          "descricao": "- Registrar falhas, identificar causas e sugerir melhorias"
+        },
+        {
+          "descricao": "- Acompanhar processos internos e indicadores de qualidade"
+        },
+        {
+          "descricao": "- Participar de auditorias e inspeções técnicas"
+        },
+        {
+          "descricao": "- Apoiar a equipe na melhoria contínua de processos"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "16",
+      "titulo": "Assistente de Compras",
+      "cargaHoraria": "40h semanais/Segunda a sexta, 8h às 17h",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo",
+      "requisitos": "Organização; Atenção a detalhes; Conhecimento básico de Excel",
+      "beneficios": "Vale transporte; Vale alimentação; Plano de saúde",
+      "topicos": [
+        {
+          "descricao": "- Registrar pedidos e acompanhar compras internas"
+        },
+        {
+          "descricao": "- Consultar fornecedores e comparar custos"
+        },
+        {
+          "descricao": "- Acompanhar prazos de entrega e conferência de materiais"
+        },
+        {
+          "descricao": "- Manter controle de orçamento e documentação de compras"
+        },
+        {
+          "descricao": "- Apoiar a área financeira e logística na organização do processo"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "17",
+      "titulo": "Operador de Estoque",
+      "cargaHoraria": "44h semanais/Segunda a sábado, em turnos",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino fundamental completo",
+      "requisitos": "Boa organização; Atenção a detalhes; Conhecimento básico de logística",
+      "beneficios": "Vale transporte; Uniforme; Seguro de vida",
+      "topicos": [
+        {
+          "descricao": "- Receber mercadorias e conferir quantidades e qualidade"
+        },
+        {
+          "descricao": "- Organizar produtos em prateleiras, almoxarifado e áreas de armazenamento"
+        },
+        {
+          "descricao": "- Registrar entradas, saídas e movimentações de estoque"
+        },
+        {
+          "descricao": "- Acompanhar nível de materiais e solicitar reposição quando necessário"
+        },
+        {
+          "descricao": "- Manter ambiente de estoque organizado e seguro"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "18",
+      "titulo": "Cozinheiro(a) Auxiliar",
+      "cargaHoraria": "44h semanais/Turnos alternados",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo",
+      "requisitos": "Desejável experiência em cozinha; Higiene e organização",
+      "beneficios": "Vale alimentação; Uniforme; Ambiente de trabalho organizado",
+      "topicos": [
+        {
+          "descricao": "- Auxiliar na preparação de ingredientes e montagem de pratos"
+        },
+        {
+          "descricao": "- Manter a cozinha limpa, organizada e em conformidade com normas de higiene"
+        },
+        {
+          "descricao": "- Apoiar o preparo de receitas e alimentação em grande volume"
+        },
+        {
+          "descricao": "- Controlar estoques mínimos de ingredientes e utensílios"
+        },
+        {
+          "descricao": "- Colaborar com a equipe para garantir rapidez e qualidade no serviço"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "19",
+      "titulo": "Secretária / Recepcionista",
+      "cargaHoraria": "40h semanais/Segunda a sexta, 8h às 17h",
+      "salario": "A combinar",
+      "idade": "18 a 65 anos",
+      "escolaridade": "Ensino médio completo",
+      "requisitos": "Atendimento ao público; Organização; Conhecimento em informática básica",
+      "beneficios": "Vale transporte; Plano de saúde; Ambiente profissional",
+      "topicos": [
+        {
+          "descricao": "- Atender telefonemas e receber clientes com cordialidade"
+        },
+        {
+          "descricao": "- Organizar agenda, reuniões e documentos da empresa"
+        },
+        {
+          "descricao": "- Apoiar a rotina administrativa e agendar compromissos"
+        },
+        {
+          "descricao": "- Manter arquivos e cadastros atualizados"
+        },
+        {
+          "descricao": "- Garantir bom atendimento e suporte à equipe interna"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    },
+    {
+      "id": "20",
+      "titulo": "Motorista Entregador",
+      "cargaHoraria": "44h semanais/Turnos variados",
+      "salario": "A combinar",
+      "idade": "21 a 65 anos",
+      "escolaridade": "Ensino fundamental completo",
+      "requisitos": "CNH categoria B válida; Experiência em entregas; Conhecimento da cidade",
+      "beneficios": "Vale transporte; Vale alimentação; Seguro de vida",
+      "topicos": [
+        {
+          "descricao": "- Realizar entregas de forma segura e pontual"
+        },
+        {
+          "descricao": "- Verificar rotas, horários e documentos necessários para entrega"
+        },
+        {
+          "descricao": "- Manter veículo limpo, organizado e em boas condições"
+        },
+        {
+          "descricao": "- Atender clientes com educação e respeito"
+        },
+        {
+          "descricao": "- Registrar entregas e relatar ocorrências do dia"
+        }
+      ],
+      "empresa": "",
+      "categoria": ""
+    }
+  ];
 }
