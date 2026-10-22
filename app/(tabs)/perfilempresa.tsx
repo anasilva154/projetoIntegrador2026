@@ -13,8 +13,9 @@ import {
   Alert,
   Image,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /* ------------------------------------------------------------------
    CORES (as mesmas da tela de cadastro)
@@ -163,6 +164,7 @@ function Divisor() {
 ------------------------------------------------------------------ */
 export default function PerfilScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   // perfil = dados salvos | rascunho = o que está sendo editado
   const [perfil, setPerfil] = useState<Perfil>({
@@ -299,7 +301,7 @@ export default function PerfilScreen() {
       ) : (
         <Pressable
           style={styles.botaoRoxo}
-          onPress={() => router.replace('/')}
+          onPress={() => router.replace('/' as Href)}
         >
           <Text style={styles.botaoRoxoTexto}>Sair</Text>
         </Pressable>
@@ -327,20 +329,51 @@ export default function PerfilScreen() {
         />
       </View>
 
-      <Pressable
-        style={styles.botaoVoltar}
-        onPress={() => router.back()}
-        accessibilityRole="button"
-        accessibilityLabel="Voltar"
-        hitSlop={10}
+      <View
+        style={[
+          styles.rodape,
+          { height: 56 + insets.bottom, paddingBottom: insets.bottom },
+        ]}
       >
-        <Image
-          source={require('../../assets/voltar 1.png')}
-          style={styles.voltarIcone}
-          resizeMode="contain"
-          accessibilityLabel="Seta para voltar"
-        />
-      </Pressable>
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => router.push('/(tabs)/curriculo')}
+          hitSlop={8}
+          accessibilityLabel="Currículos"
+        >
+          <Image
+            source={require('../../assets/images/inicio.png')}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
+        </Pressable>
+
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => router.push('/(tabs)/rotas/produtos/editaremprego')}
+          hitSlop={8}
+          accessibilityLabel="Adicionar vaga ou curso"
+        >
+          <Image
+            source={require('../../assets/images/editar.png')}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
+        </Pressable>
+
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => router.push('/(tabs)/perfilempresa')}
+          hitSlop={8}
+          accessibilityLabel="Perfil da empresa"
+        >
+          <Image
+            source={require('../../assets/images/inicioperfil.png')}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -367,6 +400,7 @@ cabeçalho: {
   
   // Header
   header: {
+    height: 56,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -384,7 +418,7 @@ cabeçalho: {
     backgroundColor: CINZA_CARD,
     borderRadius: 24,
     padding: 20,
-    marginBottom: 30,
+    marginBottom: 10,
   },
 
   // Topo do card 
@@ -504,21 +538,24 @@ cabeçalho: {
     fontSize: 15,
     fontWeight: '600',
   },
-  botaoVoltar: {
-    position: 'absolute',
-    bottom: 82,
-    left: 6,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: AMARELO,
+  rodape: {
+    marginHorizontal: -20,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 24,
     shadowColor: '#000',
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: -4 },
+    elevation: 10,
   },
-  voltarIcone: { width: 48, height: 48 },
+  itemRodape: {
+    width: 64,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconeRodape: { width: 22, height: 22 },
 });

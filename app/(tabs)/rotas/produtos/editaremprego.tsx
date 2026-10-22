@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   FlatList,
   Image,
@@ -96,6 +98,8 @@ function textoVagas(n: number) {
 }
 
 export default function Vagas() {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [vagas, setVagas] = useState<Item[]>(VAGAS_INICIAIS);
   const [busca, setBusca] = useState("");
 
@@ -182,13 +186,8 @@ export default function Vagas() {
     <View>
       <View style={styles.cabecalho}>
         <Image
-          source={require("../../../../assets/images/vooa.png")}
+          source={require("../../../../assets/images/vooalogo.png")}
           style={styles.logo}
-          resizeMode="contain"
-        />
-        <Image
-          source={require("../../../../assets/images/do-utilizador.png")}
-          style={styles.avatar}
           resizeMode="contain"
         />
       </View>
@@ -372,6 +371,52 @@ export default function Vagas() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      <View
+        style={[
+          styles.rodape,
+          { height: 56 + insets.bottom, paddingBottom: insets.bottom },
+        ]}
+      >
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => router.push('/(tabs)/curriculo')}
+          hitSlop={8}
+          accessibilityLabel="Início"
+        >
+          <Image
+            source={require("../../../../assets/images/inicio.png")}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
+        </Pressable>
+
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => setEscolhaAberta(true)}
+          hitSlop={8}
+          accessibilityLabel="Adicionar vaga ou curso"
+        >
+          <Image
+            source={require("../../../../assets/images/editar.png")}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
+        </Pressable>
+
+        <Pressable
+          style={styles.itemRodape}
+          onPress={() => router.push('/(tabs)/perfilempresa')}
+          hitSlop={8}
+          accessibilityLabel="Perfil da empresa"
+        >
+          <Image
+            source={require("../../../../assets/images/inicioperfil.png")}
+            style={styles.iconeRodape}
+            resizeMode="contain"
+          />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -382,29 +427,23 @@ const styles = StyleSheet.create({
     backgroundColor: ROXO,
   },
   lista: {
-    paddingBottom: 24,
+    paddingBottom: 110,
   },
 
   /* Topo branco */
   cabecalho: {
-    height: 105,
+    height: 56,
     backgroundColor: BRANCO,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: 14,
   },
   logo: {
-    width: 200,
+    width: 80,
     height: 100,
-    marginLeft: -34,
-    alignSelf: "flex-start",
+    marginTop: 10,
   },
-  avatar: {
-    width: 32,
-    height: 32,
-    marginRight: 16,
-  },
-
   /* Conteúdo roxo */
   conteudoTopo: {
     paddingHorizontal: 20,
@@ -638,4 +677,23 @@ const styles = StyleSheet.create({
     color: MARINHO,
     fontWeight: "700",
   },
+  rodape: {
+    backgroundColor: BRANCO,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 24,
+    shadowColor: "#000000",
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: -4 },
+    elevation: 10,
+  },
+  itemRodape: {
+    width: 64,
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconeRodape: { width: 22, height: 22 },
 });

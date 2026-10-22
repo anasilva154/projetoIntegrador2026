@@ -130,13 +130,6 @@ export default function Inicio() {
           style={styles.logo}
           resizeMode="contain"
         />
-        <View style={styles.perfil}>
-          <Image
-            source={require('../../assets/images/do-utilizador.png')}
-            style={styles.perfilIcone}
-            resizeMode="contain"
-          />
-        </View>
       </View>
 
       {/* área roxa */}
@@ -197,7 +190,7 @@ export default function Inicio() {
         <Pressable
           style={styles.itemRodape}
           onPress={() => {
-            // TODO: ex: router.push('/editar')
+            router.push('/(tabs)/rotas/produtos/editaremprego');
           }}
           hitSlop={8}
         >
@@ -210,9 +203,7 @@ export default function Inicio() {
 
         <Pressable
           style={styles.itemRodape}
-          onPress={() => {
-            // TODO: ex: router.push('/perfil')
-          }}
+          onPress={() => router.push('/(tabs)/perfilempresa')}
           hitSlop={8}
         >
           <Image
@@ -240,8 +231,6 @@ const styles = StyleSheet.create({
   },
 
   logo: { width: 80, height: 100, marginTop: 10 },
-
-  perfilIcone: { width: 40, height: 27 },
 
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo, overflow: 'hidden' },
 

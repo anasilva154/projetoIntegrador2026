@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
 import {
   View,
   Text,
@@ -12,13 +13,14 @@ import {
 } from 'react-native';
 
 export default function Cadastro1() {
+  const router = useRouter();
   const [nome, setNome] = useState('');
   const [cnpj, setCnpj] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
 
   const cadastrar = () => {
-    console.log('cadastrar', { nome, cnpj, senha, confirmarSenha });
+    router.push('/curriculo');
   };
 
   return (
