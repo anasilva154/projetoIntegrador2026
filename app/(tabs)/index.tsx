@@ -1,120 +1,145 @@
-import { FlatList, View, Text, Pressable, Image, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
+import { useRouter } from 'expo-router';
 
-const dados = [
-  {
-    id: '1',
-    titulo: 'Bem-vindo!',
-    subtitulo: 'Encontre oportunidades que combinam com você.',
-  },
-];
+export default function Index() {
+  const router = useRouter();
 
-// Topo da tela: só a imagem (logo + ilustração)
-function Topo() {
+  const serContratado = () => {
+    router.push('/(tabs)/rotas/produtos/cadastro2');
+  };
+
+  const contratar = () => {
+    router.push('/(tabs)/rotas/cadastro1');
+  };
+
   return (
-    <Image
-      source={require('../../assets/images/tize.png')}
-      style={styles.imagem}
-      resizeMode="contain"
-    />
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={cores.roxo} />
+
+      <View style={styles.conteudo}>
+        <Text style={styles.titulo}>O App para encontrar</Text>
+        <Text style={styles.destaque}>Estagiários e Jovens Aprendizes</Text>
+
+        <Text style={styles.descricao}>
+          Antes de dar início ao seu cadastro,{'\n'}
+          precisamos saber; Você gostaria de:
+        </Text>
+
+        <View style={styles.card}>
+          <Image
+            source={require('../../assets/images/vooa.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+
+          <TouchableOpacity
+            style={[styles.botao, styles.botaoRoxo]}
+            onPress={serContratado}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.textoBotao}>ser contratado</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.botao, styles.botaoAmarelo]}
+            onPress={contratar}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.textoBotao}>contratar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
-// Rodapé da tela: botão Começar + link de login
-function Rodape() {
-  return (
-    <View style={styles.rodape}>
-      <Link href="/buscar" asChild>
-        <Pressable style={styles.botao}>
-          <Text style={styles.botaoTexto}>Começar</Text>
-        </Pressable>
-      </Link>
-
-      <Text style={styles.loginTexto}>
-        Já possui cadastro?{' '}
-        <Link href="/perfil" style={styles.loginLink}>
-          Faça seu login.
-        </Link>
-      </Text>
-    </View>
-  );
-}
-
-// Como desenhar cada item da lista
-function renderItem({ item }: { item: (typeof dados)[number] }) {
-  return (
-    <View style={styles.textos}>
-      <Text style={styles.titulo}>{item.titulo}</Text>
-      <Text style={styles.subtitulo}>{item.subtitulo}</Text>
-    </View>
-  );
-}
-
-export default function Boasvindas() {
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={dados}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        ListHeaderComponent={<Topo />}
-        ListFooterComponent={<Rodape />}
-      />
-    </View>
-  );
-}
+const cores = {
+  roxo: '#7B2FF7',
+  roxoEscuro: '#4B1BA8',
+  amarelo: '#F4C242',
+  branco: '#FFFFFF',
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#6842f1',
-    paddingTop: 20,
-    paddingHorizontal: 24,
+    backgroundColor: cores.roxo,
   },
-  imagem: {
-    width: '100%',
-    height: 440,
-  },
-  textos: {
-    alignItems: 'center',
-  },
-  titulo: {
-    color: '#FFFFFF',
-    fontSize: 40,
-    fontWeight: 'bold',
-  },
-  subtitulo: {
-    color: '#E3DBFF',
-    fontSize: 22,
-    textAlign: 'center',
-    marginTop: 12,
-  },
-  rodape: {
-    alignItems: 'center',
-    marginTop: 32,
-  },
-  botao: {
-    flexDirection: 'row',
+  conteudo: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
-    width: '100%',
-    padding: 18,
-    borderRadius: 40,
-    backgroundColor: '#FFD21F',
+    paddingHorizontal: 24,
+    transform: [{ translateY: -15 }],
   },
-  botaoTexto: {
-    color: '#2A0A8F',
+  titulo: {
+    color: cores.branco,
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    textAlign: 'center',
   },
-  loginTexto: {
-    color: '#E3DBFF',
-    fontSize: 15,
-    marginTop: 20,
+  destaque: {
+    color: cores.amarelo,
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginTop: 2,
   },
-  loginLink: {
-    color: '#FFD21F',
-    fontWeight: 'bold',
+  descricao: {
+    color: cores.branco,
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
+    marginTop: 14,
+    marginBottom: 24,
+  },
+  card: {
+    width: '70%',
+    backgroundColor: cores.branco,
+    borderRadius: 32,
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 28,
+    marginTop: 55,
+    transform: [{ translateY: -55 }],
+    shadowColor: cores.roxoEscuro,
+    shadowOffset: { width: 4, height: 6 },
+    shadowOpacity: 0.6,
+    shadowRadius: 6,
+    elevation: 10,
+  },
+  logo: {
+    width: 220,
+    height: 110,
+    alignSelf: 'center',
+    marginBottom: 8,
+  },
+  botao: {
+    width: '70%',
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 18,
+  },
+  botaoRoxo: {
+    backgroundColor: cores.roxo,
+  },
+  botaoAmarelo: {
+    backgroundColor: cores.amarelo,
+  },
+  textoBotao: {
+    color: cores.branco,
+    fontSize: 16,
+    fontWeight: '700',
   },
 });
