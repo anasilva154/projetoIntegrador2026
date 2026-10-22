@@ -4,14 +4,10 @@ type Props = {
   titulo: string;
   cor: string;
   onPress: () => void;
-  size: string;
+  size: number;
 };
 
 export function Botao({ titulo, cor, onPress, size }: Props) {
-  console.log('Botao renderizado com tamanho:', size);
-  size=Number(size); // Log para verificar o valor de 
-  console.log('Botao renderizado com tamanho:', size);
-  
   return (
     <TouchableOpacity
       style={[styles.botao, { backgroundColor: cor, width: size }]}
