@@ -1,108 +1,120 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Header } from '../../components/header';
-import { Botao } from '../../components/botao';
+import { FlatList, View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import { Link } from 'expo-router';
 
-export default function Inicio() {
-  const router = useRouter();
+const dados = [
+  {
+    id: '1',
+    titulo: 'Bem-vindo!',
+    subtitulo: 'Encontre oportunidades que combinam com você.',
+  },
+];
 
+// Topo da tela: só a imagem (logo + ilustração)
+function Topo() {
   return (
-    <View style={styles.tela}>
-      <Header nome="nome do usuario" />
+    <Image
+      source={require('../../assets/images/tize.png')}
+      style={styles.imagem}
+      resizeMode="contain"
+    />
+  );
+}
 
-      <View style={styles.conteudo}>
-        {/* Texto aninhado com estilos mistos */}
-        <Text style={styles.paragrafo}>
-          A plataforma que reúne{' '}
-          <Text style={styles.destaqueAmarelo}>diferentes oportunidades</Text>{' '}
-          em um só lugar,{' '}
-          <Text style={styles.destaqueNegrito}>facilitando a busca</Text>{' '}
-          por aquilo que combina com os interesses e objetivos de cada pessoa.
-        </Text>
+// Rodapé da tela: botão Começar + link de login
+function Rodape() {
+  return (
+    <View style={styles.rodape}>
+      <Link href="/buscar" asChild>
+        <Pressable style={styles.botao}>
+          <Text style={styles.botaoTexto}>Começar</Text>
+        </Pressable>
+      </Link>
 
-        <View style={styles.botoes}>
-          <Botao
-            titulo="vagas de emprego"
-            cor="#F2BE35"
-            onPress={() => router.push('/vagas')}
-            size={200}
-          />
-          <Botao
-            titulo="cursos"
-            cor="#6A2BC7"
-            onPress={() => router.push('/cursos')}
-            size={200}
-          />
-        </View>
-      </View>
+      <Text style={styles.loginTexto}>
+        Já possui cadastro?{' '}
+        <Link href="/perfil" style={styles.loginLink}>
+          Faça seu login.
+        </Link>
+      </Text>
+    </View>
+  );
+}
 
-      {/* Circulos decorativos dentro dos limites da tela */}
-      <View style={styles.circuloPequeno} />
-      <View style={styles.circuloMedio} />
-      <View style={styles.circuloGrande} />
+// Como desenhar cada item da lista
+function renderItem({ item }: { item: (typeof dados)[number] }) {
+  return (
+    <View style={styles.textos}>
+      <Text style={styles.titulo}>{item.titulo}</Text>
+      <Text style={styles.subtitulo}>{item.subtitulo}</Text>
+    </View>
+  );
+}
+
+export default function Boasvindas() {
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={dados}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        ListHeaderComponent={<Topo />}
+        ListFooterComponent={<Rodape />}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  tela: {
+  container: {
     flex: 1,
-    backgroundColor: '#7B2CF9',
-    overflow: 'hidden', // corta as formas que ultrapassam a tela
+    backgroundColor: '#6842f1',
+    paddingTop: 20,
+    paddingHorizontal: 24,
   },
-  conteudo: {
-    flex: 1,
-    alignItems: 'center',
-    paddingHorizontal: 60,
-    paddingTop: 110,
+  imagem: {
+    width: '100%',
+    height: 440,
   },
-  paragrafo: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'justify',
-  },
-  destaqueAmarelo: {
-    color: '#F2BE35',
-    fontWeight: 'bold',
-  },
-  destaqueNegrito: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
-  botoes: {
-    marginTop: 50,
-    gap: 24,
+  textos: {
     alignItems: 'center',
   },
-
-  // ---------- circulos decorativos ----------
-
-  circuloPequeno: {
-    position: 'absolute',
-    left: 28,
-    bottom: 38,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#F2BE35',
+  titulo: {
+    color: '#FFFFFF',
+    fontSize: 40,
+    fontWeight: 'bold',
   },
-  circuloMedio: {
-    position: 'absolute',
-    right: 26,
-    bottom: 52,
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: '#F2BE35',
+  subtitulo: {
+    color: '#E3DBFF',
+    fontSize: 22,
+    textAlign: 'center',
+    marginTop: 12,
   },
-  circuloGrande: {
-    position: 'absolute',
-    left: 117,
-    bottom: 28,
-    width: 158,
-    height: 158,
-    borderRadius: 84,
-    backgroundColor: '#F2BE35',
+  rodape: {
+    alignItems: 'center',
+    marginTop: 32,
+  },
+  botao: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    width: '100%',
+    padding: 18,
+    borderRadius: 40,
+    backgroundColor: '#FFD21F',
+  },
+  botaoTexto: {
+    color: '#2A0A8F',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  loginTexto: {
+    color: '#E3DBFF',
+    fontSize: 15,
+    marginTop: 20,
+  },
+  loginLink: {
+    color: '#FFD21F',
+    fontWeight: 'bold',
   },
 });
