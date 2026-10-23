@@ -32,7 +32,7 @@ function Rodape() {
 
       <Text style={styles.loginTexto}>
         Já possui cadastro?{' '}
-        <Link href="/perfil" style={styles.loginLink}>
+        <Link href="/escolhaLogin" style={styles.loginLink}>
           Faça seu login.
         </Link>
       </Text>

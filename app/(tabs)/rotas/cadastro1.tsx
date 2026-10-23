@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import {
   View,
   Text,
@@ -92,6 +92,11 @@ export default function Cadastro1() {
             <Text style={styles.textoBotao}>Cadastrar</Text>
           </TouchableOpacity>
         </View>
+
+        <Text style={styles.rodape}>
+          Já possui cadastro? Vá para o{' '}
+          <Link href="/logincontratar" style={styles.link}>login.</Link>
+        </Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -169,5 +174,15 @@ const styles = StyleSheet.create({
     color: cores.branco,
     fontSize: 18,
     fontWeight: '700',
+  },
+  rodape: {
+    color: cores.branco,
+    fontSize: 13,
+    textAlign: 'center',
+    padding: 16,
+  },
+  link: {
+    color: cores.roxo,
+    fontWeight: 'bold',
   },
 });

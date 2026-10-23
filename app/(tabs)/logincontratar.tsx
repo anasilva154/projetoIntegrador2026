@@ -22,7 +22,7 @@ export default function Login() {
     }
 
     setErro('');
-    router.replace('/perfil'); // troca de tela sem poder voltar
+    router.replace('/curriculo'); // troca de tela sem poder voltar
   };
 
   return (
@@ -66,7 +66,7 @@ export default function Login() {
 
       <Text style={styles.rodape}>
         Não possui login? Faça seu{' '}
-        <Link href="/cadastro" style={styles.link}>cadastro.</Link>
+        <Link href="/(tabs)/rotas/cadastro1" style={styles.link}>cadastro.</Link>
       </Text>
     </View>
   );

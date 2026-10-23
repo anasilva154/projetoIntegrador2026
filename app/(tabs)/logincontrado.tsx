@@ -63,7 +63,7 @@ export default function Login() {
 
       <Text style={styles.rodape}>
         Não possui login? Faça seu{' '}
-        <Link href="/cadastro" style={styles.link}>cadastro.</Link>
+        <Link href="/(tabs)/rotas/produtos/cadastro2" style={styles.link}>cadastro.</Link>
       </Text>
     </View>
   );

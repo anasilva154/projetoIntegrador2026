@@ -10,15 +10,17 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
+import { Link } from 'expo-router';
 
 export default function Cadastro1() {
   const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
   const [cnpj, setCnpj] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
 
   const cadastrar = () => {
-    console.log('cadastrar', { nome, cnpj, senha, confirmarSenha });
+    console.log('cadastrar', { nome, email, cnpj, senha, confirmarSenha });
   };
 
   return (
@@ -46,6 +48,17 @@ export default function Cadastro1() {
               value={nome}
               onChangeText={setNome}
               autoCapitalize="words"
+            />
+          </View>
+
+          <View style={styles.campo}>
+            <Text style={styles.label}>E-mail:</Text>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
           </View>
 
@@ -90,6 +103,11 @@ export default function Cadastro1() {
             <Text style={styles.textoBotao}>Cadastrar</Text>
           </TouchableOpacity>
         </View>
+
+        <Text style={styles.rodape}>
+          Já possui cadastro? Vá para o{' '}
+          <Link href="/logincontrado" style={styles.link}>login.</Link>
+        </Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -117,9 +135,9 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   titulo: {
-    color: cores.branco,
-    fontSize: 28,
-    fontWeight: '800',
+    color: cores.amarelo,
+    fontSize: 22,
+    fontWeight: '700',
     textAlign: 'center',
     marginBottom: 18,
   },
@@ -158,7 +176,7 @@ const styles = StyleSheet.create({
     width: '82%',
     height: 44,
     borderRadius: 22,
-    backgroundColor: cores.roxo,
+    backgroundColor: cores.amarelo,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 8,
@@ -167,5 +185,15 @@ const styles = StyleSheet.create({
     color: cores.branco,
     fontSize: 18,
     fontWeight: '700',
+  },
+  rodape: {
+    color: cores.branco,
+    fontSize: 13,
+    textAlign: 'center',
+    padding: 16,
+  },
+  link: {
+    color: cores.amarelo,
+    fontWeight: 'bold',
   },
 });
