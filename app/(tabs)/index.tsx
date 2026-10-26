@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../../components/header';
 import { Botao } from '../../components/botao';
+import { Rodape } from '../../components/rodape';
 
 export default function Inicio() {
   const router = useRouter();
@@ -10,7 +12,15 @@ export default function Inicio() {
     <View style={styles.tela}>
       <Header nome="nome do usuario" />
 
-      <View style={styles.conteudo}>
+      {/* Circulos decorativos dentro dos limites da tela */}
+      <View style={styles.circuloPequeno} />
+      <View style={styles.circuloMedio} />
+      <View style={styles.circuloGrande} />
+
+      <ScrollView
+        contentContainerStyle={styles.conteudo}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Texto aninhado com estilos mistos */}
         <Text style={styles.paragrafo}>
           A plataforma que reúne{' '}
@@ -34,12 +44,15 @@ export default function Inicio() {
             size={200}
           />
         </View>
-      </View>
 
-      {/* Circulos decorativos dentro dos limites da tela */}
-      <View style={styles.circuloPequeno} />
-      <View style={styles.circuloMedio} />
-      <View style={styles.circuloGrande} />
+        <View style={styles.rodapeInfo}>
+          <Ionicons name="shield-checkmark-outline" size={18} color="#F2BE35" />
+          <Text style={styles.textoRodape}>
+            Seus envios ficam reunidos e fáceis de consultar.
+          </Text>
+        </View>
+      </ScrollView>
+      <Rodape />
     </View>
   );
 }
@@ -51,10 +64,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden', // corta as formas que ultrapassam a tela
   },
   conteudo: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: 60,
     paddingTop: 110,
+    paddingBottom: 100,
   },
   paragrafo: {
     color: '#FFFFFF',
@@ -74,6 +88,19 @@ const styles = StyleSheet.create({
     marginTop: 50,
     gap: 24,
     alignItems: 'center',
+  },
+  rodapeInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 21,
+    paddingHorizontal: 6,
+  },
+  textoRodape: {
+    color: 'rgba(255,255,255,0.82)',
+    fontSize: 12,
+    lineHeight: 18,
   },
 
   // ---------- circulos decorativos ----------

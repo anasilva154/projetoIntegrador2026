@@ -25,19 +25,8 @@ export default function TabLayout() {
           borderBottomWidth: 1,
           borderBottomColor: "rgb(37, 6, 6)",
         },
-        tabBarActiveTintColor: "#007AFF",
-        tabBarInactiveTintColor: "#8E8E93",
         tabBarStyle: {
-          backgroundColor: "rgb(9, 9, 94)",
-          borderTopWidth: 1,
-          borderTopColor: "#F0F0F0",
-          height: Platform.OS === "ios" ? 88 : 64,
-          paddingBottom: Platform.OS === "ios" ? 30 : 80,
-          paddingTop: 10,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "500",
+          display: "none",
         },
       }}
     >

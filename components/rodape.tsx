@@ -1,10 +1,11 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
 
 const ABAS = [
-  { rotulo: 'Início', rota: '/', icone: '🏠' },
-  { rotulo: 'Currículos enviados', rota: '/curriculos', icone: '📄' },
-  { rotulo: 'Perfil', rota: '/perfil', icone: '👤' },
+  { rotulo: 'Início', rota: '/', icone: 'home-outline' },
+  { rotulo: 'Currículos', rota: '/curriculos', icone: 'document-text-outline' },
+  { rotulo: 'Matrículas', rota: '/matriculas', icone: 'school-outline' },
 ] as const;
 
 export function Rodape() {
@@ -21,7 +22,11 @@ export function Rodape() {
             style={styles.aba}
             onPress={() => router.push(aba.rota)}
           >
-            <Text style={styles.icone}>{aba.icone}</Text>
+            <Ionicons
+              name={aba.icone}
+              size={22}
+              color={ativa ? '#F2BE35' : '#FFFFFF'}
+            />
             <Text style={[styles.rotulo, ativa && styles.rotuloAtivo]}>
               {aba.rotulo}
             </Text>
@@ -50,9 +55,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,
-  },
-  icone: {
-    fontSize: 20,
   },
   rotulo: {
     color: '#FFFFFF',
