@@ -11,11 +11,10 @@ import {
   KeyboardTypeOptions,
   Linking,
   Alert,
-  Image,
 } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { RodapeFlutuante } from '../../components/rodapeFlutuante';
 
 /* ------------------------------------------------------------------
    CORES (as mesmas da tela de cadastro)
@@ -164,7 +163,6 @@ function Divisor() {
 ------------------------------------------------------------------ */
 export default function PerfilScreen() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
 
   // perfil = dados salvos | rascunho = o que está sendo editado
   const [perfil, setPerfil] = useState<Perfil>({
@@ -325,55 +323,17 @@ export default function PerfilScreen() {
           ListHeaderComponent={Topo}
           ListFooterComponent={Rodape}
           ItemSeparatorComponent={Divisor}
+          contentContainerStyle={{ paddingBottom: 90 }}
           keyboardShouldPersistTaps="handled"
         />
       </View>
 
-      <View
-        style={[
-          styles.rodape,
-          { height: 56 + insets.bottom, paddingBottom: insets.bottom },
-        ]}
-      >
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => router.push('/(tabs)/curriculo')}
-          hitSlop={8}
-          accessibilityLabel="Currículos"
-        >
-          <Image
-            source={require('../../assets/images/inicio.png')}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => router.push('/(tabs)/rotas/produtos/editaremprego')}
-          hitSlop={8}
-          accessibilityLabel="Adicionar vaga ou curso"
-        >
-          <Image
-            source={require('../../assets/images/editar.png')}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => router.push('/(tabs)/perfilempresa')}
-          hitSlop={8}
-          accessibilityLabel="Perfil da empresa"
-        >
-          <Image
-            source={require('../../assets/images/inicioperfil.png')}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-      </View>
+      <RodapeFlutuante
+        abaAtiva="perfil"
+        aoIrParaInicio={() => router.push('/(tabs)/curriculo')}
+        aoAdicionar={() => router.push('/(tabs)/rotas/produtos/editaremprego')}
+        aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
+      />
     </View>
   );
 }
@@ -538,24 +498,4 @@ cabeçalho: {
     fontSize: 15,
     fontWeight: '600',
   },
-  rodape: {
-    marginHorizontal: -20,
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: -4 },
-    elevation: 10,
-  },
-  itemRodape: {
-    width: 64,
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconeRodape: { width: 22, height: 22 },
 });

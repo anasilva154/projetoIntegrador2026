@@ -9,9 +9,10 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { RodapeFlutuante } from '../../components/rodapeFlutuante';
 
 /* ---------- cores ---------- */
 const cores = {
@@ -47,7 +48,6 @@ const areas = ['Todos', 'Tecnologia da Informação', 'Marketing', 'Administrati
 /* ---------- tela ---------- */
 export default function Inicio() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const [busca, setBusca] = useState('');
   const [areaSelecionada, setAreaSelecionada] = useState('Todos');
 
@@ -142,7 +142,7 @@ export default function Inicio() {
           ListHeaderComponent={cabecalho}
           ListEmptyComponent={<Text style={styles.vazio}>Nenhuma vaga encontrada.</Text>}
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-          contentContainerStyle={{ paddingBottom: 24 }}
+          contentContainerStyle={{ paddingBottom: 110 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
@@ -166,53 +166,12 @@ export default function Inicio() {
         />
       </View>
 
-      {/* rodapé fixo, reto, ocupando o fim todo da tela */}
-      <View
-        style={[
-          styles.rodape,
-          { height: 56 + insets.bottom, paddingBottom: insets.bottom },
-        ]}
-      >
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => {
-            // TODO: ex: router.push('/')
-          }}
-          hitSlop={8}
-        >
-          <Image
-            source={require('../../assets/images/inicio.png')}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => {
-            router.push('/(tabs)/rotas/produtos/editaremprego');
-          }}
-          hitSlop={8}
-        >
-          <Image
-            source={require('../../assets/images/editar.png')}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => router.push('/(tabs)/perfilempresa')}
-          hitSlop={8}
-        >
-          <Image
-            source={require('../../assets/images/inicioperfil.png')}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-      </View>
+      <RodapeFlutuante
+        abaAtiva="inicio"
+        aoIrParaInicio={() => router.push('/(tabs)/curriculo')}
+        aoAdicionar={() => router.push('/(tabs)/rotas/produtos/editaremprego')}
+        aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
+      />
     </SafeAreaView>
   );
 }
@@ -287,25 +246,4 @@ const styles = StyleSheet.create({
 
   vazio: { textAlign: 'center', color: cores.branco, padding: 32 },
 
-  // rodapé reto, linha inteira, sombra só em cima, ícones agrupados no centro
-  rodape: {
-    backgroundColor: cores.branco,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 24, // espaço entre os botões (diminua para aproximar mais)
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: -4 },
-    elevation: 10,
-  },
-  // largura fixa: o espaçamento é igual entre todos
-  itemRodape: {
-    width: 64,
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconeRodape: { width: 22, height: 22 },
 });

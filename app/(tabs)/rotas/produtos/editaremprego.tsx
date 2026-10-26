@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { RodapeFlutuante } from "../../../../components/rodapeFlutuante";
 import {
   FlatList,
   Image,
@@ -99,7 +99,6 @@ function textoVagas(n: number) {
 
 export default function Vagas() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const [vagas, setVagas] = useState<Item[]>(VAGAS_INICIAIS);
   const [busca, setBusca] = useState("");
 
@@ -372,51 +371,12 @@ export default function Vagas() {
         </KeyboardAvoidingView>
       </Modal>
 
-      <View
-        style={[
-          styles.rodape,
-          { height: 56 + insets.bottom, paddingBottom: insets.bottom },
-        ]}
-      >
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => router.push('/(tabs)/curriculo')}
-          hitSlop={8}
-          accessibilityLabel="Início"
-        >
-          <Image
-            source={require("../../../../assets/images/inicio.png")}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => setEscolhaAberta(true)}
-          hitSlop={8}
-          accessibilityLabel="Adicionar vaga ou curso"
-        >
-          <Image
-            source={require("../../../../assets/images/editar.png")}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-
-        <Pressable
-          style={styles.itemRodape}
-          onPress={() => router.push('/(tabs)/perfilempresa')}
-          hitSlop={8}
-          accessibilityLabel="Perfil da empresa"
-        >
-          <Image
-            source={require("../../../../assets/images/inicioperfil.png")}
-            style={styles.iconeRodape}
-            resizeMode="contain"
-          />
-        </Pressable>
-      </View>
+      <RodapeFlutuante
+        abaAtiva="editar"
+        aoIrParaInicio={() => router.push('/(tabs)/curriculo')}
+        aoAdicionar={() => setEscolhaAberta(true)}
+        aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
+      />
     </View>
   );
 }
@@ -677,23 +637,4 @@ const styles = StyleSheet.create({
     color: MARINHO,
     fontWeight: "700",
   },
-  rodape: {
-    backgroundColor: BRANCO,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 24,
-    shadowColor: "#000000",
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: -4 },
-    elevation: 10,
-  },
-  itemRodape: {
-    width: 64,
-    height: 56,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconeRodape: { width: 22, height: 22 },
 });
