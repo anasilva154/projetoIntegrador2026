@@ -1,5 +1,5 @@
-// app/login.tsx
-import { View, Text, TextInput, Pressable, Image, StyleSheet } from 'react-native';
+﻿// app/login.tsx
+import { Alert, View, Text, TextInput, Pressable, Image, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 
@@ -10,14 +10,25 @@ export default function Login() {
   const [erro, setErro] = useState('');
 
   const logar = () => {
-    if (email.trim() === '' || senha.trim() === '') {
-      setErro('Preencha todos os campos.');
+    if (!email.trim() || !senha.trim()) {
+      const mensagem = 'Preencha todos os campos.';
+      setErro(mensagem);
+      Alert.alert('Campos obrigatórios', mensagem);
       return;
     }
 
-    // aqui entra a validação de verdade com o servidor
-    if (email !== 'teste@vooa.com' || senha !== '123456') {
-      setErro('E-mail ou senha incorretos.');
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      const mensagem = 'Digite um endereço de e-mail válido.';
+      setErro(mensagem);
+      Alert.alert('Informação inválida', mensagem);
+      return;
+    }
+
+    // Aqui entra a validação de verdade com o servidor.
+    if (email.trim().toLowerCase() !== 'teste@vooa.com' || senha !== '123456') {
+      const mensagem = 'E-mail ou senha incorretos. Confira os dados e tente novamente.';
+      setErro(mensagem);
+      Alert.alert('Informações incorretas', mensagem);
       return;
     }
 
@@ -48,7 +59,7 @@ export default function Login() {
         />
 
         {/* Link com asChild: o Pressable vira o elemento clicável */}
-        <Link href="/esqueci-senha" asChild>
+        <Link href="/recuperarsenha" asChild>
           <Pressable>
             <Text style={styles.esqueciSenha}>Esqueceu a senha?</Text>
           </Pressable>

@@ -66,22 +66,26 @@ export default function Vagas() {
               {item.empresa}
             </Text>
 
-            <View style={styles.cardSubtitulo}>
+            <TouchableOpacity
+              style={styles.cardSubtitulo}
+              onPress={() => router.push('/vagasinformacao')}
+              activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel={`Ver detalhes da vaga ${item.titulo}`}
+            >
               {item.topicos.slice(0, 4).map((topico, index) => (
                 <View key={index} style={styles.topicoLinha}>
                   <Text style={styles.bolinhaTopico}>•</Text>
                   <Text style={styles.topicoTexto} numberOfLines={1}>
-                    {topico.descricao}
+                    {topico.descricao.replace(/^\s*-\s*/, '')}
                   </Text>
                 </View>
               ))}
 
               <View style={styles.saibaMaisContainer}>
-                <TouchableOpacity onPress={() => router.push(`/rotas/vagas/${item.id}`)}>
-                  <Text style={styles.saibaMais}>Saiba mais</Text>
-                </TouchableOpacity>
+                <Text style={styles.saibaMais}>Saiba mais</Text>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
         )}
         ListEmptyComponent={<Text style={styles.vazio}>Nenhuma vaga encontrada.</Text>}
@@ -90,7 +94,10 @@ export default function Vagas() {
         keyboardShouldPersistTaps="handled"
       />
 
-      <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.back()}>
+      <TouchableOpacity
+        style={styles.botaoVoltar}
+        onPress={() => router.push('/rotas/inicialpessoa')}
+      >
         <Image
           source={require('../assets/images/voltar.png')}
           style={styles.iconeVoltar}
@@ -104,7 +111,7 @@ export default function Vagas() {
 const styles = StyleSheet.create({
   tela: {
     flex: 1,
-    backgroundColor: '#7B2CF9',
+    backgroundColor: '#7B2FF7',
   },
 
   buscaContainer: {

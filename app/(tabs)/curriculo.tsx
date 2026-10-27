@@ -1,4 +1,4 @@
-// app/(tabs)/index.tsx
+﻿// app/(tabs)/index.tsx
 import { useMemo, useState } from 'react';
 import {
   FlatList,
@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { RodapeFlutuante } from '../../components/rodapeFlutuante';
+import { Header } from '../../components/header';
 
 /* ---------- cores ---------- */
 const cores = {
@@ -22,8 +23,8 @@ const cores = {
   vidro: 'rgba(255,255,255,0.18)',
   circulo: 'rgba(255,255,255,0.10)',
   amarelo: '#FFC83D',
-  titulo: '#25164F',
-  texto: '#6B6B80',
+  titulo: '#000000',
+  texto: '#000000',
   branco: '#FFFFFF',
   preto: '#000000',
 };
@@ -65,16 +66,13 @@ export default function Inicio() {
 
   // decide para onde cada vaga navega: a de Auxiliar Administrativo vai para analisarcurri
    // decide para onde cada vaga navega: a de Jovem Aprendiz - Auxiliar vai para analisarcurri
-  const abrirVaga = (item: Vaga) => {
-    if (item.id === '6') {
-      router.push('/analisarcurri');
-    } else {
-      router.push(`/candidato/${item.id}`);
-    }
+  const abrirVaga = (_item: Vaga) => {
+    router.push('/analisarcurri');
   };
+
   const cabecalho = (
     <View>
-      {/* título */}
+      {/* Título */}
       <View style={styles.saudacao}>
         <Text style={styles.titulo}>Bem-vindo!</Text>
         <Text style={styles.subtitulo}>
@@ -124,22 +122,15 @@ export default function Inicio() {
   return (
     <SafeAreaView style={styles.tela} edges={['top']}>
       {/* barra de topo branca (fixa) */}
-      <View style={styles.topo}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
+      <Header />
 
-      {/* área roxa */}
+      {/* Área roxa */}
       <View style={styles.fundoRoxo}>
-        <View pointerEvents="none" style={styles.circuloGrande} />
+        {cabecalho}
 
         <FlatList
           data={listaFiltrada}
           keyExtractor={(item) => item.id}
-          ListHeaderComponent={cabecalho}
           ListEmptyComponent={<Text style={styles.vazio}>Nenhuma vaga encontrada.</Text>}
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
           contentContainerStyle={{ paddingBottom: 110 }}
@@ -179,17 +170,6 @@ export default function Inicio() {
 /* ---------- estilos ---------- */
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
-
-  topo: {
-    height: 56,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-
-  logo: { width: 80, height: 100, marginTop: 10 },
 
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo, overflow: 'hidden' },
 

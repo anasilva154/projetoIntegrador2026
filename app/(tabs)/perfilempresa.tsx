@@ -15,11 +15,12 @@ import {
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { RodapeFlutuante } from '../../components/rodapeFlutuante';
+import { Header as HeaderLogo } from '../../components/header';
 
 /* ------------------------------------------------------------------
    CORES (as mesmas da tela de cadastro)
 ------------------------------------------------------------------ */
-const ROXO = '#7B2CFF';
+const ROXO = '#7B2FF7';
 const AMARELO = '#FFC700';
 const CINZA_CARD = '#EBEBEB';
 const CINZA_INPUT = '#F8F8F8';
@@ -309,23 +310,27 @@ export default function PerfilScreen() {
 
   return (
     <View style={styles.container}>
-      <Header
-        titulo="Perfil Empresa"
-        editando={editando}
-        onEditar={editando ? cancelarEdicao : iniciarEdicao}
-      />
+      <HeaderLogo />
 
-      <View style={styles.card}>
-        <FlatList
-          data={dados}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          ListHeaderComponent={Topo}
-          ListFooterComponent={Rodape}
-          ItemSeparatorComponent={Divisor}
-          contentContainerStyle={{ paddingBottom: 90 }}
-          keyboardShouldPersistTaps="handled"
+      <View style={styles.conteudo}>
+        <Header
+          titulo="Perfil Empresa"
+          editando={editando}
+          onEditar={editando ? cancelarEdicao : iniciarEdicao}
         />
+
+        <View style={styles.card}>
+          <FlatList
+            data={dados}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            ListHeaderComponent={Topo}
+            ListFooterComponent={Rodape}
+            ItemSeparatorComponent={Divisor}
+            contentContainerStyle={{ paddingBottom: 90 }}
+            keyboardShouldPersistTaps="handled"
+          />
+        </View>
       </View>
 
       <RodapeFlutuante
@@ -346,6 +351,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: AMARELO,
+  },
+  conteudo: {
+    flex: 1,
     paddingTop: 30,
     paddingHorizontal: 20,
   },

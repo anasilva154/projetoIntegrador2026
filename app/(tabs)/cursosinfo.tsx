@@ -2,6 +2,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { View, Text, Pressable, Image, ScrollView, StyleSheet } from 'react-native';
+import { Header } from '../../components/header';
 
 const vaga = {
   titulo: 'Curso Técnico em Informática',
@@ -40,27 +41,7 @@ export default function Vaga() {
   return (
     <View style={styles.container}>
       {/* Header: logo (esquerda) e perfil (direita) */}
-      <View style={styles.header}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logoHeader}
-          resizeMode="contain"
-        />
-
-        <Pressable
-          style={styles.botaoPerfil}
-          onPress={() => {
-            // TODO: navegar para a tela de perfil, ex: router.push('/perfil')
-          }}
-          hitSlop={10}
-        >
-          <Image
-            source={require('../../assets/images/do-utilizador.png')}
-            style={styles.perfilIcone}
-            resizeMode="contain"
-          />
-        </Pressable>
-      </View>
+      <Header />
 
       {/* ScrollView só rola se a tela for muito pequena */}
       <ScrollView contentContainerStyle={styles.conteudo} showsVerticalScrollIndicator={false}>
@@ -130,7 +111,7 @@ export default function Vaga() {
       </ScrollView>
 
       {/* Botão de voltar: círculo roxo com sombra e ícone PNG por cima */}
-      <Pressable style={styles.botaoVoltar} onPress={() => router.back()} hitSlop={10}>
+      <Pressable style={styles.botaoVoltar} onPress={() => router.push('/cursos')} hitSlop={10}>
         <Image
           source={require('../../assets/images/voltar.png')}
           style={styles.voltarIcone}
@@ -143,22 +124,6 @@ export default function Vaga() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#7B2FF7' },
-
-  header: {
-    height: 56,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-  logoHeader: { width: 80, height: 100, marginTop: 10 },
-
-  botaoPerfil: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  perfilIcone: { width: 40, height: 27 },
 
   conteudo: { flexGrow: 1, paddingHorizontal: 12, paddingTop: 12, paddingBottom: 12 },
 
@@ -173,7 +138,7 @@ const styles = StyleSheet.create({
 
   tag: {
     alignSelf: 'flex-start',
-    backgroundColor: '#ECE8FB',
+    backgroundColor: '#F8F8F8',
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 3,

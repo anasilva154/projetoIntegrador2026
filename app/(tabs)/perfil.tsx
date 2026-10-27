@@ -9,16 +9,17 @@ import {
   TextInput,
   StyleSheet,
   KeyboardTypeOptions,
-  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { RodapeFlutuante } from '../../components/rodapeperfil';
+import { Header as HeaderLogo } from '../../components/header';
 
 /* ------------------------------------------------------------------
    CORES (as mesmas da tela de cadastro)
 ------------------------------------------------------------------ */
-const ROXO = '#7B2CFF';
-const ROXO_FUNDO = '#8B45FF';
+const ROXO = '#7B2FF7';
+const ROXO_FUNDO = '#7B2FF7';
 const AMARELO = '#FFC700';
 const CINZA_CARD = '#EBEBEB';
 const CINZA_INPUT = '#F8F8F8';
@@ -282,38 +283,34 @@ export default function PerfilScreen() {
 
   return (
     <View style={styles.container}>
-      <Header
-        titulo="Meu Perfil"
-        editando={editando}
-        onEditar={editando ? cancelarEdicao : iniciarEdicao}
-      />
+      <HeaderLogo />
 
-      <View style={styles.card}>
-        <FlatList
-          data={dados}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          ListHeaderComponent={Topo}
-          ListFooterComponent={Rodape}
-          ItemSeparatorComponent={Divisor}
-          keyboardShouldPersistTaps="handled"
+      <View style={styles.conteudo}>
+        <Header
+          titulo="Meu Perfil"
+          editando={editando}
+          onEditar={editando ? cancelarEdicao : iniciarEdicao}
         />
+
+        <View style={styles.card}>
+          <FlatList
+            data={dados}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            ListHeaderComponent={Topo}
+            ListFooterComponent={Rodape}
+            ItemSeparatorComponent={Divisor}
+            keyboardShouldPersistTaps="handled"
+          />
+        </View>
       </View>
 
-      <Pressable
-        style={styles.botaoVoltar}
-        onPress={() => router.back()}
-        accessibilityRole="button"
-        accessibilityLabel="Voltar"
-        hitSlop={10}
-      >
-        <Image
-          source={require('../../assets/voltar 1.png')}
-          style={styles.voltarIcone}
-          resizeMode="contain"
-          accessibilityLabel="Seta para voltar"
-        />
-      </Pressable>
+      <RodapeFlutuante
+        abaAtiva="perfil"
+        aoIrParaInicio={() => router.push('/rotas/inicialpessoa')}
+        aoAdicionar={() => router.push('/curriculos')}
+        aoIrParaPerfil={() => router.push('/perfil')}
+      />
     </View>
   );
 }
@@ -326,6 +323,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: ROXO_FUNDO,
+  },
+  conteudo: {
+    flex: 1,
     paddingTop: 30,
     paddingHorizontal: 20,
   },
@@ -403,7 +403,7 @@ cabeçalho: {
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 20,
-    backgroundColor: '#E3D3FF',
+    backgroundColor: '#7B2FF7',
   },
   seloTexto: {
     color: ROXO,
@@ -467,21 +467,4 @@ cabeçalho: {
     fontSize: 15,
     fontWeight: '600',
   },
-  botaoVoltar: {
-    position: 'absolute',
-    bottom: 82,
-    left: 6,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: AMARELO,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
-  },
-  voltarIcone: { width: 48, height: 48 },
 });

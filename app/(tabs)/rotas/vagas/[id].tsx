@@ -73,7 +73,7 @@ export default function Vagas() {
 }
 
 const styles = StyleSheet.create({
-  tela: { flex: 1, backgroundColor: '#7B2CF9' },
+  tela: { flex: 1, backgroundColor: '#7B2FF7' },
   conteudo: { padding: 20, paddingBottom: 40, gap: 14 },
   cabecalho: { paddingTop: 12, paddingBottom: 8 },
   identificador: { color: '#F2BE35', fontSize: 12, fontWeight: '700', letterSpacing: 1 },

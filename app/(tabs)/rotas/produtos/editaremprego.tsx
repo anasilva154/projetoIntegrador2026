@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { RodapeFlutuante } from "../../../../components/rodapeFlutuante";
+import { Header } from "../../../../components/header";
 import {
   FlatList,
-  Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -40,14 +40,13 @@ type Form = Omit<Item, "id" | "tipo" | "quantidade"> & { quantidade: string };
 type CampoTexto = Exclude<keyof Form, "presencial">;
 
 const ROXO = "#7B2FF7";
-const ROXO_CLARO = "#ECE8FB";
+const ROXO_CLARO = "#F8F8F8";
 const AMARELO = "#F5B81C";
 const AMARELO_ESCURO = "#B77900";
 const CINZA_MODAL = "#F5F5F5";
-const CINZA_CLARO = "#D9D9D9";
-const CINZA_TEXTO = "#6E6A9A";
-const MARINHO = "#1A1446";
-const BORDA = "#E4E2F5";
+const CINZA_TEXTO = "#000000";
+const MARINHO = "#000000";
+const BORDA = "#E5E5E5";
 const VERMELHO = "#D92D43";
 const VERMELHO_CLARO = "#FDE8EB";
 const BRANCO = "#FFFFFF";
@@ -183,14 +182,6 @@ export default function Vagas() {
 
   const topoDaLista = (
     <View>
-      <View style={styles.cabecalho}>
-        <Image
-          source={require("../../../../assets/images/vooalogo.png")}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
-
       <View style={styles.conteudoTopo}>
         <View style={styles.linhaTitulo}>
           <Text style={styles.titulo}>Vagas disponíveis</Text>
@@ -212,7 +203,7 @@ export default function Vagas() {
           <TextInput
             style={styles.campoBusca}
             placeholder="Buscar por cargo ou curso..."
-            placeholderTextColor="#6B6B6B"
+            placeholderTextColor="#000000"
             value={busca}
             onChangeText={setBusca}
           />
@@ -223,6 +214,7 @@ export default function Vagas() {
 
   return (
     <View style={styles.tela}>
+      <Header />
       <FlatList
         data={vagasFiltradas}
         keyExtractor={(item) => String(item.id)}
@@ -254,7 +246,7 @@ export default function Vagas() {
                 </Pressable>
 
                 <Pressable style={styles.botaoEditar} onPress={() => abrirEdicao(item)}>
-                  <Ionicons name="pencil" size={14} color={ROXO} />
+                  <Ionicons name="pencil" size={14} color="#000000" />
                   <Text style={styles.botaoEditarTexto}>Editar</Text>
                 </Pressable>
               </View>
@@ -390,20 +382,6 @@ const styles = StyleSheet.create({
     paddingBottom: 110,
   },
 
-  /* Topo branco */
-  cabecalho: {
-    height: 56,
-    backgroundColor: BRANCO,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 14,
-  },
-  logo: {
-    width: 80,
-    height: 100,
-    marginTop: 10,
-  },
   /* Conteúdo roxo */
   conteudoTopo: {
     paddingHorizontal: 20,
@@ -440,7 +418,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: CINZA_CLARO,
+    backgroundColor: BRANCO,
     borderRadius: 16,
     paddingHorizontal: 16,
     height: 52,
@@ -521,7 +499,7 @@ const styles = StyleSheet.create({
     height: 28,
   },
   botaoEditarTexto: {
-    color: ROXO,
+    color: "#000000",
     fontWeight: "700",
     fontSize: 12,
   },

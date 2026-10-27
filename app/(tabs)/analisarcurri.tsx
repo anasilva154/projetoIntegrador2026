@@ -12,15 +12,16 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { Header } from '../../components/header';
 
 /* ---------- cores ---------- */
 const cores = {
-  roxo: '#6C3AEA',
+  roxo: '#7B2FF7',
   cinzaClaro: '#EDEDED',
   vidro: 'rgba(255,255,255,0.18)',
   amarelo: '#FFC83D',
-  titulo: '#25164F',
-  texto: '#6B6B80',
+  titulo: '#7B2FF7',
+  texto: '#7B2FF7',
   branco: '#FFFFFF',
   preto: '#000000',
 };
@@ -81,11 +82,11 @@ export default function Candidatos() {
 
       {/* busca (branca) */}
       <View style={styles.busca}>
-        <Ionicons name="search-outline" size={24} color={cores.texto} />
+        <Ionicons name="search-outline" size={24} color={cores.preto} />
         <TextInput
           style={styles.buscaInput}
           placeholder="Buscar candidato..."
-          placeholderTextColor={cores.texto}
+          placeholderTextColor={cores.preto}
           value={busca}
           onChangeText={setBusca}
           autoCorrect={false}
@@ -99,26 +100,7 @@ export default function Candidatos() {
   return (
     <SafeAreaView style={styles.tela} edges={['top']}>
       {/* barra de topo branca (fixa) */}
-      <View style={styles.topo}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Pressable
-          style={styles.botaoPerfil}
-          onPress={() => {
-            // TODO: navegar para a tela de perfil, ex: router.push('/perfil')
-          }}
-          hitSlop={10}
-        >
-          <Image
-            source={require('../../assets/images/do-utilizador.png')}
-            style={styles.perfilIcone}
-            resizeMode="contain"
-          />
-        </Pressable>
-      </View>
+      <Header />
 
       {/* área roxa */}
       <View style={styles.fundoRoxo}>
@@ -135,8 +117,10 @@ export default function Candidatos() {
             <Pressable
               style={styles.card}
               onPress={() => {
-                // TODO: abrir o currículo do candidato, ex: router.push(`/curriculo/${item.id}`)
+                if (item.id === '1') router.push('/pdfcurriculo');
               }}
+              accessibilityRole="button"
+              accessibilityLabel={`Abrir currículo de ${item.nome}`}
             >
               <View style={styles.avatar}>
                 <Image
@@ -164,7 +148,7 @@ export default function Candidatos() {
         />
       </View>
 
-      {/* Botão de voltar: leva direto para a tela de curriculo.tsx */}
+      {/* Botão de voltar: leva direto para a tela de currículo.tsx */}
       <Pressable style={styles.botaoVoltar} onPress={() => router.push('/curriculo')} hitSlop={10}>
         <Image
           source={require('../../assets/images/voltar.png')}
@@ -179,18 +163,6 @@ export default function Candidatos() {
 /* ---------- estilos ---------- */
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
-
-  topo: {
-    height: 56,
-    backgroundColor: cores.branco,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-  logo: { width: 80, height: 100, marginTop: 10 },
-  botaoPerfil: { alignItems: 'center', justifyContent: 'center' },
-  perfilIcone: { width: 40, height: 27 },
 
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo },
 
@@ -233,7 +205,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 20,
   },
-  buscaInput: { flex: 1, fontSize: 16, color: cores.titulo },
+  buscaInput: { flex: 1, fontSize: 16, color: cores.preto },
 
   card: {
     flexDirection: 'row',
@@ -255,7 +227,7 @@ const styles = StyleSheet.create({
   },
   avatarIcone: { width: 36, height: 36 },
   info: { flex: 1, gap: 4 },
-  nome: { fontSize: 18, fontWeight: '800', color: cores.titulo },
+  nome: { fontSize: 18, fontWeight: '800', color: cores.preto },
   linhaCurriculo: {
     flexDirection: 'row',
     alignItems: 'center',

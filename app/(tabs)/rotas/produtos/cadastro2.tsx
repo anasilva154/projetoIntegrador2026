@@ -10,9 +10,10 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 export default function Cadastro1() {
+  const router = useRouter();
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [cnpj, setCnpj] = useState('');
@@ -20,7 +21,7 @@ export default function Cadastro1() {
   const [confirmarSenha, setConfirmarSenha] = useState('');
 
   const cadastrar = () => {
-    console.log('cadastrar', { nome, email, cnpj, senha, confirmarSenha });
+    router.push('/rotas/inicialpessoa');
   };
 
   return (

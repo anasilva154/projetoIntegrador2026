@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
-import { BotaoVoltar } from './botaoVoltar';
+import { RodapeFlutuante } from '../components/rodapeperfil';
 
 export default function Curriculos() {
   const router = useRouter();
@@ -78,7 +78,12 @@ export default function Curriculos() {
         </View>
       </ScrollView>
 
-      <BotaoVoltar />
+      <RodapeFlutuante
+        abaAtiva="editar"
+        aoIrParaInicio={() => router.push('/rotas/inicialpessoa')}
+        aoAdicionar={() => router.push('/curriculos')}
+        aoIrParaPerfil={() => router.push('/perfil')}
+      />
     </View>
   );
 }
@@ -86,7 +91,7 @@ export default function Curriculos() {
 const styles = StyleSheet.create({
   tela: {
     flex: 1,
-    backgroundColor: '#7B2CF9',
+    backgroundColor: '#7B2FF7',
   },
   decoracao: {
     ...StyleSheet.absoluteFillObject,
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     backgroundColor: '#FFFFFF',
     elevation: 7,
-    shadowColor: '#2B0B67',
+    shadowColor: '#7B2FF7',
     shadowOpacity: 0.2,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 7 },
@@ -186,7 +191,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#6A2BC7',
+    backgroundColor: '#7B2FF7',
     borderWidth: 3,
     borderColor: '#FFFFFF',
   },
@@ -212,14 +217,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.7,
   },
   tituloCartao: {
-    color: '#26134C',
+    color: '#7B2FF7',
     fontSize: 21,
     fontWeight: '800',
     textAlign: 'center',
     marginTop: 16,
   },
   textoCartao: {
-    color: '#736B80',
+    color: '#7B2FF7',
     fontSize: 14,
     lineHeight: 21,
     textAlign: 'center',
@@ -228,7 +233,7 @@ const styles = StyleSheet.create({
   divisor: {
     alignSelf: 'stretch',
     height: 1,
-    backgroundColor: '#EEEAF4',
+    backgroundColor: '#E5E5E5',
     marginVertical: 19,
   },
   dica: {
@@ -255,7 +260,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 16,
     borderRadius: 16,
-    backgroundColor: '#6A2BC7',
+    backgroundColor: '#7B2FF7',
     marginTop: 17,
   },
   textoBotao: {

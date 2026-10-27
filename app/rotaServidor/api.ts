@@ -1,9 +1,9 @@
-// Configuração base da API
+﻿// Configuração base da API
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "https://sua-api.com/api";
 const API_TOKEN = process.env.EXPO_PUBLIC_API_TOKEN || "";
 
 /**
- * Função utilitária genérica para chamadas HTTP com autenticação Bearer
+ * Função utilitária genérica para chamadas HTTP com autenticação
  */
 export async function apiRequest<T = any>(
     endpoint: string,
@@ -11,11 +11,15 @@ export async function apiRequest<T = any>(
 ): Promise<T> {
     const url = `${API_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
 
-    const headers: HeadersInit = {
-        "Content-Type": "application/json",
-        ...(API_TOKEN ? { Authorization: `Bearer ${API_TOKEN}` } : {}),
-        ...options.headers,
-    };
+    const headers = new Headers(options.headers || {});
+
+    if (!headers.has("Content-Type") && !(options.body instanceof FormData)) {
+        headers.set("Content-Type", "application/json");
+    }
+
+    if (API_TOKEN) {
+        headers.set("Authorization", `Bearer ${API_TOKEN}`);
+    }
 
     const response = await fetch(url, {
         ...options,
@@ -40,7 +44,12 @@ export async function apiRequest<T = any>(
         return null as T;
     }
 
-    return response.json();
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+        return response.json();
+    }
+
+    return response.text() as unknown as T;
 }
 
 export { API_URL, API_TOKEN };

@@ -33,7 +33,7 @@ export default function Matriculas() {
 
         <View style={styles.cartaoVazio}>
           <View style={styles.iconePrincipal}>
-            <Ionicons name="school" size={36} color="#5A35B5" />
+            <Ionicons name="school" size={36} color="#7B2FF7" />
             <View style={styles.iconeSelo}>
               <Ionicons name="add" size={16} color="#FFFFFF" />
             </View>
@@ -86,7 +86,7 @@ export default function Matriculas() {
 const styles = StyleSheet.create({
   tela: {
     flex: 1,
-    backgroundColor: '#7B2CF9',
+    backgroundColor: '#7B2FF7',
   },
   decoracao: {
     ...StyleSheet.absoluteFillObject,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     backgroundColor: '#FFFFFF',
     elevation: 7,
-    shadowColor: '#2B0B67',
+    shadowColor: '#7B2FF7',
     shadowOpacity: 0.2,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 7 },
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EEE8FF',
+    backgroundColor: '#F8F8F8',
     marginBottom: 18,
   },
   iconeSelo: {
@@ -197,29 +197,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     paddingVertical: 6,
     borderRadius: 15,
-    backgroundColor: '#F3EEFF',
+    backgroundColor: '#F8F8F8',
   },
   pontoStatus: {
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: '#7950C8',
+    backgroundColor: '#7B2FF7',
   },
   etiquetaStatusTexto: {
-    color: '#6545A0',
+    color: '#7B2FF7',
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.7,
   },
   tituloCartao: {
-    color: '#26134C',
+    color: '#7B2FF7',
     fontSize: 21,
     fontWeight: '800',
     textAlign: 'center',
     marginTop: 16,
   },
   textoCartao: {
-    color: '#736B80',
+    color: '#7B2FF7',
     fontSize: 14,
     lineHeight: 21,
     textAlign: 'center',
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   divisor: {
     alignSelf: 'stretch',
     height: 1,
-    backgroundColor: '#EEEAF4',
+    backgroundColor: '#E5E5E5',
     marginVertical: 19,
   },
   dica: {
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 16,
     borderRadius: 16,
-    backgroundColor: '#6A2BC7',
+    backgroundColor: '#7B2FF7',
     marginTop: 17,
   },
   textoBotao: {

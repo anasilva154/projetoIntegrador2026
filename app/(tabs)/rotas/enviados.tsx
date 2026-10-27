@@ -40,7 +40,7 @@ export default function Enviados() {
             onPress={() => router.push('/matriculas')}
           >
             <View style={[styles.iconeContainer, styles.iconeMatriculas]}>
-              <Ionicons name="school-outline" size={27} color="#5A35B5" />
+              <Ionicons name="school-outline" size={27} color="#7B2FF7" />
             </View>
 
             <View style={styles.detalhesCartao}>
@@ -52,7 +52,7 @@ export default function Enviados() {
             </View>
 
             <View style={styles.seta}>
-              <Ionicons name="arrow-forward" size={19} color="#5A35B5" />
+              <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
             </View>
           </TouchableOpacity>
 
@@ -74,7 +74,7 @@ export default function Enviados() {
             </View>
 
             <View style={styles.seta}>
-              <Ionicons name="arrow-forward" size={19} color="#5A35B5" />
+              <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
             </View>
           </TouchableOpacity>
         </View>
@@ -95,7 +95,7 @@ export default function Enviados() {
 const styles = StyleSheet.create({
   tela: {
     flex: 1,
-    backgroundColor: '#7B2CF9',
+    backgroundColor: '#7B2FF7',
   },
   decoracao: {
     ...StyleSheet.absoluteFillObject,
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: '#FFFFFF',
     elevation: 7,
-    shadowColor: '#2B0B67',
+    shadowColor: '#7B2FF7',
     shadowOpacity: 0.2,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 7 },
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   iconeMatriculas: {
-    backgroundColor: '#EEE8FF',
+    backgroundColor: '#F8F8F8',
   },
   iconeCurriculos: {
     backgroundColor: '#FFF3D6',
@@ -203,19 +203,19 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   etiqueta: {
-    color: '#8A7BA6',
+    color: '#7B2FF7',
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 1,
     marginBottom: 4,
   },
   tituloCartao: {
-    color: '#26134C',
+    color: '#7B2FF7',
     fontSize: 20,
     fontWeight: '800',
   },
   descricaoCartao: {
-    color: '#736B80',
+    color: '#7B2FF7',
     fontSize: 13,
     lineHeight: 18,
     marginTop: 5,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: '#F3EEFF',
+    backgroundColor: '#F8F8F8',
     alignItems: 'center',
     justifyContent: 'center',
   },

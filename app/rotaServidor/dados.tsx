@@ -13,16 +13,16 @@ export default function DadosVagas() {
       "beneficios": "Vale transporte; Vale alimentação; Seguro de vida;",
       "topicos": [
         {
-          "descricao": "- Auxiliar na organização de documentos"
+          "descricao": "Auxiliar na organização de documentos"
         },
         {
-          "descricao": "- Apoiar a equipe nas tarefas do dia a dia"
+          "descricao": "Apoiar a equipe nas tarefas do dia a dia"
         },
         {
-          "descricao": "- Preencher planilhas e cadastrar informações"
+          "descricao": "Preencher planilhas e cadastrar informações"
         },
         {
-          "descricao": "- Aprender novas atividades administrativas"
+          "descricao": "Aprender novas atividades administrativas"
         }
       ]
     },
@@ -39,19 +39,19 @@ export default function DadosVagas() {
       "beneficios": "Vale transporte; Seguro de vida; Plano de saúde;",
       "topicos": [
         {
-          "descricao": "- Atendimento ao cliente presencialmente, por telefone e por whatsapp"
+          "descricao": "Atendimento ao cliente presencialmente, por telefone e por WhatsApp"
         },
         {
-          "descricao": "- Apresentar produtos e esclarecer dúvidas,"
+          "descricao": "Apresentar produtos e esclarecer dúvidas"
         },
         {
-          "descricao": "- Elaborar orçamentos e registrar pedidos"
+          "descricao": "Elaborar orçamentos e registrar pedidos"
         },
         {
-          "descricao": "- Manter o cadastro de clientes atualizado"
+          "descricao": "Manter o cadastro de clientes atualizado"
         },
         {
-          "descricao": "- Cumprir metas de vendas definidas pela empresa"
+          "descricao": "Cumprir metas de vendas definidas pela empresa"
         }
       ]
     },
@@ -68,19 +68,19 @@ export default function DadosVagas() {
       "beneficios": "Vale transporte; Vale alimentação; Seguro de vida;",
       "topicos": [
         {
-          "descricao": "- Abastecer as linhas de produção com materiais e insumos"
+          "descricao": "Abastecer as linhas de produção com materiais e insumos"
         },
         {
-          "descricao": "- Operar máquinas e equipamentos simples, após treinamento"
+          "descricao": "Operar máquinas e equipamentos simples, após treinamento"
         },
         {
-          "descricao": "- Realizar inspeção de qualidade nos produtos"
+          "descricao": "Realizar inspeção de qualidade nos produtos"
         },
         {
-          "descricao": "- Auxiliar na embalagem e expedição dos produtos"
+          "descricao": "Auxiliar na embalagem e expedição dos produtos"
         },
         {
-          "descricao": "- Seguir normas de segurança e higiene no ambiente de trabalho"
+          "descricao": "Seguir normas de segurança e higiene no ambiente de trabalho"
         }
       ]
     },
@@ -97,19 +97,19 @@ export default function DadosVagas() {
       "beneficios": "Vale transporte",
       "topicos": [
         {
-          "descricao": "- Apoiar o processo de recrutamento e seleção"
+          "descricao": "Apoiar o processo de recrutamento e seleção"
         },
         {
-          "descricao": "- Agendar entrevistas e acompanhar candidatos"
+          "descricao": "Agendar entrevistas e acompanhar candidatos"
         },
         {
-          "descricao": "- Auxiliar na administração de benefícios e folha de pagamento"
+          "descricao": "Auxiliar na administração de benefícios e folha de pagamento"
         },
         {
-          "descricao": "- Manter registros e arquivos atualizados"
+          "descricao": "Manter registros e arquivos atualizados"
         },
         {
-          "descricao": "- Colaborar com a equipe de RH em projetos e atividades diversas"
+          "descricao": "Colaborar com a equipe de RH em projetos e atividades diversas"
         }
       ]
     },
@@ -126,19 +126,19 @@ export default function DadosVagas() {
       "beneficios": "não informado",
       "topicos": [
         {
-          "descricao": "- Organizar e arquivar documentos físicos e digitais"
+          "descricao": "Organizar e arquivar documentos físicos e digitais"
         },
         {
-          "descricao": "- Atender chamadas telefônicas e responder e-mails"
+          "descricao": "Atender chamadas telefônicas e responder e-mails"
         },
         {
-          "descricao": "- Auxiliar na elaboração de relatórios e planilhas"
+          "descricao": "Auxiliar na elaboração de relatórios e planilhas"
         },
         {
-          "descricao": "- Controlar o estoque de materiais de escritório"
+          "descricao": "Controlar o estoque de materiais de escritório"
         },
         {
-          "descricao": "- Apoiar a equipe em tarefas administrativas diversas"
+          "descricao": "Apoiar a equipe em tarefas administrativas diversas"
         }
       ]
     },
@@ -150,24 +150,24 @@ export default function DadosVagas() {
       "cargaHoraria": "44h semanais/Escala 6x1, em turnos (manhã ou tarde)",
       "salario": "A combinar",
       "idade": "18 a 65 anos",
-      "escolaridade": "Ensino médio completo)",
+      "escolaridade": "Ensino médio completo",
       "requisitos": "Conhecimento básico de sistemas de PDV",
       "beneficios": "Vale alimentação",
       "topicos": [
         {
-          "descricao": "- Operar o caixa registrador e processar transações de vendas"
+          "descricao": "Operar o caixa registrador e processar transações de vendas"
         },
         {
-          "descricao": "- Verificar a autenticidade de notas e moedas"
+          "descricao": "Verificar a autenticidade de notas e moedas"
         },
         {
-          "descricao": "- Emitir recibos e notas fiscais"
+          "descricao": "Emitir recibos e notas fiscais"
         },
         {
-          "descricao": "- Manter o caixa organizado e reconciliar o dinheiro no final do turno"
+          "descricao": "Manter o caixa organizado e reconciliar o dinheiro no final do turno"
         },
         {
-          "descricao": "- Atender clientes com cortesia e resolver problemas de pagamento"
+          "descricao": "Atender clientes com cortesia e resolver problemas de pagamento"
         }
       ]
     },
@@ -184,19 +184,19 @@ export default function DadosVagas() {
       "beneficios": "Uniforme fornecido pela empresa",
       "topicos": [
         {
-          "descricao": " - Repor produtos nas prateleiras e gôndolas"
+          "descricao": " Repor produtos nas prateleiras e gôndolas"
         },
         {
-          "descricao": "- Verificar datas de validade e organizar produtos de acordo com as normas da empresa"
+          "descricao": "Verificar datas de validade e organizar produtos de acordo com as normas da empresa"
         },
         {
-          "descricao": "- Auxiliar na conferência de mercadorias recebidas e no controle de estoque"
+          "descricao": "Auxiliar na conferência de mercadorias recebidas e no controle de estoque"
         },
         {
-          "descricao": "- Manter a área de trabalho limpa e organizada"
+          "descricao": "Manter a área de trabalho limpa e organizada"
         },
         {
-          "descricao": "- Atender clientes e fornecer informações sobre produtos, quando necessário"
+          "descricao": "Atender clientes e fornecer informações sobre produtos, quando necessário"
         }
       ]
     },
@@ -216,16 +216,16 @@ export default function DadosVagas() {
           "descricao": "- Empacotar produtos de forma eficiente e segura"
         },
         {
-          "descricao": "- Manter a área de empacotamento limpa e organizada"
+          "descricao": "Manter a área de empacotamento limpa e organizada"
         },
         {
-          "descricao": "- Auxiliar clientes com o empacotamento de suas compras, quando necessário"
+          "descricao": "Auxiliar clientes com o empacotamento de suas compras, quando necessário"
         },
         {
-          "descricao": "- Seguir normas de segurança e higiene no ambiente de trabalho"
+          "descricao": "Seguir normas de segurança e higiene no ambiente de trabalho"
         },
         {
-          "descricao": "- Colaborar com a equipe para garantir um fluxo de trabalho eficiente"
+          "descricao": "Colaborar com a equipe para garantir um fluxo de trabalho eficiente"
         }
       ]
     },
@@ -242,19 +242,19 @@ export default function DadosVagas() {
       "beneficios": "alimentação no local; Uniforme fornecido pela empresa",
       "topicos": [
         {
-          "descricao": "- Auxiliar na preparação de alimentos, seguindo receitas e padrões de qualidade"
+          "descricao": "Auxiliar na preparação de alimentos, seguindo receitas e padrões de qualidade"
         },
         {
-          "descricao": "- Manter a cozinha limpa e organizada, lavando utensílios e equipamentos"
+          "descricao": "Manter a cozinha limpa e organizada, lavando utensílios e equipamentos"
         },
         {
-          "descricao": "- Controlar o estoque de ingredientes e informar a necessidade de reposição"
+          "descricao": "Controlar o estoque de ingredientes e informar a necessidade de reposição"
         },
         {
-          "descricao": "- Seguir normas de segurança alimentar e higiene pessoal"
+          "descricao": "Seguir normas de segurança alimentar e higiene pessoal"
         },
         {
-          "descricao": "- Colaborar com a equipe para garantir um serviço eficiente e de qualidade"
+          "descricao": "Colaborar com a equipe para garantir um serviço eficiente e de qualidade"
         }
       ]
     },
@@ -271,19 +271,19 @@ export default function DadosVagas() {
       "beneficios": "Uniforme e EPIs fornecidos pela empresa",
       "topicos": [
         {
-          "descricao": "- Realizar limpeza e manutenção de áreas internas e externas da empresa"
+          "descricao": "Realizar limpeza e manutenção de áreas internas e externas da empresa"
         },
         {
-          "descricao": "- Auxiliar na organização de materiais e equipamentos"
+          "descricao": "Auxiliar na organização de materiais e equipamentos"
         },
         {
-          "descricao": "- Coletar e descartar resíduos de acordo com as normas ambientais"
+          "descricao": "Coletar e descartar resíduos de acordo com as normas ambientais"
         },
         {
-          "descricao": "- Seguir normas de segurança e higiene no ambiente de trabalho"
+          "descricao": "Seguir normas de segurança e higiene no ambiente de trabalho"
         },
         {
-          "descricao": "- Colaborar com a equipe para garantir um ambiente limpo e seguro"
+          "descricao": "Colaborar com a equipe para garantir um ambiente limpo e seguro"
         }
       ]
     },
@@ -298,19 +298,19 @@ export default function DadosVagas() {
       "beneficios": "Vale transporte; Bolsa de estágio; Ambiente profissional",
       "topicos": [
         {
-          "descricao": "- Auxiliar na manutenção de computadores e periféricos"
+          "descricao": "Auxiliar na manutenção de computadores e periféricos"
         },
         {
-          "descricao": "- Instalar e configurar softwares básicos"
+          "descricao": "Instalar e configurar softwares básicos"
         },
         {
-          "descricao": "- Apoiar o suporte técnico interno da empresa"
+          "descricao": "Apoiar o suporte técnico interno da empresa"
         },
         {
-          "descricao": "- Registrar ocorrências e acompanhar chamados de TI"
+          "descricao": "Registrar ocorrências e acompanhar chamados de TI"
         },
         {
-          "descricao": "- Participar de treinamentos e aprender processos de suporte"
+          "descricao": "Participar de treinamentos e aprender processos de suporte"
         }
       ],
       "empresa": "",
@@ -327,19 +327,19 @@ export default function DadosVagas() {
       "beneficios": "Vale transporte; Plano de saúde; Incentivo à capacitação",
       "topicos": [
         {
-          "descricao": "- Apoiar campanhas de marketing e divulgação"
+          "descricao": "Apoiar campanhas de marketing e divulgação"
         },
         {
-          "descricao": "- Criar materiais para redes sociais e campanhas internas"
+          "descricao": "Criar materiais para redes sociais e campanhas internas"
         },
         {
-          "descricao": "- Organizar conteúdos e calendarização de postagens"
+          "descricao": "Organizar conteúdos e calendarização de postagens"
         },
         {
-          "descricao": "- Acompanhar métricas de alcance e engajamento"
+          "descricao": "Acompanhar métricas de alcance e engajamento"
         },
         {
-          "descricao": "- Auxiliar na criação de materiais promocionais"
+          "descricao": "Auxiliar na criação de materiais promocionais"
         }
       ],
       "empresa": "",

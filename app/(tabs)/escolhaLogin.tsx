@@ -64,7 +64,7 @@ export default function Index() {
 
 const cores = {
   roxo: '#7B2FF7',
-  roxoEscuro: '#4B1BA8',
+  roxoEscuro: '#7B2FF7',
   amarelo: '#F4C242',
   branco: '#FFFFFF',
 };

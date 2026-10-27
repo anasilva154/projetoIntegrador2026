@@ -1,7 +1,19 @@
 // app/(tabs)/vaga.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { View, Text, Pressable, Image, ScrollView, StyleSheet } from 'react-native';
+import { useRef, type ReactNode } from 'react';
+import { Header } from '../../components/header';
+import {
+  Animated,
+  View,
+  Text,
+  Pressable,
+  Image,
+  ScrollView,
+  StyleSheet,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 
 const vaga = {
   titulo: 'Jovem Aprendiz / Auxiliar',
@@ -37,33 +49,49 @@ function Lista({ itens }: { itens: string[] }) {
   );
 }
 
+function BotaoAnimado({
+  children,
+  onPress,
+  style,
+  hitSlop,
+}: {
+  children: ReactNode;
+  onPress: () => void;
+  style: StyleProp<ViewStyle>;
+  hitSlop?: number;
+}) {
+  const escala = useRef(new Animated.Value(1)).current;
+
+  const animarEscala = (toValue: number) => {
+    Animated.spring(escala, {
+      toValue,
+      useNativeDriver: true,
+      speed: 30,
+      bounciness: 8,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onPressIn={() => animarEscala(0.94)}
+      onPressOut={() => animarEscala(1)}
+      hitSlop={hitSlop}
+    >
+      <Animated.View style={[style, { transform: [{ scale: escala }] }]}>
+        {children}
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 export default function Vaga() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
       {/* Header: logo (esquerda) e perfil (direita) */}
-      <View style={styles.header}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logoHeader}
-          resizeMode="contain"
-        />
-
-        <Pressable
-          style={styles.botaoPerfil}
-          onPress={() => {
-            // TODO: navegar para a tela de perfil, ex: router.push('/perfil')
-          }}
-          hitSlop={10}
-        >
-          <Image
-            source={require('../../assets/images/do-utilizador.png')}
-            style={styles.perfilIcone}
-            resizeMode="contain"
-          />
-        </Pressable>
-      </View>
+      <Header />
 
       {/* ScrollView só rola se a tela for muito pequena */}
       <ScrollView contentContainerStyle={styles.conteudo} showsVerticalScrollIndicator={false}>
@@ -125,43 +153,31 @@ export default function Vaga() {
 
           {/* View envolvendo o botão, só para garantir a centralização */}
           <View style={styles.botaoWrapper}>
-            <Pressable style={styles.botao} onPress={() => router.push('/candidatar')}>
+            <BotaoAnimado style={styles.botao} onPress={() => router.push('/candidatar')}>
               <Text style={styles.txtBotao}>Candidatar-se</Text>
-            </Pressable>
+            </BotaoAnimado>
           </View>
         </View>
       </ScrollView>
 
       {/* Botão de voltar: círculo roxo com sombra e ícone PNG por cima */}
-      <Pressable style={styles.botaoVoltar} onPress={() => router.back()} hitSlop={10}>
+      <BotaoAnimado
+        style={styles.botaoVoltar}
+        onPress={() => router.push('/vagas')}
+        hitSlop={10}
+      >
         <Image
           source={require('../../assets/images/voltar.png')}
           style={styles.voltarIcone}
           resizeMode="contain"
         />
-      </Pressable>
+      </BotaoAnimado>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#7B2FF7' },
-
-  header: {
-    height: 56,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-  logoHeader: { width: 80, height: 100, marginTop: 10 },
-
-  botaoPerfil: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  perfilIcone: { width: 40, height: 27 },
 
   conteudo: { flexGrow: 1, paddingHorizontal: 12, paddingTop: 12, paddingBottom: 12 },
 
@@ -176,7 +192,7 @@ const styles = StyleSheet.create({
 
   tag: {
     alignSelf: 'flex-start',
-    backgroundColor: '#ECE8FB',
+    backgroundColor: '#F8F8F8',
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 3,

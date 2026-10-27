@@ -1,6 +1,7 @@
-// app/candidatar.tsx
-import { useState } from 'react';
+﻿// app/candidatar.tsx
+import { useRef, useState, type ReactNode } from 'react';
 import {
+  Animated,
   View,
   Text,
   TextInput,
@@ -11,25 +12,65 @@ import {
   Platform,
   Alert,
   StyleSheet,
+  type StyleProp,
+  type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import * as DocumentPicker from 'expo-document-picker';
+import { Header } from '../../components/header';
 
 /* ---------- cores ---------- */
 const cores = {
   roxo: '#7B2FF7',
-  roxoClaro: '#F5F2FF',
-  roxoBorda: '#D9D0F5',
+  roxoClaro: '#F8F8F8',
+  roxoBorda: '#7B2FF7',
   amarelo: '#FFC83D',
-  titulo: '#25164F',
-  texto: '#6B6B80',
+  titulo: '#000000',
+  texto: '#000000',
   branco: '#FFFFFF',
   erro: '#D93025',
 };
 
 const LIMITE_MB = 5;
 const LIMITE_MENSAGEM = 500;
+
+function BotaoAnimado({
+  children,
+  onPress,
+  style,
+  hitSlop,
+}: {
+  children: ReactNode;
+  onPress: () => void;
+  style: StyleProp<ViewStyle>;
+  hitSlop?: number;
+}) {
+  const escala = useRef(new Animated.Value(1)).current;
+
+  const animarEscala = (toValue: number) => {
+    Animated.spring(escala, {
+      toValue,
+      useNativeDriver: true,
+      speed: 30,
+      bounciness: 8,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onPressIn={() => animarEscala(0.94)}
+      onPressOut={() => animarEscala(1)}
+      hitSlop={hitSlop}
+    >
+      <Animated.View style={[style, { transform: [{ scale: escala }] }]}>
+        {children}
+      </Animated.View>
+    </Pressable>
+  );
+}
 
 /* ---------- tela ---------- */
 export default function Candidatar() {
@@ -41,6 +82,44 @@ export default function Candidatar() {
   const [idade, setIdade] = useState('');
   const [cidade, setCidade] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [anexo, setAnexo] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
+
+  async function selecionarAnexo() {
+    try {
+      const resultado = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'image/*'],
+        copyToCacheDirectory: true,
+      });
+
+      if (resultado.canceled) return;
+
+      const arquivo = resultado.assets[0];
+      const extensaoPermitida = /\.(pdf|jpe?g|png|gif|webp|heic|heif|bmp)$/i.test(
+        arquivo.name,
+      );
+      const tipoPermitido = arquivo.mimeType
+        ? arquivo.mimeType === 'application/pdf' || arquivo.mimeType.startsWith('image/')
+        : extensaoPermitida;
+
+      if (!tipoPermitido) {
+        Alert.alert('Formato não permitido', 'Selecione um arquivo PDF ou uma imagem.');
+        return;
+      }
+
+      const tamanho = arquivo.size ?? arquivo.file?.size;
+      if (tamanho !== undefined && tamanho > LIMITE_MB * 1024 * 1024) {
+        Alert.alert('Arquivo muito grande', `O anexo deve ter no máximo ${LIMITE_MB} MB.`);
+        return;
+      }
+
+      setAnexo(arquivo);
+    } catch (error) {
+      Alert.alert(
+        'Erro ao selecionar anexo',
+        error instanceof Error ? error.message : 'Tente novamente.',
+      );
+    }
+  }
 
   function enviar() {
     const emailValido = /^\S+@\S+\.\S+$/.test(email.trim());
@@ -53,6 +132,10 @@ export default function Candidatar() {
       Alert.alert('E-mail inválido', 'Digite um e-mail válido.');
       return;
     }
+    if (!anexo) {
+      Alert.alert('Anexo obrigatório', 'Selecione seu currículo em PDF ou uma imagem.');
+      return;
+    }
 
     // TODO: enviar os dados para o servidor
     Alert.alert('Candidatura enviada!', 'Boa sorte!', [
@@ -62,23 +145,10 @@ export default function Candidatar() {
 
   return (
     <SafeAreaView style={styles.tela} edges={['top', 'bottom']}>
-      {/* barra de topo branca (igual às outras páginas) */}
-      <View style={styles.topo}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <View style={styles.perfil}>
-          <Image
-            source={require('../../assets/images/do-utilizador.png')}
-            style={styles.perfilIcone}
-            resizeMode="contain"
-          />
-        </View>
-      </View>
+      {/* Barra de topo branca, igual às outras páginas */}
+      <Header />
 
-      {/* área roxa */}
+      {/* Área roxa */}
       <KeyboardAvoidingView
         style={styles.fundoRoxo}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -89,11 +159,11 @@ export default function Candidatar() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.cartao}>
-            {/* título */}
+            {/* Título */}
             <View style={styles.cabecalho}>
               <Text style={styles.titulo}>Candidatar-se</Text>
               <Text style={styles.subtitulo}>
-                Preencha seus dados e anexe o seu currículo em PDF para se candidatar a esta vaga.
+                Preencha seus dados e anexe seu currículo em PDF ou uma foto para se candidatar a esta vaga.
               </Text>
             </View>
 
@@ -174,20 +244,43 @@ export default function Candidatar() {
               </View>
             </View>
 
-            {/* currículo (só visual, ainda não funciona) */}
+            {/* Anexo do currículo */}
             <Text style={styles.rotulo}>
-              Currículo (PDF) <Text style={styles.obrigatorio}>*</Text>
+              Currículo ou foto <Text style={styles.obrigatorio}>*</Text>
             </Text>
             <Pressable
               style={styles.upload}
-              onPress={() => {
-                // TODO: abrir seletor de arquivo
-              }}
+              onPress={selecionarAnexo}
+              accessibilityRole="button"
+              accessibilityLabel={anexo ? 'Trocar anexo selecionado' : 'Selecionar currículo ou foto'}
             >
-              <Ionicons name="cloud-upload-outline" size={44} color={cores.roxo} />
-              <Text style={styles.uploadTitulo}>Clique para anexar seu currículo</Text>
-              <Text style={styles.uploadInfo}>Arquivos em PDF (máx. {LIMITE_MB}MB)</Text>
+              <Ionicons
+                name={anexo ? 'document-attach-outline' : 'cloud-upload-outline'}
+                size={44}
+                color={cores.roxo}
+              />
+              <Text style={styles.uploadTitulo}>
+                {anexo ? anexo.name : 'Toque para anexar um arquivo ou foto'}
+              </Text>
+              <Text style={styles.uploadInfo}>
+                {anexo
+                  ? `${anexo.size !== undefined || anexo.file?.size !== undefined
+                    ? `${((anexo.size ?? anexo.file?.size ?? 0) / (1024 * 1024)).toFixed(2)} MB`
+                    : 'Tamanho indisponível'} · Toque para trocar`
+                  : `PDF ou imagem (máx. ${LIMITE_MB} MB)`}
+              </Text>
             </Pressable>
+            {anexo && (
+              <Pressable
+                style={styles.removerAnexo}
+                onPress={() => setAnexo(null)}
+                accessibilityRole="button"
+                accessibilityLabel="Remover anexo"
+              >
+                <Ionicons name="close-circle-outline" size={18} color={cores.erro} />
+                <Text style={styles.removerAnexoTexto}>Remover anexo</Text>
+              </Pressable>
+            )}
 
             {/* mensagem */}
             <Text style={styles.rotulo}>
@@ -207,16 +300,16 @@ export default function Candidatar() {
             </Text>
 
             {/* enviar */}
-            <Pressable style={styles.botao} onPress={enviar}>
+            <BotaoAnimado style={styles.botao} onPress={enviar}>
               <Text style={styles.botaoTexto}>Enviar</Text>
-            </Pressable>
+            </BotaoAnimado>
           </View>
         </ScrollView>
 
-        {/* botão de voltar flutuante, no canto inferior esquerdo */}
-        <Pressable
+        {/* Botão de voltar flutuante, no canto inferior esquerdo */}
+        <BotaoAnimado
           style={styles.botaoVoltar}
-          onPress={() => router.push('/vagasinformação.tsx')}
+          onPress={() => router.push('/vagasinformacao')}
           hitSlop={8}
         >
           <Image
@@ -224,7 +317,7 @@ export default function Candidatar() {
             style={styles.iconeVoltar}
             resizeMode="contain"
           />
-        </Pressable>
+        </BotaoAnimado>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -233,17 +326,6 @@ export default function Candidatar() {
 /* ---------- estilos ---------- */
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
-
-  topo: {
-    height: 56,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-  logo: { width: 80, height: 100, marginTop: 10 },
-  perfilIcone: { width: 40, height: 27 },
 
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo },
   scroll: { padding: 16, paddingBottom: 96 },
@@ -296,6 +378,14 @@ const styles = StyleSheet.create({
   },
   uploadTitulo: { fontSize: 14, fontWeight: '800', color: cores.roxo },
   uploadInfo: { fontSize: 12, color: cores.texto },
+  removerAnexo: {
+    alignSelf: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 8,
+  },
+  removerAnexoTexto: { color: cores.erro, fontSize: 12, fontWeight: '700' },
 
   inputMensagem: { height: 110, paddingTop: 12 },
   contador: { alignSelf: 'flex-end', fontSize: 12, color: cores.texto, marginTop: 6 },
@@ -311,7 +401,7 @@ const styles = StyleSheet.create({
   },
   botaoTexto: { fontSize: 16, fontWeight: '800', color: cores.titulo },
 
-  // botão de voltar: círculo roxo com o PNG preenchendo, fixo no canto inferior esquerdo
+  // Botão de voltar: círculo roxo com o PNG preenchendo, fixo no canto inferior esquerdo
   botaoVoltar: {
     position: 'absolute',
     left: 6,

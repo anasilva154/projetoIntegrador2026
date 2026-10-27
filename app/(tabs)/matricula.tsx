@@ -1,6 +1,7 @@
-// app/matricula.tsx
-import { useState } from 'react';
+﻿// app/matricula.tsx
+import { useRef, useState, type ReactNode } from 'react';
 import {
+  Animated,
   View,
   Text,
   TextInput,
@@ -12,25 +13,65 @@ import {
   Alert,
   Modal,
   StyleSheet,
+  type StyleProp,
+  type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import * as DocumentPicker from 'expo-document-picker';
+import { Header } from '../../components/header';
 
 /* ---------- cores ---------- */
 const cores = {
   roxo: '#7B2FF7',
-  roxoClaro: '#F5F2FF',
-  roxoBorda: '#D9D0F5',
+  roxoClaro: '#F8F8F8',
+  roxoBorda: '#7B2FF7',
   amarelo: '#FFC83D',
-  titulo: '#25164F',
-  texto: '#6B6B80',
+  titulo: '#000000',
+  texto: '#000000',
   branco: '#FFFFFF',
   erro: '#D93025',
   sucesso: '#2E9E5B',
 };
 
 const LIMITE_MB = 5;
+
+function BotaoAnimado({
+  children,
+  onPress,
+  style,
+  hitSlop,
+}: {
+  children: ReactNode;
+  onPress: () => void;
+  style: StyleProp<ViewStyle>;
+  hitSlop?: number;
+}) {
+  const escala = useRef(new Animated.Value(1)).current;
+
+  const animarEscala = (toValue: number) => {
+    Animated.spring(escala, {
+      toValue,
+      useNativeDriver: true,
+      speed: 30,
+      bounciness: 8,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onPressIn={() => animarEscala(0.94)}
+      onPressOut={() => animarEscala(1)}
+      hitSlop={hitSlop}
+    >
+      <Animated.View style={[style, { transform: [{ scale: escala }] }]}>
+        {children}
+      </Animated.View>
+    </Pressable>
+  );
+}
 
 /* ---------- tela ---------- */
 export default function Candidatar() {
@@ -45,6 +86,44 @@ export default function Candidatar() {
   const [escolaridade, setEscolaridade] = useState('');
   const [turno, setTurno] = useState('');
   const [enviado, setEnviado] = useState(false);
+  const [documento, setDocumento] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
+
+  async function selecionarDocumento() {
+    try {
+      const resultado = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'image/*'],
+        copyToCacheDirectory: true,
+      });
+
+      if (resultado.canceled) return;
+
+      const arquivo = resultado.assets[0];
+      const extensaoPermitida = /\.(pdf|jpe?g|png|gif|webp|heic|heif|bmp)$/i.test(
+        arquivo.name,
+      );
+      const tipoPermitido = arquivo.mimeType
+        ? arquivo.mimeType === 'application/pdf' || arquivo.mimeType.startsWith('image/')
+        : extensaoPermitida;
+
+      if (!tipoPermitido) {
+        Alert.alert('Formato não permitido', 'Selecione um PDF ou uma imagem.');
+        return;
+      }
+
+      const tamanho = arquivo.size ?? arquivo.file?.size;
+      if (tamanho !== undefined && tamanho > LIMITE_MB * 1024 * 1024) {
+        Alert.alert('Arquivo muito grande', `O documento deve ter no máximo ${LIMITE_MB} MB.`);
+        return;
+      }
+
+      setDocumento(arquivo);
+    } catch (error) {
+      Alert.alert(
+        'Erro ao selecionar documento',
+        error instanceof Error ? error.message : 'Tente novamente.',
+      );
+    }
+  }
 
   function enviar() {
     const emailValido = /^\S+@\S+\.\S+$/.test(email.trim());
@@ -78,23 +157,10 @@ export default function Candidatar() {
 
   return (
     <SafeAreaView style={styles.tela} edges={['top', 'bottom']}>
-      {/* barra de topo branca (igual às outras páginas) */}
-      <View style={styles.topo}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <View style={styles.perfil}>
-          <Image
-            source={require('../../assets/images/do-utilizador.png')}
-            style={styles.perfilIcone}
-            resizeMode="contain"
-          />
-        </View>
-      </View>
+      {/* Barra de topo branca, igual às outras páginas */}
+      <Header />
 
-      {/* área roxa */}
+      {/* Área roxa */}
       <KeyboardAvoidingView
         style={styles.fundoRoxo}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -105,7 +171,7 @@ export default function Candidatar() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.cartao}>
-            {/* título */}
+            {/* Título */}
             <View style={styles.cabecalho}>
               <Text style={styles.titulo}>Matricular-se</Text>
               <Text style={styles.subtitulo}>
@@ -190,7 +256,7 @@ export default function Candidatar() {
               </View>
             </View>
 
-            {/* endereço */}
+            {/* Endereço */}
             <Text style={styles.rotulo}>
               Endereço completo <Text style={styles.obrigatorio}>*</Text>
             </Text>
@@ -234,30 +300,42 @@ export default function Candidatar() {
               </View>
             </View>
 
-            {/* documento de identidade (só visual, ainda não funciona) */}
+            {/* documento de identidade */}
             <Text style={styles.rotulo}>
-              Documento<Text style={styles.opcional}></Text>
+              Documento
             </Text>
             <Pressable
               style={styles.upload}
-              onPress={() => {
-                // TODO: abrir seletor de arquivo
-              }}
+              onPress={selecionarDocumento}
+              accessibilityRole="button"
+              accessibilityLabel={documento ? 'Trocar documento selecionado' : 'Selecionar documento'}
             >
-              <Ionicons name="cloud-upload-outline" size={44} color={cores.roxo} />
-              <Text style={styles.uploadTitulo}>Clique para anexar seu documento</Text>
-              <Text style={styles.uploadInfo}>RG ou Comprovante de Residência (máx. {LIMITE_MB}MB)</Text>
+              <Ionicons
+                name={documento ? 'document-attach-outline' : 'cloud-upload-outline'}
+                size={44}
+                color={cores.roxo}
+              />
+              <Text style={styles.uploadTitulo}>
+                {documento ? documento.name : 'Toque para anexar seu documento'}
+              </Text>
+              <Text style={styles.uploadInfo}>
+                {documento
+                  ? `${documento.size !== undefined || documento.file?.size !== undefined
+                    ? `${((documento.size ?? documento.file?.size ?? 0) / (1024 * 1024)).toFixed(2)} MB`
+                    : 'Tamanho indisponível'} · Toque para trocar`
+                  : `RG ou comprovante de residência em PDF ou imagem (máx. ${LIMITE_MB} MB)`}
+              </Text>
             </Pressable>
 
             {/* enviar */}
-            <Pressable style={styles.botao} onPress={enviar}>
+            <BotaoAnimado style={styles.botao} onPress={enviar}>
               <Text style={styles.botaoTexto}>Matricular-se</Text>
-            </Pressable>
+            </BotaoAnimado>
           </View>
         </ScrollView>
 
-        {/* botão de voltar flutuante: leva para a tela do curso */}
-        <Pressable
+        {/* Botão de voltar flutuante: leva para a tela do curso */}
+        <BotaoAnimado
           style={styles.botaoVoltar}
           onPress={() => router.replace('/cursosinfo')}
           hitSlop={8}
@@ -267,10 +345,10 @@ export default function Candidatar() {
             style={styles.iconeVoltar}
             resizeMode="contain"
           />
-        </Pressable>
+        </BotaoAnimado>
       </KeyboardAvoidingView>
 
-      {/* aviso de matrícula enviada */}
+      {/* Aviso de matrícula enviada */}
       <Modal visible={enviado} transparent animationType="fade" onRequestClose={fecharAviso}>
         <View style={styles.avisoFundo}>
           <View style={styles.avisoCartao}>
@@ -294,17 +372,6 @@ export default function Candidatar() {
 /* ---------- estilos ---------- */
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
-
-  topo: {
-    height: 56,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-  logo: { width: 80, height: 100, marginTop: 10 },
-  perfilIcone: { width: 40, height: 27 },
 
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo },
   scroll: { padding: 16, paddingBottom: 96 },
@@ -370,7 +437,7 @@ const styles = StyleSheet.create({
   },
   botaoTexto: { fontSize: 16, fontWeight: '800', color: cores.titulo },
 
-  // botão de voltar: círculo roxo com o PNG preenchendo, fixo no canto inferior esquerdo
+  // Botão de voltar: círculo roxo com o PNG preenchendo, fixo no canto inferior esquerdo
   botaoVoltar: {
     position: 'absolute',
     left: 6,
@@ -390,7 +457,7 @@ const styles = StyleSheet.create({
   },
   iconeVoltar: { width: 48, height: 48 },
 
-  // aviso de matrícula enviada
+  // Aviso de matrícula enviada
   avisoFundo: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.55)',

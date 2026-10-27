@@ -12,9 +12,9 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 const cores = {
-  fundo: "#7B2CFF",
-  escuro: "#1F1257",
-  texto: "#5A4A9C",
+  fundo: "#7B2FF7",
+  escuro: "#7B2FF7",
+  texto: "#7B2FF7",
   amarelo: "#FFD22E",
   branco: "#FFFFFF",
   cinza: "#FFFFFF",
