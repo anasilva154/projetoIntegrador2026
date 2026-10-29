@@ -1,7 +1,10 @@
+import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
 // app/esqueci-senha.tsx
-import { View, Text, TextInput, Pressable, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 export default function RecuperarSenha() {
   const router = useRouter();
@@ -21,36 +24,38 @@ export default function RecuperarSenha() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.espaco} />
 
-      <View style={styles.card}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+      <View style={styles.container}>
+        <AnimacaoConteudoPagina><View style={styles.espaco} />
 
-        <Text style={styles.label}>E-mail:</Text>
-        <TextInput style={styles.input} value={email} onChangeText={setEmail} />
+        <View style={styles.card}>
+          <Image
+            source={require('../../assets/images/vooalogo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
 
-        <Pressable style={styles.botao} onPress={enviar}>
-          <Text style={styles.txtBotao}>Enviar</Text>
-        </Pressable>
+          <Text style={styles.label}>E-mail:</Text>
+          <TextInput style={styles.input} value={email} onChangeText={setEmail} />
 
-        {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+          <Pressable style={styles.botao} onPress={enviar}>
+            <Text style={styles.txtBotao}>Enviar</Text>
+          </Pressable>
 
-        {enviado && (
-          <Text style={styles.aviso}>O link de recuperação já foi enviado para o seu e-mail.</Text>
-        )}
+          {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+
+          {enviado && (
+            <Text style={styles.aviso}>O link de recuperação já foi enviado para o seu e-mail.</Text>
+          )}
+        </View>
+
+        <Text style={styles.instrucao}>
+          Digite seu <Text style={styles.negrito}>e-mail</Text> cadastrado para{'\n'}receber o link de recuperação.
+        </Text>
+
+        <View style={styles.espaco} /></AnimacaoConteudoPagina>
       </View>
 
-      <Text style={styles.instrucao}>
-        Digite seu <Text style={styles.negrito}>e-mail</Text> cadastrado para{'\n'}receber o link de recuperação.
-      </Text>
-
-      <View style={styles.espaco} />
-    </View>
   );
 }
 

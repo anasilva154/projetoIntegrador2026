@@ -1,8 +1,11 @@
+import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
 // app/(tabs)/cursoinfo.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { View, Text, Pressable, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import { Header } from '../../components/header';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 const vaga = {
   titulo: 'Curso Técnico em Informática',
@@ -43,81 +46,83 @@ export default function Vaga() {
       {/* Header: logo (esquerda) e perfil (direita) */}
       <Header />
 
-      {/* ScrollView só rola se a tela for muito pequena */}
-      <ScrollView contentContainerStyle={styles.conteudo} showsVerticalScrollIndicator={false}>
-        <View style={styles.card}>
-          <View>
-            <View style={styles.tag}>
-              <Text style={styles.txtTag}>CURSO</Text>
+
+        <AnimacaoConteudoPagina>{/* ScrollView só rola se a tela for muito pequena */}
+        <ScrollView contentContainerStyle={styles.conteudo} showsVerticalScrollIndicator={false}>
+          <View style={styles.card}>
+            <View>
+              <View style={styles.tag}>
+                <Text style={styles.txtTag}>CURSO</Text>
+              </View>
+              <Text style={styles.titulo}>{vaga.titulo}</Text>
+              <Text style={styles.empresa}>{vaga.empresa}</Text>
             </View>
-            <Text style={styles.titulo}>{vaga.titulo}</Text>
-            <Text style={styles.empresa}>{vaga.empresa}</Text>
-          </View>
 
-          <View>
-            <Text style={styles.secao}>Sobre o curso</Text>
-            <Lista itens={vaga.sobre} />
-          </View>
-
-          <View style={styles.caixaInfo}>
-            <View style={styles.infoLinha}>
-              <Ionicons name="location-outline" size={18} color="#000" />
-              <Text style={styles.infoTexto}>{vaga.local}</Text>
+            <View>
+              <Text style={styles.secao}>Sobre o curso</Text>
+              <Lista itens={vaga.sobre} />
             </View>
-            <View style={styles.infoLinha}>
-              <Ionicons name="briefcase-outline" size={18} color="#000" />
-              <Text style={styles.infoTexto}>{vaga.area}</Text>
-            </View>
-          </View>
 
-          <View>
-            <Text style={styles.secao}>Requisitos</Text>
-            <Lista itens={vaga.requisitos} />
-          </View>
-
-          <View style={styles.caixaValores}>
-            <View style={styles.valorBloco}>
-              <Image
-                source={require('../../assets/images/calendario.png')}
-                style={styles.iconeDuracao}
-                resizeMode="contain"
-              />
-              <View>
-                <Text style={styles.valorLabel}>Duração</Text>
-                <Text style={styles.valorTexto}>{vaga.duracao}</Text>
+            <View style={styles.caixaInfo}>
+              <View style={styles.infoLinha}>
+                <Ionicons name="location-outline" size={18} color="#000" />
+                <Text style={styles.infoTexto}>{vaga.local}</Text>
+              </View>
+              <View style={styles.infoLinha}>
+                <Ionicons name="briefcase-outline" size={18} color="#000" />
+                <Text style={styles.infoTexto}>{vaga.area}</Text>
               </View>
             </View>
-            <View style={styles.divisorVertical} />
-            <View style={styles.valorBloco}>
-              <Image
-                source={require('../../assets/images/cargahoraria.png')}
-                style={styles.iconeCarga}
-                resizeMode="contain"
-              />
-              <View>
-                <Text style={styles.valorLabel}>Carga horária</Text>
-                <Text style={styles.valorTexto}>{vaga.carga}</Text>
+
+            <View>
+              <Text style={styles.secao}>Requisitos</Text>
+              <Lista itens={vaga.requisitos} />
+            </View>
+
+            <View style={styles.caixaValores}>
+              <View style={styles.valorBloco}>
+                <Image
+                  source={require('../../assets/images/calendario.png')}
+                  style={styles.iconeDuracao}
+                  resizeMode="contain"
+                />
+                <View>
+                  <Text style={styles.valorLabel}>Duração</Text>
+                  <Text style={styles.valorTexto}>{vaga.duracao}</Text>
+                </View>
+              </View>
+              <View style={styles.divisorVertical} />
+              <View style={styles.valorBloco}>
+                <Image
+                  source={require('../../assets/images/cargahoraria.png')}
+                  style={styles.iconeCarga}
+                  resizeMode="contain"
+                />
+                <View>
+                  <Text style={styles.valorLabel}>Carga horária</Text>
+                  <Text style={styles.valorTexto}>{vaga.carga}</Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          {/* View envolvendo o botão, só para garantir a centralização */}
-          <View style={styles.botaoWrapper}>
-            <Pressable style={styles.botao} onPress={() => router.push('/matricula')}>
-              <Text style={styles.txtBotao}>Matricular-se</Text>
-            </Pressable>
+            {/* View envolvendo o botão, só para garantir a centralização */}
+            <View style={styles.botaoWrapper}>
+              <Pressable style={styles.botao} onPress={() => router.push('/matricula')}>
+                <Text style={styles.txtBotao}>Matricular-se</Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
 
-      {/* Botão de voltar: círculo roxo com sombra e ícone PNG por cima */}
-      <Pressable style={styles.botaoVoltar} onPress={() => router.push('/cursos')} hitSlop={10}>
-        <Image
-          source={require('../../assets/images/voltar.png')}
-          style={styles.voltarIcone}
-          resizeMode="contain"
-        />
-      </Pressable>
+        {/* Botão de voltar: círculo roxo com sombra e ícone PNG por cima */}
+        <Pressable style={styles.botaoVoltar} onPress={() => router.push('/cursos')} hitSlop={10}>
+          <Image
+            source={require('../../assets/images/voltar.png')}
+            style={styles.voltarIcone}
+            resizeMode="contain"
+          />
+        </Pressable></AnimacaoConteudoPagina>
+
     </View>
   );
 }

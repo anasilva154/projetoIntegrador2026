@@ -1,4 +1,5 @@
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacityComEfeito as TouchableOpacity } from '../components/botaoInterativo';
+import { StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 

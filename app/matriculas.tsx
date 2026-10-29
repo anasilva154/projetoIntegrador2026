@@ -1,8 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { TouchableOpacityComEfeito as TouchableOpacity } from '../components/botaoInterativo';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
 import { BotaoVoltar } from './botaoVoltar';
+import { AnimacaoConteudoPagina } from '../components/animacaoConteudoPagina';
+
 
 export default function Matriculas() {
   const router = useRouter();
@@ -11,74 +14,76 @@ export default function Matriculas() {
     <View style={styles.tela}>
       <Header />
 
-      <View pointerEvents="none" style={styles.decoracao}>
-        <View style={styles.circuloGrande} />
-        <View style={styles.circuloPequeno} />
-        <View style={styles.pontoDecorativo} />
-      </View>
 
-      <ScrollView
-        contentContainerStyle={styles.conteudo}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.selo}>
-          <Ionicons name="school-outline" size={15} color="#F2BE35" />
-          <Text style={styles.seloTexto}>SUA JORNADA DE APRENDIZADO</Text>
+        <AnimacaoConteudoPagina><View pointerEvents="none" style={styles.decoracao}>
+          <View style={styles.circuloGrande} />
+          <View style={styles.circuloPequeno} />
+          <View style={styles.pontoDecorativo} />
         </View>
 
-        <Text style={styles.titulo}>Matrículas</Text>
-        <Text style={styles.subtitulo}>
-          Acompanhe por aqui as solicitações de matrícula que você enviar.
-        </Text>
-
-        <View style={styles.cartaoVazio}>
-          <View style={styles.iconePrincipal}>
-            <Ionicons name="school" size={36} color="#7B2FF7" />
-            <View style={styles.iconeSelo}>
-              <Ionicons name="add" size={16} color="#FFFFFF" />
-            </View>
+        <ScrollView
+          contentContainerStyle={styles.conteudo}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.selo}>
+            <Ionicons name="school-outline" size={15} color="#F2BE35" />
+            <Text style={styles.seloTexto}>SUA JORNADA DE APRENDIZADO</Text>
           </View>
 
-          <View style={styles.etiquetaStatus}>
-            <View style={styles.pontoStatus} />
-            <Text style={styles.etiquetaStatusTexto}>ÁREA DE MATRÍCULAS</Text>
-          </View>
-
-          <Text style={styles.tituloCartao}>Seu próximo passo começa aqui</Text>
-          <Text style={styles.textoCartao}>
-            Quando você solicitar uma matrícula, poderá acompanhar os detalhes e
-            atualizações nesta página.
+          <Text style={styles.titulo}>Matrículas</Text>
+          <Text style={styles.subtitulo}>
+            Acompanhe por aqui as solicitações de matrícula que você enviar.
           </Text>
 
-          <View style={styles.divisor} />
+          <View style={styles.cartaoVazio}>
+            <View style={styles.iconePrincipal}>
+              <Ionicons name="school" size={36} color="#7B2FF7" />
+              <View style={styles.iconeSelo}>
+                <Ionicons name="add" size={16} color="#FFFFFF" />
+              </View>
+            </View>
 
-          <View style={styles.dica}>
-            <Ionicons name="bulb-outline" size={20} color="#8A5B00" />
-            <Text style={styles.dicaTexto}>
-              Explore os cursos disponíveis e encontre uma oportunidade para você.
+            <View style={styles.etiquetaStatus}>
+              <View style={styles.pontoStatus} />
+              <Text style={styles.etiquetaStatusTexto}>ÁREA DE MATRÍCULAS</Text>
+            </View>
+
+            <Text style={styles.tituloCartao}>Seu próximo passo começa aqui</Text>
+            <Text style={styles.textoCartao}>
+              Quando você solicitar uma matrícula, poderá acompanhar os detalhes e
+              atualizações nesta página.
+            </Text>
+
+            <View style={styles.divisor} />
+
+            <View style={styles.dica}>
+              <Ionicons name="bulb-outline" size={20} color="#8A5B00" />
+              <Text style={styles.dicaTexto}>
+                Explore os cursos disponíveis e encontre uma oportunidade para você.
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.botaoAcao}
+              activeOpacity={0.85}
+              onPress={() => router.push('/cursos')}
+            >
+              <Ionicons name="search-outline" size={19} color="#FFFFFF" />
+              <Text style={styles.textoBotao}>Explorar cursos</Text>
+              <Ionicons name="arrow-forward" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.rodapeInfo}>
+            <Ionicons name="shield-checkmark-outline" size={18} color="#F2BE35" />
+            <Text style={styles.textoRodape}>
+              Seus envios ficam reunidos e fáceis de consultar.
             </Text>
           </View>
+        </ScrollView>
 
-          <TouchableOpacity
-            style={styles.botaoAcao}
-            activeOpacity={0.85}
-            onPress={() => router.push('/cursos')}
-          >
-            <Ionicons name="search-outline" size={19} color="#FFFFFF" />
-            <Text style={styles.textoBotao}>Explorar cursos</Text>
-            <Ionicons name="arrow-forward" size={18} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
+        <BotaoVoltar /></AnimacaoConteudoPagina>
 
-        <View style={styles.rodapeInfo}>
-          <Ionicons name="shield-checkmark-outline" size={18} color="#F2BE35" />
-          <Text style={styles.textoRodape}>
-            Seus envios ficam reunidos e fáceis de consultar.
-          </Text>
-        </View>
-      </ScrollView>
-
-      <BotaoVoltar />
     </View>
   );
 }

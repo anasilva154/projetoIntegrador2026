@@ -1,18 +1,14 @@
+import { PressableComEfeito as Pressable } from '../components/botaoInterativo';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
 import { RodapeFlutuante } from '../components/rodapeperfil';
 import { listarEnvios, type Envio } from './rotaServidor/envios';
+import { AnimacaoConteudoPagina } from '../components/animacaoConteudoPagina';
+
 
 type FiltroEnvios = 'todos' | 'vaga' | 'curso';
 const corAmarelaDestaque = '#FFC83D';
@@ -82,137 +78,139 @@ export default function Curriculos() {
     <View style={styles.tela}>
       <Header />
 
-      <View pointerEvents="none" style={styles.decoracao}>
-        <View style={styles.circuloGrande} />
-        <View style={styles.circuloPequeno} />
-        <View style={styles.pontoDecorativo} />
-      </View>
 
-      <ScrollView
-        contentContainerStyle={styles.conteudo}
-        showsVerticalScrollIndicator={false}
-      >
-        <Text style={styles.titulo}>Meus envios</Text>
-        <Text style={styles.subtitulo}>
-          Consulte os currículos e as matrículas que você já enviou.
-        </Text>
-
-        <View style={styles.filtros}>
-          {opcoesFiltro.map((opcao) => {
-            const ativo = filtro === opcao.valor;
-            return (
-              <Pressable
-                key={opcao.valor}
-                style={[styles.filtro, ativo && styles.filtroAtivo]}
-                onPress={() => setFiltro(opcao.valor)}
-                accessibilityRole="button"
-                accessibilityState={{ selected: ativo }}
-              >
-                <Text style={[styles.filtroTexto, ativo && styles.filtroTextoAtivo]}>
-                  {opcao.rotulo}
-                </Text>
-              </Pressable>
-            );
-          })}
+        <AnimacaoConteudoPagina><View pointerEvents="none" style={styles.decoracao}>
+          <View style={styles.circuloGrande} />
+          <View style={styles.circuloPequeno} />
+          <View style={styles.pontoDecorativo} />
         </View>
 
-        {carregando ? (
-          <ActivityIndicator style={styles.estado} color="#FFFFFF" />
-        ) : erro ? (
-          <View style={styles.estadoCartao}>
-            <Ionicons name="alert-circle-outline" size={30} color="#D93025" />
-            <Text style={styles.estadoTexto}>{erro}</Text>
-            <Pressable style={styles.botaoRecarregar} onPress={() => setTentativa((valor) => valor + 1)}>
-              <Text style={styles.botaoRecarregarTexto}>Tentar novamente</Text>
-            </Pressable>
-          </View>
-        ) : enviosFiltrados.length === 0 ? (
-          <View style={styles.estadoCartao}>
-            <Ionicons
-              name={filtro === 'curso' ? 'school-outline' : 'document-text-outline'}
-              size={34}
-              color="#000000"
-            />
-            <Text style={styles.estadoTitulo}>
-              {envios.length === 0
-                ? 'Você ainda não enviou nada'
-                : 'Nenhum envio nesta categoria'}
-            </Text>
-            <Text style={styles.estadoTexto}>
-              {envios.length === 0
-                ? 'Quando enviar um currículo ou solicitar uma matrícula, ele aparecerá aqui.'
-                : 'Escolha outro filtro para consultar seus envios.'}
-            </Text>
-            {envios.length === 0 && (
-              <Pressable
-                style={styles.botaoAcao}
-                onPress={() => router.push(filtro === 'curso' ? '/cursos' : '/vagas')}
-              >
-                <Ionicons name="search-outline" size={19} color="#25164F" />
-                <Text style={styles.textoBotao}>
-                  {filtro === 'curso' ? 'Ver cursos' : 'Ver oportunidades'}
-                </Text>
-                <Ionicons name="arrow-forward" size={18} color="#25164F" />
-              </Pressable>
-            )}
-          </View>
-        ) : (
-          <View style={styles.listaEnvios}>
-            {enviosFiltrados.map((envio) => (
-              <Pressable
-                key={envio.id}
-                style={styles.cartaoEnvio}
-                onPress={() =>
-                  router.push({
-                    pathname: '/rotas/envios/[id]',
-                    params: { id: String(envio.id), dados: JSON.stringify(envio) },
-                  })
-                }
-                accessibilityRole="button"
-                accessibilityLabel={`Ver ${envio.tipo === 'curso' ? 'matrícula' : 'currículo'} para ${envio.titulo}`}
-              >
-                <View style={styles.iconeEnvio}>
-                  <Ionicons
-                    name={envio.tipo === 'curso' ? 'school-outline' : 'document-text-outline'}
-                    size={25}
-                    color="#8B5A00"
-                  />
-                </View>
-                <View style={styles.detalhesEnvio}>
-                  <Text style={styles.etiquetaEnvio}>
-                    {envio.tipo === 'curso' ? 'MATRÍCULA' : 'CURRÍCULO'}
-                  </Text>
-                  <Text style={styles.tituloEnvio} numberOfLines={2}>
-                    {envio.titulo}
-                  </Text>
-                  <Text style={styles.metaEnvio}>
-                    {envio.empresa}{envio.nome ? ` · ${envio.nome}` : ''}
-                  </Text>
-                  <Text style={styles.metaEnvio}>
-                    Enviado em {formatarData(envio.data_envio)}
-                    {envio.arquivo_nome ? ` · ${envio.arquivo_nome}` : ''}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#333333" />
-              </Pressable>
-            ))}
-          </View>
-        )}
-
-        <View style={styles.rodapeInfo}>
-          <Ionicons name="shield-checkmark-outline" size={18} color="#F2BE35" />
-          <Text style={styles.textoRodape}>
-            Seus envios são armazenados neste aparelho.
+        <ScrollView
+          contentContainerStyle={styles.conteudo}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.titulo}>Meus envios</Text>
+          <Text style={styles.subtitulo}>
+            Consulte os currículos e as matrículas que você já enviou.
           </Text>
-        </View>
-      </ScrollView>
 
-      <RodapeFlutuante
-        abaAtiva="editar"
-        aoIrParaInicio={() => router.push('/rotas/inicialpessoa')}
-        aoAdicionar={() => router.push('/curriculos')}
-        aoIrParaPerfil={() => router.push('/perfil')}
-      />
+          <View style={styles.filtros}>
+            {opcoesFiltro.map((opcao) => {
+              const ativo = filtro === opcao.valor;
+              return (
+                <Pressable
+                  key={opcao.valor}
+                  style={[styles.filtro, ativo && styles.filtroAtivo]}
+                  onPress={() => setFiltro(opcao.valor)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: ativo }}
+                >
+                  <Text style={[styles.filtroTexto, ativo && styles.filtroTextoAtivo]}>
+                    {opcao.rotulo}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {carregando ? (
+            <ActivityIndicator style={styles.estado} color="#FFFFFF" />
+          ) : erro ? (
+            <View style={styles.estadoCartao}>
+              <Ionicons name="alert-circle-outline" size={30} color="#D93025" />
+              <Text style={styles.estadoTexto}>{erro}</Text>
+              <Pressable style={styles.botaoRecarregar} onPress={() => setTentativa((valor) => valor + 1)}>
+                <Text style={styles.botaoRecarregarTexto}>Tentar novamente</Text>
+              </Pressable>
+            </View>
+          ) : enviosFiltrados.length === 0 ? (
+            <View style={styles.estadoCartao}>
+              <Ionicons
+                name={filtro === 'curso' ? 'school-outline' : 'document-text-outline'}
+                size={34}
+                color="#000000"
+              />
+              <Text style={styles.estadoTitulo}>
+                {envios.length === 0
+                  ? 'Você ainda não enviou nada'
+                  : 'Nenhum envio nesta categoria'}
+              </Text>
+              <Text style={styles.estadoTexto}>
+                {envios.length === 0
+                  ? 'Quando enviar um currículo ou solicitar uma matrícula, ele aparecerá aqui.'
+                  : 'Escolha outro filtro para consultar seus envios.'}
+              </Text>
+              {envios.length === 0 && (
+                <Pressable
+                  style={styles.botaoAcao}
+                  onPress={() => router.push(filtro === 'curso' ? '/cursos' : '/vagas')}
+                >
+                  <Ionicons name="search-outline" size={19} color="#25164F" />
+                  <Text style={styles.textoBotao}>
+                    {filtro === 'curso' ? 'Ver cursos' : 'Ver oportunidades'}
+                  </Text>
+                  <Ionicons name="arrow-forward" size={18} color="#25164F" />
+                </Pressable>
+              )}
+            </View>
+          ) : (
+            <View style={styles.listaEnvios}>
+              {enviosFiltrados.map((envio) => (
+                <Pressable
+                  key={envio.id}
+                  style={styles.cartaoEnvio}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/rotas/envios/[id]',
+                      params: { id: String(envio.id), dados: JSON.stringify(envio) },
+                    })
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={`Ver ${envio.tipo === 'curso' ? 'matrícula' : 'currículo'} para ${envio.titulo}`}
+                >
+                  <View style={styles.iconeEnvio}>
+                    <Ionicons
+                      name={envio.tipo === 'curso' ? 'school-outline' : 'document-text-outline'}
+                      size={25}
+                      color="#8B5A00"
+                    />
+                  </View>
+                  <View style={styles.detalhesEnvio}>
+                    <Text style={styles.etiquetaEnvio}>
+                      {envio.tipo === 'curso' ? 'MATRÍCULA' : 'CURRÍCULO'}
+                    </Text>
+                    <Text style={styles.tituloEnvio} numberOfLines={2}>
+                      {envio.titulo}
+                    </Text>
+                    <Text style={styles.metaEnvio}>
+                      {envio.empresa}{envio.nome ? ` · ${envio.nome}` : ''}
+                    </Text>
+                    <Text style={styles.metaEnvio}>
+                      Enviado em {formatarData(envio.data_envio)}
+                      {envio.arquivo_nome ? ` · ${envio.arquivo_nome}` : ''}
+                    </Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#333333" />
+                </Pressable>
+              ))}
+            </View>
+          )}
+
+          <View style={styles.rodapeInfo}>
+            <Ionicons name="shield-checkmark-outline" size={18} color="#F2BE35" />
+            <Text style={styles.textoRodape}>
+              Seus envios são armazenados neste aparelho.
+            </Text>
+          </View>
+        </ScrollView></AnimacaoConteudoPagina>
+
+        <RodapeFlutuante
+          abaAtiva="editar"
+          aoIrParaInicio={() => router.push('/rotas/inicialpessoa')}
+          aoAdicionar={() => router.push('/curriculos')}
+          aoIrParaPerfil={() => router.push('/perfil')}
+        />
+
     </View>
   );
 }

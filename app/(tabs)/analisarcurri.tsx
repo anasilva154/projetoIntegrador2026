@@ -1,18 +1,13 @@
+import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
 // app/candidato/[id].tsx
 import { useMemo, useState } from 'react';
-import {
-  FlatList,
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  Image,
-  StyleSheet,
-} from 'react-native';
+import { FlatList, View, Text, TextInput, Image, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Header } from '../../components/header';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 /* ---------- cores ---------- */
 const cores = {
@@ -196,63 +191,65 @@ export default function Candidatos() {
       {/* barra de topo branca (fixa) */}
       <Header />
 
-      {/* área roxa */}
-      <View style={styles.fundoRoxo}>
-        <FlatList
-          data={listaFiltrada}
-          keyExtractor={(item) => item.id}
-          ListHeaderComponent={cabecalho}
-          ListEmptyComponent={<Text style={styles.vazio}>Nenhum candidato encontrado.</Text>}
-          ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <Pressable
-              style={styles.card}
-              onPress={() => {
-                router.push({
-                  pathname: '/pdfcurriculo',
-                  params: { candidato: JSON.stringify(item) },
-                });
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={`Abrir currículo de ${item.nome}`}
-            >
-              <View style={styles.avatar}>
-                <Image
-                  source={require('../../assets/images/iconeperfil.png')}
-                  style={styles.avatarIcone}
-                  resizeMode="contain"
-                />
-              </View>
 
-              <View style={styles.info}>
-                <Text style={styles.nome}>{item.nome}</Text>
-                <View style={styles.linhaCurriculo}>
+        <AnimacaoConteudoPagina>{/* área roxa */}
+        <View style={styles.fundoRoxo}>
+          <FlatList
+            data={listaFiltrada}
+            keyExtractor={(item) => item.id}
+            ListHeaderComponent={cabecalho}
+            ListEmptyComponent={<Text style={styles.vazio}>Nenhum candidato encontrado.</Text>}
+            ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
+            contentContainerStyle={{ paddingBottom: 100 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <Pressable
+                style={styles.card}
+                onPress={() => {
+                  router.push({
+                    pathname: '/pdfcurriculo',
+                    params: { candidato: JSON.stringify(item) },
+                  });
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`Abrir currículo de ${item.nome}`}
+              >
+                <View style={styles.avatar}>
                   <Image
-                    source={require('../../assets/images/pdf.png')}
-                    style={styles.pdfIcone}
+                    source={require('../../assets/images/iconeperfil.png')}
+                    style={styles.avatarIcone}
                     resizeMode="contain"
                   />
-                  <Text style={styles.textoCurriculo}>Enviou currículo</Text>
                 </View>
-              </View>
 
-              <Ionicons name="chevron-forward" size={20} color={cores.preto} />
-            </Pressable>
-          )}
-        />
-      </View>
+                <View style={styles.info}>
+                  <Text style={styles.nome}>{item.nome}</Text>
+                  <View style={styles.linhaCurriculo}>
+                    <Image
+                      source={require('../../assets/images/pdf.png')}
+                      style={styles.pdfIcone}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.textoCurriculo}>Enviou currículo</Text>
+                  </View>
+                </View>
 
-      {/* Botão de voltar: leva direto para a tela de currículo.tsx */}
-      <Pressable style={styles.botaoVoltar} onPress={() => router.push('/curriculo')} hitSlop={10}>
-        <Image
-          source={require('../../assets/images/voltar.png')}
-          style={styles.voltarIcone}
-          resizeMode="contain"
-        />
-      </Pressable>
+                <Ionicons name="chevron-forward" size={20} color={cores.preto} />
+              </Pressable>
+            )}
+          />
+        </View>
+
+        {/* Botão de voltar: leva direto para a tela de currículo.tsx */}
+        <Pressable style={styles.botaoVoltar} onPress={() => router.push('/curriculo')} hitSlop={10}>
+          <Image
+            source={require('../../assets/images/voltar.png')}
+            style={styles.voltarIcone}
+            resizeMode="contain"
+          />
+        </Pressable></AnimacaoConteudoPagina>
+
     </SafeAreaView>
   );
 }

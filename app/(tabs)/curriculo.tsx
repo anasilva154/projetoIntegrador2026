@@ -1,21 +1,15 @@
-﻿// app/(tabs)/index.tsx
+﻿import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
+// app/(tabs)/index.tsx
 import { useMemo, useRef, useState } from 'react';
-import {
-  FlatList,
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  Image,
-  Modal,
-  StyleSheet,
-} from 'react-native';
+import { FlatList, View, Text, TextInput, Image, Modal, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Header } from '../../components/header';
 import { RodapeFlutuante } from '../../components/rodapeFlutuante';
- 
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
+
 /* ---------- cores ---------- */
 const cores = {
   roxo: '#7B2FF7',
@@ -29,7 +23,7 @@ const cores = {
   branco: '#FFFFFF',
   preto: '#000000',
 };
- 
+
 /* ---------- dados de exemplo ---------- */
 type CandidatoVaga = {
   id: string;
@@ -51,7 +45,7 @@ type Vaga = {
   area: string;
   candidatos: CandidatoVaga[];
 };
- 
+
 type MatriculaEnviada = {
   id: string;
   nome: string;
@@ -106,7 +100,7 @@ function criarCandidato(
     },
   };
 }
- 
+
 const vagas: Vaga[] = [
   {
     id: '1',
@@ -157,7 +151,7 @@ const vagas: Vaga[] = [
     ],
   },
 ];
- 
+
 const matriculasEnviadas: MatriculaEnviada[] = [
   {
     id: '1',
@@ -238,11 +232,11 @@ const matriculasEnviadas: MatriculaEnviada[] = [
     documento: { nome: 'Matricula_Lucas_Ferreira_Espanhol.pdf', detalhe: 'Documento demonstrativo', url: '' },
   },
 ];
- 
+
 const areas = ['Todos', 'Tecnologia da Informação', 'Marketing', 'Administrativo'];
 const areasMatriculas = [...areas, 'Idiomas'];
 const categoriasEnvio = ['Currículos', 'Matrículas'] as const;
- 
+
 /* ---------- tela ---------- */
 export default function Inicio() {
   const router = useRouter();
@@ -255,19 +249,19 @@ export default function Inicio() {
     useState<(typeof categoriasEnvio)[number]>('Currículos');
   const areasDisponiveis =
     categoriaSelecionada === 'Matrículas' ? areasMatriculas : areas;
- 
+
   const alternarCategorias = () => {
     if (mostrarCategorias) {
       setMostrarCategorias(false);
       return;
     }
- 
+
     seletorRef.current?.measureInWindow((x, y, width) => {
       setPosicaoMenu({ top: y + 42, left: Math.max(8, x + width - 140) });
       setMostrarCategorias(true);
     });
   };
- 
+
   const listaFiltrada = useMemo(() => {
     const termo = busca.trim().toLowerCase();
     if (categoriaSelecionada === 'Matrículas') {
@@ -298,7 +292,7 @@ export default function Inicio() {
           item.alunos.some((aluno) => aluno.nome.toLowerCase().includes(termo))
         );
     }
- 
+
     return vagas
       .filter((vaga) => {
         const bateArea = areaSelecionada === 'Todos' || vaga.area === areaSelecionada;
@@ -310,7 +304,7 @@ export default function Inicio() {
       })
       .map((vaga): ItemEnvio => ({ ...vaga, tipo: 'curriculo' }));
   }, [busca, areaSelecionada, categoriaSelecionada]);
- 
+
   const abrirVaga = (item: ItemEnvio) => {
     if (item.tipo === 'matricula') {
       router.push({
@@ -343,7 +337,7 @@ export default function Inicio() {
           candidatos.
         </Text>
       </View>
- 
+
       {/* busca */}
       <View style={styles.busca}>
         <Ionicons name="search-outline" size={22} color={cores.texto} />
@@ -374,10 +368,10 @@ export default function Inicio() {
               accessibilityLabel="Filtro"
             />
           </Pressable>
- 
+
         </View>
       </View>
- 
+
       <FlatList
         data={areasDisponiveis}
         keyExtractor={(item) => item}
@@ -387,83 +381,86 @@ export default function Inicio() {
         renderItem={({ item }) => {
           const ativo = item === areaSelecionada;
           return (
-            <Pressable
-              onPress={() => setAreaSelecionada(item)}
-              style={[styles.chip, ativo && styles.chipAtivo]}
-              accessibilityRole="button"
-              accessibilityState={{ selected: ativo }}
-            >
-              <Text style={[styles.chipTexto, ativo && styles.chipTextoAtivo]}>{item}</Text>
-            </Pressable>
+
+              <Pressable
+                onPress={() => setAreaSelecionada(item)}
+                style={[styles.chip, ativo && styles.chipAtivo]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: ativo }}
+              >
+                <Text style={[styles.chipTexto, ativo && styles.chipTextoAtivo]}>{item}</Text>
+              </Pressable>
+
           );
         }}
       />
- 
+
       <View style={{ height: 16 }} />
     </View>
   );
- 
+
   return (
     <SafeAreaView style={styles.tela} edges={['top']}>
       <Header />
- 
-      {/* área roxa */}
+
       <View style={styles.fundoRoxo}>
         <View pointerEvents="none" style={styles.circuloGrande} />
-        {cabecalho}
- 
-        <FlatList
-          style={styles.lista}
-          data={listaFiltrada}
-          keyExtractor={(item) => `${item.tipo}-${item.id}`}
-          ListEmptyComponent={
-            <Text style={styles.vazio}>
-              {categoriaSelecionada === 'Currículos'
-                ? 'Nenhuma vaga encontrada.'
-                : 'Nenhum curso com matrículas encontrado.'}
-            </Text>
-          }
-          ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <Pressable
-              style={styles.item}
-              onPress={() => abrirVaga(item)}
-            >
-              <View style={styles.avatar}>
-                <Image
-                  source={require('../../assets/images/envelope.png')}
-                  style={styles.envelope}
-                  resizeMode="contain"
-                />
-              </View>
- 
-              <View style={styles.info}>
-                <Text style={styles.nome}>
-                  {item.tipo === 'curriculo' ? item.titulo : item.curso}
-                </Text>
-                <Text style={styles.cargo}>
-                  {item.tipo === 'matricula'
-                    ? `${item.alunos.length} ${item.alunos.length === 1 ? 'matriculado' : 'matriculados'} · ${item.area}`
-                    : `${item.candidatos.length} ${item.candidatos.length === 1 ? 'candidato' : 'candidatos'} · ${item.area}`}
-                </Text>
-              </View>
- 
-              <Ionicons name="chevron-forward" size={20} color={cores.preto} />
-            </Pressable>
-          )}
-        />
+
+        <AnimacaoConteudoPagina>
+          <FlatList
+            style={styles.lista}
+            data={listaFiltrada}
+            keyExtractor={(item) => `${item.tipo}-${item.id}`}
+            ListHeaderComponent={cabecalho}
+            ListEmptyComponent={
+              <Text style={styles.vazio}>
+                {categoriaSelecionada === 'Currículos'
+                  ? 'Nenhuma vaga encontrada.'
+                  : 'Nenhum curso com matrículas encontrado.'}
+              </Text>
+            }
+            ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+            contentContainerStyle={{ paddingBottom: 100 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <Pressable
+                style={styles.item}
+                onPress={() => abrirVaga(item)}
+              >
+                <View style={styles.avatar}>
+                  <Image
+                    source={require('../../assets/images/envelope.png')}
+                    style={styles.envelope}
+                    resizeMode="contain"
+                  />
+                </View>
+
+                <View style={styles.info}>
+                  <Text style={styles.nome}>
+                    {item.tipo === 'curriculo' ? item.titulo : item.curso}
+                  </Text>
+                  <Text style={styles.cargo}>
+                    {item.tipo === 'matricula'
+                      ? `${item.alunos.length} ${item.alunos.length === 1 ? 'matriculado' : 'matriculados'} · ${item.area}`
+                      : `${item.candidatos.length} ${item.candidatos.length === 1 ? 'candidato' : 'candidatos'} · ${item.area}`}
+                  </Text>
+                </View>
+
+                <Ionicons name="chevron-forward" size={20} color={cores.preto} />
+              </Pressable>
+            )}
+          />
+        </AnimacaoConteudoPagina>
       </View>
- 
+
       <RodapeFlutuante
         abaAtiva="inicio"
         aoIrParaInicio={() => router.push('/(tabs)/curriculo')}
         aoAdicionar={() => router.push('/(tabs)/rotas/produtos/editaremprego')}
         aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
       />
- 
+
       <Modal
         transparent
         visible={mostrarCategorias}
@@ -515,11 +512,11 @@ export default function Inicio() {
     </SafeAreaView>
   );
 }
- 
+
 /* ---------- estilos ---------- */
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
- 
+
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo, overflow: 'hidden' },
   circuloGrande: {
     position: 'absolute',
@@ -530,12 +527,12 @@ const styles = StyleSheet.create({
     borderRadius: 125,
     backgroundColor: 'rgba(255,255,255,0.055)',
   },
- 
+
   saudacao: { paddingHorizontal: 20, paddingTop: 20, gap: 8 },
   titulo: { fontSize: 32, fontWeight: '800', color: cores.branco, lineHeight: 38 },
   subtitulo: { fontSize: 16, color: cores.branco, lineHeight: 23 },
   destaque: { color: cores.amarelo, fontWeight: '700' },
- 
+
   busca: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -550,7 +547,7 @@ const styles = StyleSheet.create({
     elevation: 30,
   },
   buscaInput: { flex: 1, fontSize: 15, color: cores.titulo },
- 
+
   chips: { paddingHorizontal: 20, gap: 8, paddingTop: 16 },
   cabecalhoLista: {
     position: 'relative',
@@ -626,7 +623,7 @@ const styles = StyleSheet.create({
   chipAtivo: { backgroundColor: cores.amarelo },
   chipTexto: { fontSize: 14, color: cores.branco, fontWeight: '600' },
   chipTextoAtivo: { color: cores.titulo, fontWeight: '800' },
- 
+
   item: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -648,8 +645,7 @@ const styles = StyleSheet.create({
   info: { flex: 1, gap: 2 },
   nome: { fontSize: 16, fontWeight: '800', color: cores.titulo },
   cargo: { fontSize: 14, color: cores.texto },
- 
+
   vazio: { textAlign: 'center', color: cores.branco, padding: 32 },
- 
+
 });
- 

@@ -1,9 +1,12 @@
+import { TouchableOpacityComEfeito as TouchableOpacity } from '../components/botaoInterativo';
 import { useMemo, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TextInput, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
 import DadosVagas from './rotaServidor/dados';
+import { AnimacaoConteudoPagina } from '../components/animacaoConteudoPagina';
+
 
 const normalizar = (texto: string) =>
   texto
@@ -33,77 +36,79 @@ export default function Vagas() {
     <View style={styles.tela}>
       <Header />
 
-      <View style={styles.buscaContainer}>
-        <Ionicons name="search-outline" size={22} color="#666666" />
-        <TextInput
-          style={styles.inputBusca}
-          placeholder="Buscar vaga ou área..."
-          placeholderTextColor="#999999"
-          value={busca}
-          onChangeText={setBusca}
-          returnKeyType="search"
-          autoCorrect={false}
-        />
-        {busca.length > 0 && (
-          <TouchableOpacity onPress={() => setBusca('')} hitSlop={10}>
-            <Ionicons name="close-circle" size={20} color="#999999" />
-          </TouchableOpacity>
-        )}
-      </View>
 
-      <FlatList
-        data={vagasFiltradas}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.tituloLinha}>
-              <Text style={styles.bolinhaTitulo}>•</Text>
-              <Text style={styles.titulo} numberOfLines={1}>
-                {item.titulo}
-              </Text>
-            </View>
-            <Text style={styles.empresa} numberOfLines={1}>
-              {item.empresa}
-            </Text>
-
-            <TouchableOpacity
-              style={styles.cardSubtitulo}
-              onPress={() => router.push('/vagasinformacao')}
-              activeOpacity={0.8}
-              accessibilityRole="button"
-              accessibilityLabel={`Ver detalhes da vaga ${item.titulo}`}
-            >
-              {item.topicos.slice(0, 4).map((topico, index) => (
-                <View key={index} style={styles.topicoLinha}>
-                  <Text style={styles.bolinhaTopico}>•</Text>
-                  <Text style={styles.topicoTexto} numberOfLines={1}>
-                    {topico.descricao.replace(/^\s*-\s*/, '')}
-                  </Text>
-                </View>
-              ))}
-
-              <View style={styles.saibaMaisContainer}>
-                <Text style={styles.saibaMais}>Saiba mais</Text>
-              </View>
+        <AnimacaoConteudoPagina><View style={styles.buscaContainer}>
+          <Ionicons name="search-outline" size={22} color="#666666" />
+          <TextInput
+            style={styles.inputBusca}
+            placeholder="Buscar vaga ou área..."
+            placeholderTextColor="#999999"
+            value={busca}
+            onChangeText={setBusca}
+            returnKeyType="search"
+            autoCorrect={false}
+          />
+          {busca.length > 0 && (
+            <TouchableOpacity onPress={() => setBusca('')} hitSlop={10}>
+              <Ionicons name="close-circle" size={20} color="#999999" />
             </TouchableOpacity>
-          </View>
-        )}
-        ListEmptyComponent={<Text style={styles.vazio}>Nenhuma vaga encontrada.</Text>}
-        contentContainerStyle={styles.lista}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      />
+          )}
+        </View>
 
-      <TouchableOpacity
-        style={styles.botaoVoltar}
-        onPress={() => router.push('/rotas/inicialpessoa')}
-      >
-        <Image
-          source={require('../assets/images/voltar.png')}
-          style={styles.iconeVoltar}
-          resizeMode="contain"
+        <FlatList
+          data={vagasFiltradas}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <View style={styles.tituloLinha}>
+                <Text style={styles.bolinhaTitulo}>•</Text>
+                <Text style={styles.titulo} numberOfLines={1}>
+                  {item.titulo}
+                </Text>
+              </View>
+              <Text style={styles.empresa} numberOfLines={1}>
+                {item.empresa}
+              </Text>
+
+              <TouchableOpacity
+                style={styles.cardSubtitulo}
+                onPress={() => router.push('/vagasinformacao')}
+                activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel={`Ver detalhes da vaga ${item.titulo}`}
+              >
+                {item.topicos.slice(0, 4).map((topico, index) => (
+                  <View key={index} style={styles.topicoLinha}>
+                    <Text style={styles.bolinhaTopico}>•</Text>
+                    <Text style={styles.topicoTexto} numberOfLines={1}>
+                      {topico.descricao.replace(/^\s*-\s*/, '')}
+                    </Text>
+                  </View>
+                ))}
+
+                <View style={styles.saibaMaisContainer}>
+                  <Text style={styles.saibaMais}>Saiba mais</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+          ListEmptyComponent={<Text style={styles.vazio}>Nenhuma vaga encontrada.</Text>}
+          contentContainerStyle={styles.lista}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         />
-      </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.botaoVoltar}
+          onPress={() => router.push('/rotas/inicialpessoa')}
+        >
+          <Image
+            source={require('../assets/images/voltar.png')}
+            style={styles.iconeVoltar}
+            resizeMode="contain"
+          />
+        </TouchableOpacity></AnimacaoConteudoPagina>
+
     </View>
   );
 }

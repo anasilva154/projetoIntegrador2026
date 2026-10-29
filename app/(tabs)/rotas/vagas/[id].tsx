@@ -1,6 +1,8 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import DadosVagas from '@/app/rotaServidor/dados';
+import { AnimacaoConteudoPagina } from '../../../../components/animacaoConteudoPagina';
+
 
 
 export default function Vagas() {
@@ -9,66 +11,68 @@ export default function Vagas() {
   const vagaSelecionada = vagas.find((vaga) => vaga.id === id);
 
   return (
-    <ScrollView style={styles.tela} contentContainerStyle={styles.conteudo}>
-      {vagaSelecionada ? (
-        <>
-          <View style={styles.cabecalho}>
-            <Text style={styles.identificador}>OPORTUNIDADE · VAGA {id}</Text>
-            <Text style={styles.titulo}>{vagaSelecionada.titulo}</Text>
-            <Text style={styles.subtitulo}>Confira os detalhes e as atividades desta oportunidade.</Text>
-          </View>
 
-          <View style={styles.cartaoResumo}>
-            <View style={styles.itemResumo}>
-              <Text style={styles.rotuloResumo}>SALÁRIO</Text>
-              <Text style={styles.valorResumo}>{vagaSelecionada.salario}</Text>
+      <ScrollView style={styles.tela} contentContainerStyle={styles.conteudo}>
+        <AnimacaoConteudoPagina>{vagaSelecionada ? (
+          <>
+            <View style={styles.cabecalho}>
+              <Text style={styles.identificador}>OPORTUNIDADE · VAGA {id}</Text>
+              <Text style={styles.titulo}>{vagaSelecionada.titulo}</Text>
+              <Text style={styles.subtitulo}>Confira os detalhes e as atividades desta oportunidade.</Text>
             </View>
-            <View style={styles.divisor} />
-            <View style={styles.itemResumo}>
-              <Text style={styles.rotuloResumo}>IDADE</Text>
-              <Text style={styles.valorResumo}>{vagaSelecionada.idade}</Text>
-            </View>
-          </View>
 
-          <View style={styles.secao}>
-            <Text style={styles.tituloSecao}>Sobre a vaga</Text>
-            <View style={styles.linhaInfo}>
-              <Text style={styles.rotulo}>Carga horária</Text>
-              <Text style={styles.valor}>{vagaSelecionada.cargaHoraria}</Text>
-            </View>
-            <View style={styles.linhaInfo}>
-              <Text style={styles.rotulo}>Escolaridade</Text>
-              <Text style={styles.valor}>{vagaSelecionada.escolaridade}</Text>
-            </View>
-          </View>
-
-          <View style={styles.secao}>
-            <Text style={styles.tituloSecao}>Atividades</Text>
-            {vagaSelecionada.topicos.map((topico, index) => (
-              <View key={`${index}-${topico.descricao}`} style={styles.linhaAtividade}>
-                <Text style={styles.marcador}>•</Text>
-                <Text style={styles.textoAtividade}>{topico.descricao.replace(/^\s*-\s*/, '')}</Text>
+            <View style={styles.cartaoResumo}>
+              <View style={styles.itemResumo}>
+                <Text style={styles.rotuloResumo}>SALÁRIO</Text>
+                <Text style={styles.valorResumo}>{vagaSelecionada.salario}</Text>
               </View>
-            ))}
-          </View>
+              <View style={styles.divisor} />
+              <View style={styles.itemResumo}>
+                <Text style={styles.rotuloResumo}>IDADE</Text>
+                <Text style={styles.valorResumo}>{vagaSelecionada.idade}</Text>
+              </View>
+            </View>
 
-          <View style={styles.secao}>
-            <Text style={styles.tituloSecao}>Requisitos</Text>
-            <Text style={styles.valor}>{vagaSelecionada.requisitos}</Text>
-          </View>
+            <View style={styles.secao}>
+              <Text style={styles.tituloSecao}>Sobre a vaga</Text>
+              <View style={styles.linhaInfo}>
+                <Text style={styles.rotulo}>Carga horária</Text>
+                <Text style={styles.valor}>{vagaSelecionada.cargaHoraria}</Text>
+              </View>
+              <View style={styles.linhaInfo}>
+                <Text style={styles.rotulo}>Escolaridade</Text>
+                <Text style={styles.valor}>{vagaSelecionada.escolaridade}</Text>
+              </View>
+            </View>
 
-          <View style={styles.secao}>
-            <Text style={styles.tituloSecao}>Benefícios</Text>
-            <Text style={styles.valor}>{vagaSelecionada.beneficios}</Text>
+            <View style={styles.secao}>
+              <Text style={styles.tituloSecao}>Atividades</Text>
+              {vagaSelecionada.topicos.map((topico, index) => (
+                <View key={`${index}-${topico.descricao}`} style={styles.linhaAtividade}>
+                  <Text style={styles.marcador}>•</Text>
+                  <Text style={styles.textoAtividade}>{topico.descricao.replace(/^\s*-\s*/, '')}</Text>
+                </View>
+              ))}
+            </View>
+
+            <View style={styles.secao}>
+              <Text style={styles.tituloSecao}>Requisitos</Text>
+              <Text style={styles.valor}>{vagaSelecionada.requisitos}</Text>
+            </View>
+
+            <View style={styles.secao}>
+              <Text style={styles.tituloSecao}>Benefícios</Text>
+              <Text style={styles.valor}>{vagaSelecionada.beneficios}</Text>
+            </View>
+          </>
+        ) : (
+          <View style={styles.naoEncontrada}>
+            <Text style={styles.tituloSecao}>Vaga não encontrada</Text>
+            <Text style={styles.valor}>Não há uma oportunidade cadastrada com este identificador.</Text>
           </View>
-        </>
-      ) : (
-        <View style={styles.naoEncontrada}>
-          <Text style={styles.tituloSecao}>Vaga não encontrada</Text>
-          <Text style={styles.valor}>Não há uma oportunidade cadastrada com este identificador.</Text>
-        </View>
-      )}
-    </ScrollView>
+        )}</AnimacaoConteudoPagina>
+      </ScrollView>
+
   );
 }
 

@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams, Tabs } from "expo-router";
+import { AnimacaoConteudoPagina } from '../../../../components/animacaoConteudoPagina';
+
 
 export default function Busca() {
     const { query } = useLocalSearchParams();
@@ -8,14 +10,16 @@ export default function Busca() {
     console.log("query recebido:", query);
 
     return (
-        <View style={styles.container}>
-            <Tabs.Screen
-                options={{
-                    title: `Busca: ${query}`,
-                }}
-            />
-            <Text style={styles.texto}>Termo buscado: {query}</Text>
-        </View>
+
+          <View style={styles.container}>
+              <Tabs.Screen
+                  options={{
+                      title: `Busca: ${query}`,
+                  }}
+              />
+              <AnimacaoConteudoPagina><Text style={styles.texto}>Termo buscado: {query}</Text></AnimacaoConteudoPagina>
+          </View>
+
     );
 }
 

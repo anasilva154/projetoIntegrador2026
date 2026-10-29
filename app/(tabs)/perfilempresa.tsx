@@ -1,21 +1,14 @@
+import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
 // app/(tabs)/perfil.tsx
 
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  TextInput,
-  StyleSheet,
-  KeyboardTypeOptions,
-  Linking,
-  Alert,
-} from 'react-native';
+import { View, Text, FlatList, TextInput, StyleSheet, KeyboardTypeOptions, Linking, Alert } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { RodapeFlutuante } from '../../components/rodapeFlutuante';
 import { Header as HeaderLogo } from '../../components/header';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 /* ------------------------------------------------------------------
    CORES (as mesmas da tela de cadastro)
@@ -312,33 +305,35 @@ export default function PerfilScreen() {
     <View style={styles.container}>
       <HeaderLogo />
 
-      <View style={styles.conteudo}>
-        <Header
-          titulo="Perfil Empresa"
-          editando={editando}
-          onEditar={editando ? cancelarEdicao : iniciarEdicao}
+
+        <View style={styles.conteudo}>
+          <AnimacaoConteudoPagina><Header
+            titulo="Perfil Empresa"
+            editando={editando}
+            onEditar={editando ? cancelarEdicao : iniciarEdicao}
+          />
+
+          <View style={styles.card}>
+            <FlatList
+              data={dados}
+              keyExtractor={(item) => item.id}
+              renderItem={renderItem}
+              ListHeaderComponent={Topo}
+              ListFooterComponent={Rodape}
+              ItemSeparatorComponent={Divisor}
+              contentContainerStyle={{ paddingBottom: 90 }}
+              keyboardShouldPersistTaps="handled"
+            />
+          </View></AnimacaoConteudoPagina>
+        </View>
+
+        <RodapeFlutuante
+          abaAtiva="perfil"
+          aoIrParaInicio={() => router.push('/(tabs)/curriculo')}
+          aoAdicionar={() => router.push('/(tabs)/rotas/produtos/editaremprego')}
+          aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
         />
 
-        <View style={styles.card}>
-          <FlatList
-            data={dados}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            ListHeaderComponent={Topo}
-            ListFooterComponent={Rodape}
-            ItemSeparatorComponent={Divisor}
-            contentContainerStyle={{ paddingBottom: 90 }}
-            keyboardShouldPersistTaps="handled"
-          />
-        </View>
-      </View>
-
-      <RodapeFlutuante
-        abaAtiva="perfil"
-        aoIrParaInicio={() => router.push('/(tabs)/curriculo')}
-        aoAdicionar={() => router.push('/(tabs)/rotas/produtos/editaremprego')}
-        aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
-      />
     </View>
   );
 }
@@ -365,7 +360,7 @@ cabeçalho: {
     justifyContent: 'space-between',
     paddingHorizontal: 14,
   },
-  
+
   // Header
   header: {
     height: 56,

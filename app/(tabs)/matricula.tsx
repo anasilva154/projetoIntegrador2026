@@ -1,27 +1,15 @@
-﻿// app/matricula.tsx
+﻿import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
+// app/matricula.tsx
 import { useRef, useState, type ReactNode } from 'react';
-import {
-  Animated,
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  Image,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-  Modal,
-  StyleSheet,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Animated, View, Text, TextInput, Image, ScrollView, KeyboardAvoidingView, Platform, Alert, Modal, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../components/header';
 import { salvarEnvio } from '../rotaServidor/envios';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 /* ---------- cores ---------- */
 const cores = {
@@ -181,211 +169,213 @@ export default function Candidatar() {
       {/* Barra de topo branca, igual às outras páginas */}
       <Header />
 
-      {/* Área roxa */}
-      <KeyboardAvoidingView
-        style={styles.fundoRoxo}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+
+        <AnimacaoConteudoPagina>{/* Área roxa */}
+        <KeyboardAvoidingView
+          style={styles.fundoRoxo}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={styles.cartao}>
-            {/* Título */}
-            <View style={styles.cabecalho}>
-              <Text style={styles.titulo}>Matricular-se</Text>
-              <Text style={styles.subtitulo}>
-                Preencha seus dados para realizar a matrícula neste curso.
+          <ScrollView
+            contentContainerStyle={styles.scroll}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.cartao}>
+              {/* Título */}
+              <View style={styles.cabecalho}>
+                <Text style={styles.titulo}>Matricular-se</Text>
+                <Text style={styles.subtitulo}>
+                  Preencha seus dados para realizar a matrícula neste curso.
+                </Text>
+              </View>
+
+              {/* nome */}
+              <Text style={styles.rotulo}>
+                Nome completo <Text style={styles.obrigatorio}>*</Text>
               </Text>
-            </View>
-
-            {/* nome */}
-            <Text style={styles.rotulo}>
-              Nome completo <Text style={styles.obrigatorio}>*</Text>
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite seu nome completo"
-              placeholderTextColor={cores.texto}
-              value={nome}
-              onChangeText={setNome}
-              autoCapitalize="words"
-            />
-
-            {/* data de nascimento e CPF */}
-            <View style={styles.linha}>
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  Nascimento <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="dd/mm/aaaa"
-                  placeholderTextColor={cores.texto}
-                  value={nascimento}
-                  onChangeText={setNascimento}
-                  keyboardType="number-pad"
-                />
-              </View>
-
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  CPF <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Digite seu CPF"
-                  placeholderTextColor={cores.texto}
-                  value={cpf}
-                  onChangeText={setCpf}
-                  keyboardType="number-pad"
-                />
-              </View>
-            </View>
-
-            {/* e-mail e telefone */}
-            <View style={styles.linha}>
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  E-mail <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Digite seu e-mail"
-                  placeholderTextColor={cores.texto}
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </View>
-
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  Telefone <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Digite seu telefone"
-                  placeholderTextColor={cores.texto}
-                  value={telefone}
-                  onChangeText={setTelefone}
-                  keyboardType="phone-pad"
-                />
-              </View>
-            </View>
-
-            {/* Endereço */}
-            <Text style={styles.rotulo}>
-              Endereço completo <Text style={styles.obrigatorio}>*</Text>
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Rua, número, bairro, cidade"
-              placeholderTextColor={cores.texto}
-              value={endereco}
-              onChangeText={setEndereco}
-              autoCapitalize="words"
-            />
-
-            {/* escolaridade e turno */}
-            <View style={styles.linha}>
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  Escolaridade <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ex.: Ensino médio"
-                  placeholderTextColor={cores.texto}
-                  value={escolaridade}
-                  onChangeText={setEscolaridade}
-                  autoCapitalize="sentences"
-                />
-              </View>
-
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  Turno <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ex.: Noturno"
-                  placeholderTextColor={cores.texto}
-                  value={turno}
-                  onChangeText={setTurno}
-                  autoCapitalize="sentences"
-                />
-              </View>
-            </View>
-
-            {/* documento de identidade */}
-            <Text style={styles.rotulo}>
-              Documento
-            </Text>
-            <Pressable
-              style={styles.upload}
-              onPress={selecionarDocumento}
-              accessibilityRole="button"
-              accessibilityLabel={documento ? 'Trocar documento selecionado' : 'Selecionar documento'}
-            >
-              <Ionicons
-                name={documento ? 'document-attach-outline' : 'cloud-upload-outline'}
-                size={44}
-                color={cores.roxo}
+              <TextInput
+                style={styles.input}
+                placeholder="Digite seu nome completo"
+                placeholderTextColor={cores.texto}
+                value={nome}
+                onChangeText={setNome}
+                autoCapitalize="words"
               />
-              <Text style={styles.uploadTitulo}>
-                {documento ? documento.name : 'Toque para anexar seu documento'}
+
+              {/* data de nascimento e CPF */}
+              <View style={styles.linha}>
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    Nascimento <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="dd/mm/aaaa"
+                    placeholderTextColor={cores.texto}
+                    value={nascimento}
+                    onChangeText={setNascimento}
+                    keyboardType="number-pad"
+                  />
+                </View>
+
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    CPF <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite seu CPF"
+                    placeholderTextColor={cores.texto}
+                    value={cpf}
+                    onChangeText={setCpf}
+                    keyboardType="number-pad"
+                  />
+                </View>
+              </View>
+
+              {/* e-mail e telefone */}
+              <View style={styles.linha}>
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    E-mail <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite seu e-mail"
+                    placeholderTextColor={cores.texto}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
+
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    Telefone <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite seu telefone"
+                    placeholderTextColor={cores.texto}
+                    value={telefone}
+                    onChangeText={setTelefone}
+                    keyboardType="phone-pad"
+                  />
+                </View>
+              </View>
+
+              {/* Endereço */}
+              <Text style={styles.rotulo}>
+                Endereço completo <Text style={styles.obrigatorio}>*</Text>
               </Text>
-              <Text style={styles.uploadInfo}>
-                {documento
-                  ? `${documento.size !== undefined || documento.file?.size !== undefined
-                    ? `${((documento.size ?? documento.file?.size ?? 0) / (1024 * 1024)).toFixed(2)} MB`
-                    : 'Tamanho indisponível'} · Toque para trocar`
-                  : `RG ou comprovante de residência em PDF ou imagem (máx. ${LIMITE_MB} MB)`}
+              <TextInput
+                style={styles.input}
+                placeholder="Rua, número, bairro, cidade"
+                placeholderTextColor={cores.texto}
+                value={endereco}
+                onChangeText={setEndereco}
+                autoCapitalize="words"
+              />
+
+              {/* escolaridade e turno */}
+              <View style={styles.linha}>
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    Escolaridade <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ex.: Ensino médio"
+                    placeholderTextColor={cores.texto}
+                    value={escolaridade}
+                    onChangeText={setEscolaridade}
+                    autoCapitalize="sentences"
+                  />
+                </View>
+
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    Turno <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ex.: Noturno"
+                    placeholderTextColor={cores.texto}
+                    value={turno}
+                    onChangeText={setTurno}
+                    autoCapitalize="sentences"
+                  />
+                </View>
+              </View>
+
+              {/* documento de identidade */}
+              <Text style={styles.rotulo}>
+                Documento
               </Text>
-            </Pressable>
+              <Pressable
+                style={styles.upload}
+                onPress={selecionarDocumento}
+                accessibilityRole="button"
+                accessibilityLabel={documento ? 'Trocar documento selecionado' : 'Selecionar documento'}
+              >
+                <Ionicons
+                  name={documento ? 'document-attach-outline' : 'cloud-upload-outline'}
+                  size={44}
+                  color={cores.roxo}
+                />
+                <Text style={styles.uploadTitulo}>
+                  {documento ? documento.name : 'Toque para anexar seu documento'}
+                </Text>
+                <Text style={styles.uploadInfo}>
+                  {documento
+                    ? `${documento.size !== undefined || documento.file?.size !== undefined
+                      ? `${((documento.size ?? documento.file?.size ?? 0) / (1024 * 1024)).toFixed(2)} MB`
+                      : 'Tamanho indisponível'} · Toque para trocar`
+                    : `RG ou comprovante de residência em PDF ou imagem (máx. ${LIMITE_MB} MB)`}
+                </Text>
+              </Pressable>
 
-            {/* enviar */}
-            <BotaoAnimado style={styles.botao} onPress={enviar}>
-              <Text style={styles.botaoTexto}>Matricular-se</Text>
-            </BotaoAnimado>
-          </View>
-        </ScrollView>
-
-        {/* Botão de voltar flutuante: leva para a tela do curso */}
-        <BotaoAnimado
-          style={styles.botaoVoltar}
-          onPress={() => router.replace('/cursosinfo')}
-          hitSlop={8}
-        >
-          <Image
-            source={require('../../assets/images/voltar.png')}
-            style={styles.iconeVoltar}
-            resizeMode="contain"
-          />
-        </BotaoAnimado>
-      </KeyboardAvoidingView>
-
-      {/* Aviso de matrícula enviada */}
-      <Modal visible={enviado} transparent animationType="fade" onRequestClose={fecharAviso}>
-        <View style={styles.avisoFundo}>
-          <View style={styles.avisoCartao}>
-            <View style={styles.avisoIcone}>
-              <Ionicons name="checkmark" size={40} color={cores.branco} />
+              {/* enviar */}
+              <BotaoAnimado style={styles.botao} onPress={enviar}>
+                <Text style={styles.botaoTexto}>Matricular-se</Text>
+              </BotaoAnimado>
             </View>
-            <Text style={styles.avisoTitulo}>Matrícula enviada!</Text>
-            <Text style={styles.avisoTexto}>
-              Recebemos os seus dados. Em breve entraremos em contato.
-            </Text>
-            <Pressable style={styles.avisoBotao} onPress={fecharAviso}>
-              <Text style={styles.avisoBotaoTexto}>OK</Text>
-            </Pressable>
+          </ScrollView>
+
+          {/* Botão de voltar flutuante: leva para a tela do curso */}
+          <BotaoAnimado
+            style={styles.botaoVoltar}
+            onPress={() => router.replace('/cursosinfo')}
+            hitSlop={8}
+          >
+            <Image
+              source={require('../../assets/images/voltar.png')}
+              style={styles.iconeVoltar}
+              resizeMode="contain"
+            />
+          </BotaoAnimado>
+        </KeyboardAvoidingView>
+
+        {/* Aviso de matrícula enviada */}</AnimacaoConteudoPagina>
+        <Modal visible={enviado} transparent animationType="fade" onRequestClose={fecharAviso}>
+          <View style={styles.avisoFundo}>
+            <View style={styles.avisoCartao}>
+              <View style={styles.avisoIcone}>
+                <Ionicons name="checkmark" size={40} color={cores.branco} />
+              </View>
+              <Text style={styles.avisoTitulo}>Matrícula enviada!</Text>
+              <Text style={styles.avisoTexto}>
+                Recebemos os seus dados. Em breve entraremos em contato.
+              </Text>
+              <Pressable style={styles.avisoBotao} onPress={fecharAviso}>
+                <Text style={styles.avisoBotaoTexto}>OK</Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+
     </SafeAreaView>
   );
 }

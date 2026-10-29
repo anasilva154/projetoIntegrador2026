@@ -1,14 +1,9 @@
+import { TouchableOpacityComEfeito as TouchableOpacity } from '../../components/botaoInterativo';
 import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-} from 'react-native';
+import { View, Text, Image, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 export default function Index() {
   const router = useRouter();
@@ -22,43 +17,45 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={cores.roxo} />
 
-      <View style={styles.conteudo}>
-        <Text style={styles.titulo}>O App para encontrar</Text>
-        <Text style={styles.destaque}>Estagiários e Jovens Aprendizes</Text>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor={cores.roxo} />
 
-        <Text style={styles.descricao}>
-          Antes de dar início ao seu cadastro,{'\n'}
-          precisamos saber; Você gostaria de:
-        </Text>
+        <View style={styles.conteudo}>
+          <AnimacaoConteudoPagina><Text style={styles.titulo}>O App para encontrar</Text>
+          <Text style={styles.destaque}>Estagiários e Jovens Aprendizes</Text>
 
-        <View style={styles.card}>
-          <Image
-            source={require('../../assets/images/vooa.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+          <Text style={styles.descricao}>
+            Antes de dar início ao seu cadastro,{'\n'}
+            precisamos saber; Você gostaria de:
+          </Text>
 
-          <TouchableOpacity
-            style={[styles.botao, styles.botaoRoxo]}
-            onPress={serContratado}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.textoBotao}>ser contratado</Text>
-          </TouchableOpacity>
+          <View style={styles.card}>
+            <Image
+              source={require('../../assets/images/vooa.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
 
-          <TouchableOpacity
-            style={[styles.botao, styles.botaoAmarelo]}
-            onPress={contratar}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.textoBotao}>contratar</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.botao, styles.botaoRoxo]}
+              onPress={serContratado}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.textoBotao}>ser contratado</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.botao, styles.botaoAmarelo]}
+              onPress={contratar}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.textoBotao}>contratar</Text>
+            </TouchableOpacity>
+          </View></AnimacaoConteudoPagina>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+
   );
 }
 

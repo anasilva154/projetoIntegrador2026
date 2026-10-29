@@ -1,15 +1,9 @@
+import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
 import { useRef } from 'react';
-import {
-  Animated,
-  FlatList,
-  View,
-  Text,
-  Pressable,
-  Image,
-  StyleSheet,
-  Platform,
-} from 'react-native';
+import { Animated, FlatList, View, Text, Image, StyleSheet, Platform } from 'react-native';
 import { Link } from 'expo-router';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 function animarPressao(escala: Animated.Value, toValue: number) {
   Animated.spring(escala, {
@@ -101,15 +95,17 @@ function renderItem({ item }: { item: (typeof dados)[number] }) {
 
 export default function Boasvindas() {
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={dados}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        ListHeaderComponent={<Topo />}
-        ListFooterComponent={<Rodape />}
-      />
-    </View>
+
+      <View style={styles.container}>
+        <AnimacaoConteudoPagina><FlatList
+          data={dados}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          ListHeaderComponent={<Topo />}
+          ListFooterComponent={<Rodape />}
+        /></AnimacaoConteudoPagina>
+      </View>
+
   );
 }
 

@@ -1,21 +1,12 @@
+import { PressableComEfeito as Pressable } from '../../../../components/botaoInterativo';
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { RodapeFlutuante } from "../../../../components/rodapeFlutuante";
 import { Header } from "../../../../components/header";
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TextInputProps,
-  View,
-} from "react-native";
+import { FlatList, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TextInputProps, View } from "react-native";
+import { AnimacaoConteudoPagina } from '../../../../components/animacaoConteudoPagina';
+
 
 type Tipo = "vaga" | "curso";
 
@@ -215,160 +206,162 @@ export default function Vagas() {
   return (
     <View style={styles.tela}>
       <Header />
-      <FlatList
-        data={vagasFiltradas}
-        keyExtractor={(item) => String(item.id)}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={topoDaLista}
-        contentContainerStyle={styles.lista}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.cardCorpo}>
-              <View style={styles.cardInfo}>
-                <Text style={styles.cardTitulo}>{item.titulo}</Text>
-                <Text style={styles.cardEmpresa}>{item.empresa}</Text>
 
-                <View style={styles.cardLinha}>
-                  <Ionicons name="location-outline" size={16} color="#B77900" />
-                  <Text style={styles.cardDetalhe}>{item.cidade}</Text>
+        <AnimacaoConteudoPagina><FlatList
+          data={vagasFiltradas}
+          keyExtractor={(item) => String(item.id)}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={topoDaLista}
+          contentContainerStyle={styles.lista}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <View style={styles.cardCorpo}>
+                <View style={styles.cardInfo}>
+                  <Text style={styles.cardTitulo}>{item.titulo}</Text>
+                  <Text style={styles.cardEmpresa}>{item.empresa}</Text>
+
+                  <View style={styles.cardLinha}>
+                    <Ionicons name="location-outline" size={16} color="#B77900" />
+                    <Text style={styles.cardDetalhe}>{item.cidade}</Text>
+                  </View>
+
+                  <View style={styles.cardLinha}>
+                    <Ionicons name="people-outline" size={16} color="#B77900" />
+                    <Text style={styles.cardDetalhe}>{textoVagas(item.quantidade)}</Text>
+                  </View>
                 </View>
 
-                <View style={styles.cardLinha}>
-                  <Ionicons name="people-outline" size={16} color="#B77900" />
-                  <Text style={styles.cardDetalhe}>{textoVagas(item.quantidade)}</Text>
+                <View style={styles.cardAcoes}>
+                  <Pressable style={styles.botaoRemover} onPress={() => excluirVaga(item.id)}>
+                    <Ionicons name="trash-outline" size={14} color={VERMELHO} />
+                    <Text style={styles.botaoRemoverTexto}>Remover</Text>
+                  </Pressable>
+
+                  <Pressable style={styles.botaoEditar} onPress={() => abrirEdicao(item)}>
+                    <Ionicons name="pencil" size={14} color="#000000" />
+                    <Text style={styles.botaoEditarTexto}>Editar</Text>
+                  </Pressable>
                 </View>
               </View>
 
-              <View style={styles.cardAcoes}>
-                <Pressable style={styles.botaoRemover} onPress={() => excluirVaga(item.id)}>
-                  <Ionicons name="trash-outline" size={14} color={VERMELHO} />
-                  <Text style={styles.botaoRemoverTexto}>Remover</Text>
-                </Pressable>
-
-                <Pressable style={styles.botaoEditar} onPress={() => abrirEdicao(item)}>
-                  <Ionicons name="pencil" size={14} color="#000000" />
-                  <Text style={styles.botaoEditarTexto}>Editar</Text>
-                </Pressable>
-              </View>
             </View>
+          )}
+        />
 
-          </View>
-        )}
-      />
-
-      {/* ESCOLHA: VAGA OU CURSO */}
-      <Modal
-        visible={escolhaAberta}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setEscolhaAberta(false)}
-      >
-        <Pressable style={styles.modalFundo} onPress={() => setEscolhaAberta(false)}>
-          <View style={styles.modalCaixa}>
-            <Text style={styles.modalTitulo}>O que deseja adicionar?</Text>
-
-            <Pressable style={styles.opcao} onPress={() => escolherTipo("vaga")}>
-              <Ionicons name="briefcase-outline" size={24} color={AMARELO_ESCURO} />
-              <Text style={styles.opcaoTexto}>Vaga de emprego</Text>
-            </Pressable>
-
-            <Pressable style={styles.opcao} onPress={() => escolherTipo("curso")}>
-              <Ionicons name="school-outline" size={24} color={AMARELO_ESCURO} />
-              <Text style={styles.opcaoTexto}>Curso</Text>
-            </Pressable>
-
-            <View style={styles.modalBotoes}>
-              <Pressable onPress={() => setEscolhaAberta(false)}>
-                <Text style={styles.modalCancelar}>Cancelar</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Pressable>
-      </Modal>
-
-      {/* FORMULÁRIO */}
-      <Modal
-        visible={modalAberto}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setModalAberto(false)}
-      >
-        <KeyboardAvoidingView
-          style={styles.modalFundo}
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        {/* ESCOLHA: VAGA OU CURSO */}</AnimacaoConteudoPagina>
+        <Modal
+          visible={escolhaAberta}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setEscolhaAberta(false)}
         >
-          <View style={styles.modalCaixa}>
-            <Text style={styles.modalTitulo}>{tituloModal}</Text>
+          <Pressable style={styles.modalFundo} onPress={() => setEscolhaAberta(false)}>
+            <View style={styles.modalCaixa}>
+              <Text style={styles.modalTitulo}>O que deseja adicionar?</Text>
 
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              {campo("titulo", ehCurso ? "Nome do curso" : "Título da vaga")}
-              {campo("empresa", ehCurso ? "Nome da instituição" : "Nome da empresa")}
-              {campo("cidade", "Cidade - UF")}
-              {campo("quantidade", "Quantidade de vagas", { keyboardType: "numeric" })}
-              {campo("sobre", ehCurso ? "Sobre o curso" : "Sobre a vaga", {
-                multiline: true,
-              })}
+              <Pressable style={styles.opcao} onPress={() => escolherTipo("vaga")}>
+                <Ionicons name="briefcase-outline" size={24} color={AMARELO_ESCURO} />
+                <Text style={styles.opcaoTexto}>Vaga de emprego</Text>
+              </Pressable>
 
-              <Text style={styles.modalRotulo}>Modalidade</Text>
-              <View style={styles.linhaModalidade}>
-                <Pressable
-                  style={[styles.chip, form.presencial && styles.chipAtivo]}
-                  onPress={() => atualizar("presencial", true)}
-                >
-                  <Text style={[styles.chipTexto, form.presencial && styles.chipTextoAtivo]}>
-                    Presencial
-                  </Text>
-                </Pressable>
+              <Pressable style={styles.opcao} onPress={() => escolherTipo("curso")}>
+                <Ionicons name="school-outline" size={24} color={AMARELO_ESCURO} />
+                <Text style={styles.opcaoTexto}>Curso</Text>
+              </Pressable>
 
-                <Pressable
-                  style={[styles.chip, !form.presencial && styles.chipAtivo]}
-                  onPress={() => atualizar("presencial", false)}
-                >
-                  <Text style={[styles.chipTexto, !form.presencial && styles.chipTextoAtivo]}>
-                    Não presencial
-                  </Text>
+              <View style={styles.modalBotoes}>
+                <Pressable onPress={() => setEscolhaAberta(false)}>
+                  <Text style={styles.modalCancelar}>Cancelar</Text>
                 </Pressable>
               </View>
-
-              {campo("setor", ehCurso ? "Setor (onde pode atuar)" : "Setor")}
-
-              {ehCurso ? (
-                <>
-                  {campo("periodo", "Período (ex.: noturno)")}
-                  {campo("duracao", "Duração do curso (ex.: 6 meses)")}
-                  {campo("cargaHoraria", "Carga horária")}
-                </>
-              ) : (
-                <>
-                  {campo("requisitos", "Requisitos", { multiline: true })}
-                  {campo("salario", "Salário")}
-                  {campo("cargaHoraria", "Carga horária")}
-                </>
-              )}
-            </ScrollView>
-
-            <View style={styles.modalBotoes}>
-              <Pressable onPress={() => setModalAberto(false)}>
-                <Text style={styles.modalCancelar}>Cancelar</Text>
-              </Pressable>
-
-              <Pressable style={styles.modalSalvar} onPress={salvar}>
-                <Text style={styles.modalSalvarTexto}>Salvar</Text>
-              </Pressable>
             </View>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+          </Pressable>
+        </Modal>
 
-      <RodapeFlutuante
-        abaAtiva="editar"
-        aoIrParaInicio={() => router.push('/(tabs)/curriculo')}
-        aoAdicionar={() => setEscolhaAberta(true)}
-        aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
-      />
+        {/* FORMULÁRIO */}
+        <Modal
+          visible={modalAberto}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setModalAberto(false)}
+        >
+          <KeyboardAvoidingView
+            style={styles.modalFundo}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
+            <View style={styles.modalCaixa}>
+              <Text style={styles.modalTitulo}>{tituloModal}</Text>
+
+              <ScrollView
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+              >
+                {campo("titulo", ehCurso ? "Nome do curso" : "Título da vaga")}
+                {campo("empresa", ehCurso ? "Nome da instituição" : "Nome da empresa")}
+                {campo("cidade", "Cidade - UF")}
+                {campo("quantidade", "Quantidade de vagas", { keyboardType: "numeric" })}
+                {campo("sobre", ehCurso ? "Sobre o curso" : "Sobre a vaga", {
+                  multiline: true,
+                })}
+
+                <Text style={styles.modalRotulo}>Modalidade</Text>
+                <View style={styles.linhaModalidade}>
+                  <Pressable
+                    style={[styles.chip, form.presencial && styles.chipAtivo]}
+                    onPress={() => atualizar("presencial", true)}
+                  >
+                    <Text style={[styles.chipTexto, form.presencial && styles.chipTextoAtivo]}>
+                      Presencial
+                    </Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={[styles.chip, !form.presencial && styles.chipAtivo]}
+                    onPress={() => atualizar("presencial", false)}
+                  >
+                    <Text style={[styles.chipTexto, !form.presencial && styles.chipTextoAtivo]}>
+                      Não presencial
+                    </Text>
+                  </Pressable>
+                </View>
+
+                {campo("setor", ehCurso ? "Setor (onde pode atuar)" : "Setor")}
+
+                {ehCurso ? (
+                  <>
+                    {campo("periodo", "Período (ex.: noturno)")}
+                    {campo("duracao", "Duração do curso (ex.: 6 meses)")}
+                    {campo("cargaHoraria", "Carga horária")}
+                  </>
+                ) : (
+                  <>
+                    {campo("requisitos", "Requisitos", { multiline: true })}
+                    {campo("salario", "Salário")}
+                    {campo("cargaHoraria", "Carga horária")}
+                  </>
+                )}
+              </ScrollView>
+
+              <View style={styles.modalBotoes}>
+                <Pressable onPress={() => setModalAberto(false)}>
+                  <Text style={styles.modalCancelar}>Cancelar</Text>
+                </Pressable>
+
+                <Pressable style={styles.modalSalvar} onPress={salvar}>
+                  <Text style={styles.modalSalvarTexto}>Salvar</Text>
+                </Pressable>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </Modal>
+
+        <RodapeFlutuante
+          abaAtiva="editar"
+          aoIrParaInicio={() => router.push('/(tabs)/curriculo')}
+          aoAdicionar={() => setEscolhaAberta(true)}
+          aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
+        />
+
     </View>
   );
 }

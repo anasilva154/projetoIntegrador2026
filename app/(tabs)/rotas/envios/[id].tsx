@@ -1,9 +1,12 @@
+import { PressableComEfeito as Pressable } from '../../../../components/botaoInterativo';
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Header } from "../../../../components/header";
 import type { Envio } from "../../../rotaServidor/envios";
+import { AnimacaoConteudoPagina } from '../../../../components/animacaoConteudoPagina';
+
 
 function isEnvio(valor: unknown): valor is Envio {
   if (!valor || typeof valor !== "object") return false;
@@ -57,51 +60,56 @@ export default function DetalhesEnvio() {
   return (
     <View style={styles.tela}>
       <Header />
-      <ScrollView contentContainerStyle={styles.conteudo}>
-        <Pressable
-          style={styles.voltar}
-          onPress={() => router.back()}
-          accessibilityRole="button"
-        >
-          <Ionicons name="arrow-back" size={20} color="#7B2FF7" />
-          <Text style={styles.voltarTexto}>Voltar aos currículos</Text>
-        </Pressable>
 
-        <View style={styles.cartao}>
-          <View style={styles.icone}>
-            <Ionicons
-              name={envio?.tipo === "curso" ? "school-outline" : "briefcase-outline"}
-              size={30}
-              color="#8A4B0F"
-            />
-          </View>
-          <Text style={styles.selo}>DETALHES DO ENVIO</Text>
-          <Text style={styles.titulo}>
-            {envio ? envio.titulo : "Envio não encontrado"}
-          </Text>
+        <ScrollView contentContainerStyle={styles.conteudo}>
+          <AnimacaoConteudoPagina><Pressable
+            style={({ pressed }) => [
+              styles.voltar,
+              pressed && styles.voltarPressionado,
+            ]}
+            onPress={() => router.back()}
+            accessibilityRole="button"
+          >
+            <Ionicons name="arrow-back" size={20} color="#7B2FF7" />
+            <Text style={styles.voltarTexto}>Voltar aos currículos</Text>
+          </Pressable>
 
-          {envio ? (
-            <>
-              <Text style={styles.empresa}>{envio.empresa}</Text>
-              <View style={styles.divisor} />
-              <View style={styles.linha}>
-                <Ionicons name="calendar-outline" size={19} color="#7B2FF7" />
-                <Text style={styles.info}>Enviado em {formatarData(envio.data_envio)}</Text>
-              </View>
-              <View style={styles.linha}>
-                <Ionicons name="checkmark-circle-outline" size={19} color="#7B2FF7" />
-                <Text style={styles.info}>
-                  Status: {envio.status ?? "enviado"}
-                </Text>
-              </View>
-            </>
-          ) : (
-            <Text style={styles.empresa}>
-              Não foi possível abrir os detalhes deste envio. Volte à lista e tente novamente.
+          <View style={styles.cartao}>
+            <View style={styles.icone}>
+              <Ionicons
+                name={envio?.tipo === "curso" ? "school-outline" : "briefcase-outline"}
+                size={30}
+                color="#8A4B0F"
+              />
+            </View>
+            <Text style={styles.selo}>DETALHES DO ENVIO</Text>
+            <Text style={styles.titulo}>
+              {envio ? envio.titulo : "Envio não encontrado"}
             </Text>
-          )}
-        </View>
-      </ScrollView>
+
+            {envio ? (
+              <>
+                <Text style={styles.empresa}>{envio.empresa}</Text>
+                <View style={styles.divisor} />
+                <View style={styles.linha}>
+                  <Ionicons name="calendar-outline" size={19} color="#7B2FF7" />
+                  <Text style={styles.info}>Enviado em {formatarData(envio.data_envio)}</Text>
+                </View>
+                <View style={styles.linha}>
+                  <Ionicons name="checkmark-circle-outline" size={19} color="#7B2FF7" />
+                  <Text style={styles.info}>
+                    Status: {envio.status ?? "enviado"}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <Text style={styles.empresa}>
+                Não foi possível abrir os detalhes deste envio. Volte à lista e tente novamente.
+              </Text>
+            )}
+          </View></AnimacaoConteudoPagina>
+        </ScrollView>
+
     </View>
   );
 }
@@ -114,9 +122,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "flex-start",
     gap: 8,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 11,
+    borderRadius: 999,
+    backgroundColor: "#FFFFFF",
   },
-  voltarTexto: { color: "#FFFFFF", fontSize: 14, fontWeight: "700" },
+  voltarPressionado: {
+    backgroundColor: "#E8E3F0",
+    transform: [{ scale: 0.97 }],
+  },
+  voltarTexto: { color: "#7B2FF7", fontSize: 14, fontWeight: "700" },
   cartao: {
     alignItems: "center",
     marginTop: 16,

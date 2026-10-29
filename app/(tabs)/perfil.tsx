@@ -1,19 +1,14 @@
+import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
 // app/(tabs)/perfil.tsx
 
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  TextInput,
-  StyleSheet,
-  KeyboardTypeOptions,
-} from 'react-native';
+import { View, Text, FlatList, TextInput, StyleSheet, KeyboardTypeOptions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { RodapeFlutuante } from '../../components/rodapeperfil';
 import { Header as HeaderLogo } from '../../components/header';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 /* ------------------------------------------------------------------
    CORES (as mesmas da tela de cadastro)
@@ -285,32 +280,34 @@ export default function PerfilScreen() {
     <View style={styles.container}>
       <HeaderLogo />
 
-      <View style={styles.conteudo}>
-        <Header
-          titulo="Meu Perfil"
-          editando={editando}
-          onEditar={editando ? cancelarEdicao : iniciarEdicao}
+
+        <View style={styles.conteudo}>
+          <AnimacaoConteudoPagina><Header
+            titulo="Meu Perfil"
+            editando={editando}
+            onEditar={editando ? cancelarEdicao : iniciarEdicao}
+          />
+
+          <View style={styles.card}>
+            <FlatList
+              data={dados}
+              keyExtractor={(item) => item.id}
+              renderItem={renderItem}
+              ListHeaderComponent={Topo}
+              ListFooterComponent={Rodape}
+              ItemSeparatorComponent={Divisor}
+              keyboardShouldPersistTaps="handled"
+            />
+          </View></AnimacaoConteudoPagina>
+        </View>
+
+        <RodapeFlutuante
+          abaAtiva="perfil"
+          aoIrParaInicio={() => router.push('/rotas/inicialpessoa')}
+          aoAdicionar={() => router.push('/curriculos')}
+          aoIrParaPerfil={() => router.push('/perfil')}
         />
 
-        <View style={styles.card}>
-          <FlatList
-            data={dados}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            ListHeaderComponent={Topo}
-            ListFooterComponent={Rodape}
-            ItemSeparatorComponent={Divisor}
-            keyboardShouldPersistTaps="handled"
-          />
-        </View>
-      </View>
-
-      <RodapeFlutuante
-        abaAtiva="perfil"
-        aoIrParaInicio={() => router.push('/rotas/inicialpessoa')}
-        aoAdicionar={() => router.push('/curriculos')}
-        aoIrParaPerfil={() => router.push('/perfil')}
-      />
     </View>
   );
 }
@@ -337,7 +334,7 @@ cabeçalho: {
     justifyContent: 'space-between',
     paddingHorizontal: 14,
   },
-  
+
   // Header
   header: {
     flexDirection: 'row',

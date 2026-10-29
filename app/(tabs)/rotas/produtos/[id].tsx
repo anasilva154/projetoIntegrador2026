@@ -5,6 +5,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useLocalSearchParams, Tabs } from 'expo-router';
+import { AnimacaoConteudoPagina } from '../../../../components/animacaoConteudoPagina';
+
 
 export default function ProdutoDetalhe() {
   const { id } = useLocalSearchParams();
@@ -12,14 +14,16 @@ export default function ProdutoDetalhe() {
   console.log('ID recebido:', id);
 
   return (
-    <View style={styles.container}>
-      <Tabs.Screen
-        options={{
-          title: `Produto ${id}`,
-        }}
-      />
-      <Text style={styles.texto}>Crie aqui sua página da rota!</Text>
-    </View>
+
+      <View style={styles.container}>
+        <Tabs.Screen
+          options={{
+            title: `Produto ${id}`,
+          }}
+        />
+        <AnimacaoConteudoPagina><Text style={styles.texto}>Crie aqui sua página da rota!</Text></AnimacaoConteudoPagina>
+      </View>
+
   );
 }
 

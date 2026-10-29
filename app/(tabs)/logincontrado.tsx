@@ -1,7 +1,10 @@
-﻿// app/login.tsx
-import { Alert, View, Text, TextInput, Pressable, Image, StyleSheet } from 'react-native';
+﻿import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
+// app/login.tsx
+import { Alert, View, Text, TextInput, Image, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 export default function Login() {
   const router = useRouter();
@@ -37,46 +40,48 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Quero ser contratado</Text>
 
-      <View style={styles.card}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+      <View style={styles.container}>
+        <AnimacaoConteudoPagina><Text style={styles.titulo}>Quero ser contratado</Text>
 
-        <Text style={styles.label}>E-mail:</Text>
-        <TextInput style={styles.input} value={email} onChangeText={setEmail} />
+        <View style={styles.card}>
+          <Image
+            source={require('../../assets/images/vooalogo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
 
-        <Text style={styles.label}>Senha:</Text>
-        <TextInput
-          style={styles.input}
-          value={senha}
-          onChangeText={setSenha}
-          secureTextEntry={true}
-        />
+          <Text style={styles.label}>E-mail:</Text>
+          <TextInput style={styles.input} value={email} onChangeText={setEmail} />
 
-        {/* Link com asChild: o Pressable vira o elemento clicável */}
-        <Link href="/recuperarsenha" asChild>
-          <Pressable>
-            <Text style={styles.esqueciSenha}>Esqueceu a senha?</Text>
+          <Text style={styles.label}>Senha:</Text>
+          <TextInput
+            style={styles.input}
+            value={senha}
+            onChangeText={setSenha}
+            secureTextEntry={true}
+          />
+
+          {/* Link com asChild: o Pressable vira o elemento clicável */}
+          <Link href="/recuperarsenha" asChild>
+            <Pressable>
+              <Text style={styles.esqueciSenha}>Esqueceu a senha?</Text>
+            </Pressable>
+          </Link>
+
+          <Pressable style={styles.botao} onPress={logar}>
+            <Text style={styles.txtBotao}>Logar</Text>
           </Pressable>
-        </Link>
 
-        <Pressable style={styles.botao} onPress={logar}>
-          <Text style={styles.txtBotao}>Logar</Text>
-        </Pressable>
+          {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+        </View>
 
-        {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+        <Text style={styles.rodape}>
+          Não possui login? Faça seu{' '}
+          <Link href="/(tabs)/rotas/produtos/cadastro2" style={styles.link}>cadastro.</Link>
+        </Text></AnimacaoConteudoPagina>
       </View>
 
-      <Text style={styles.rodape}>
-        Não possui login? Faça seu{' '}
-        <Link href="/(tabs)/rotas/produtos/cadastro2" style={styles.link}>cadastro.</Link>
-      </Text>
-    </View>
   );
 }
 

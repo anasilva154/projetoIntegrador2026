@@ -1,4 +1,5 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacityComEfeito as TouchableOpacity } from './botaoInterativo';
+import { Text, StyleSheet } from 'react-native';
 
 type Props = {
   titulo: string;

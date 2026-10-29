@@ -1,25 +1,15 @@
-﻿// app/candidatar.tsx
+﻿import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
+// app/candidatar.tsx
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import {
-  Animated,
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  Image,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Animated, View, Text, TextInput, Image, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../components/header';
 import { salvarEnvio } from '../rotaServidor/envios';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 /* ---------- cores ---------- */
 const cores = {
@@ -210,206 +200,208 @@ export default function Candidatar() {
       {/* Barra de topo branca, igual às outras páginas */}
       <Header />
 
-      {/* Área roxa */}
-      <KeyboardAvoidingView
-        style={styles.fundoRoxo}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+
+        <AnimacaoConteudoPagina>{/* Área roxa */}
+        <KeyboardAvoidingView
+          style={styles.fundoRoxo}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={styles.cartao}>
-            {/* Título */}
-            <View style={styles.cabecalho}>
-              <Text style={styles.titulo}>Candidatar-se</Text>
-              <Text style={styles.subtitulo}>
-                Preencha seus dados e anexe seu currículo em PDF ou uma foto para se candidatar a esta vaga.
+          <ScrollView
+            contentContainerStyle={styles.scroll}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.cartao}>
+              {/* Título */}
+              <View style={styles.cabecalho}>
+                <Text style={styles.titulo}>Candidatar-se</Text>
+                <Text style={styles.subtitulo}>
+                  Preencha seus dados e anexe seu currículo em PDF ou uma foto para se candidatar a esta vaga.
+                </Text>
+              </View>
+
+              {/* nome */}
+              <Text style={styles.rotulo}>
+                Nome completo <Text style={styles.obrigatorio}>*</Text>
               </Text>
-            </View>
-
-            {/* nome */}
-            <Text style={styles.rotulo}>
-              Nome completo <Text style={styles.obrigatorio}>*</Text>
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite seu nome completo"
-              placeholderTextColor={cores.texto}
-              value={nome}
-              onChangeText={setNome}
-              autoCapitalize="words"
-            />
-
-            {/* e-mail e telefone */}
-            <View style={styles.linha}>
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  E-mail <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Digite seu e-mail"
-                  placeholderTextColor={cores.texto}
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </View>
-
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  Telefone <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Digite seu telefone"
-                  placeholderTextColor={cores.texto}
-                  value={telefone}
-                  onChangeText={setTelefone}
-                  keyboardType="phone-pad"
-                />
-              </View>
-            </View>
-
-            {/* idade e cidade */}
-            <View style={styles.linha}>
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  Idade <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Digite sua idade"
-                  placeholderTextColor={cores.texto}
-                  value={idade}
-                  onChangeText={setIdade}
-                  keyboardType="number-pad"
-                />
-              </View>
-
-              <View style={styles.coluna}>
-                <Text style={styles.rotulo}>
-                  Bairro onde mora <Text style={styles.obrigatorio}>*</Text>
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Digite seu bairro"
-                  placeholderTextColor={cores.texto}
-                  value={cidade}
-                  onChangeText={setCidade}
-                  autoCapitalize="words"
-                />
-              </View>
-            </View>
-
-            {/* Anexo do currículo */}
-            <Text style={styles.rotulo}>
-              Currículo ou foto <Text style={styles.obrigatorio}>*</Text>
-            </Text>
-            <Pressable
-              style={styles.upload}
-              onPress={selecionarAnexo}
-              accessibilityRole="button"
-              accessibilityLabel={anexo ? 'Trocar anexo selecionado' : 'Selecionar currículo ou foto'}
-            >
-              <Ionicons
-                name={anexo ? 'document-attach-outline' : 'cloud-upload-outline'}
-                size={44}
-                color={cores.roxo}
+              <TextInput
+                style={styles.input}
+                placeholder="Digite seu nome completo"
+                placeholderTextColor={cores.texto}
+                value={nome}
+                onChangeText={setNome}
+                autoCapitalize="words"
               />
-              <Text style={styles.uploadTitulo}>
-                {anexo ? anexo.name : 'Toque para anexar um arquivo ou foto'}
+
+              {/* e-mail e telefone */}
+              <View style={styles.linha}>
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    E-mail <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite seu e-mail"
+                    placeholderTextColor={cores.texto}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
+
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    Telefone <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite seu telefone"
+                    placeholderTextColor={cores.texto}
+                    value={telefone}
+                    onChangeText={setTelefone}
+                    keyboardType="phone-pad"
+                  />
+                </View>
+              </View>
+
+              {/* idade e cidade */}
+              <View style={styles.linha}>
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    Idade <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite sua idade"
+                    placeholderTextColor={cores.texto}
+                    value={idade}
+                    onChangeText={setIdade}
+                    keyboardType="number-pad"
+                  />
+                </View>
+
+                <View style={styles.coluna}>
+                  <Text style={styles.rotulo}>
+                    Bairro onde mora <Text style={styles.obrigatorio}>*</Text>
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Digite seu bairro"
+                    placeholderTextColor={cores.texto}
+                    value={cidade}
+                    onChangeText={setCidade}
+                    autoCapitalize="words"
+                  />
+                </View>
+              </View>
+
+              {/* Anexo do currículo */}
+              <Text style={styles.rotulo}>
+                Currículo ou foto <Text style={styles.obrigatorio}>*</Text>
               </Text>
-              <Text style={styles.uploadInfo}>
-                {anexo
-                  ? `${anexo.size !== undefined || anexo.file?.size !== undefined
-                    ? `${((anexo.size ?? anexo.file?.size ?? 0) / (1024 * 1024)).toFixed(2)} MB`
-                    : 'Tamanho indisponível'} · Toque para trocar`
-                  : `PDF ou imagem (máx. ${LIMITE_MB} MB)`}
-              </Text>
-            </Pressable>
-            {anexo && (
               <Pressable
-                style={styles.removerAnexo}
-                onPress={() => setAnexo(null)}
+                style={styles.upload}
+                onPress={selecionarAnexo}
                 accessibilityRole="button"
-                accessibilityLabel="Remover anexo"
+                accessibilityLabel={anexo ? 'Trocar anexo selecionado' : 'Selecionar currículo ou foto'}
               >
-                <Ionicons name="close-circle-outline" size={18} color={cores.erro} />
-                <Text style={styles.removerAnexoTexto}>Remover anexo</Text>
+                <Ionicons
+                  name={anexo ? 'document-attach-outline' : 'cloud-upload-outline'}
+                  size={44}
+                  color={cores.roxo}
+                />
+                <Text style={styles.uploadTitulo}>
+                  {anexo ? anexo.name : 'Toque para anexar um arquivo ou foto'}
+                </Text>
+                <Text style={styles.uploadInfo}>
+                  {anexo
+                    ? `${anexo.size !== undefined || anexo.file?.size !== undefined
+                      ? `${((anexo.size ?? anexo.file?.size ?? 0) / (1024 * 1024)).toFixed(2)} MB`
+                      : 'Tamanho indisponível'} · Toque para trocar`
+                    : `PDF ou imagem (máx. ${LIMITE_MB} MB)`}
+                </Text>
               </Pressable>
-            )}
+              {anexo && (
+                <Pressable
+                  style={styles.removerAnexo}
+                  onPress={() => setAnexo(null)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Remover anexo"
+                >
+                  <Ionicons name="close-circle-outline" size={18} color={cores.erro} />
+                  <Text style={styles.removerAnexoTexto}>Remover anexo</Text>
+                </Pressable>
+              )}
 
-            {/* mensagem */}
-            <Text style={styles.rotulo}>
-              Mensagem <Text style={styles.opcional}>(opcional)</Text>
-            </Text>
-            <TextInput
-              style={[styles.input, styles.inputMensagem]}
-              placeholder="Conte um pouco sobre você e por que quer fazer parte da nossa equipe."
-              placeholderTextColor={cores.texto}
-              value={mensagem}
-              onChangeText={(t) => setMensagem(t.slice(0, LIMITE_MENSAGEM))}
-              multiline
-              textAlignVertical="top"
-            />
-            <Text style={styles.contador}>
-              {mensagem.length}/{LIMITE_MENSAGEM}
-            </Text>
-
-            {/* enviar */}
-            <BotaoAnimado style={styles.botao} onPress={enviar}>
-              <Text style={styles.botaoTexto}>Enviar</Text>
-            </BotaoAnimado>
-          </View>
-        </ScrollView>
-
-        {/* Botão de voltar flutuante, no canto inferior esquerdo */}
-        <BotaoAnimado
-          style={styles.botaoVoltar}
-          onPress={() => router.push('/vagasinformacao')}
-          hitSlop={8}
-        >
-          <Image
-            source={require('../../assets/images/voltar.png')}
-            style={styles.iconeVoltar}
-            resizeMode="contain"
-          />
-        </BotaoAnimado>
-      </KeyboardAvoidingView>
-      {feedback && (
-        <View style={styles.feedbackFundo} accessibilityLiveRegion="polite">
-          <View style={styles.feedbackCartao}>
-            <View
-              style={[
-                styles.feedbackIcone,
-                feedback.tipo === 'sucesso' ? styles.feedbackIconeSucesso : styles.feedbackIconeErro,
-              ]}
-            >
-              <Ionicons
-                name={feedback.tipo === 'sucesso' ? 'checkmark' : 'alert'}
-                size={30}
-                color={cores.branco}
-              />
-            </View>
-            <Text style={styles.feedbackTitulo}>{feedback.titulo}</Text>
-            <Text style={styles.feedbackTexto}>{feedback.mensagem}</Text>
-            <Pressable
-              style={styles.feedbackBotao}
-              onPress={feedback.tipo === 'sucesso' ? irParaCurriculos : () => setFeedback(null)}
-              accessibilityRole="button"
-            >
-              <Text style={styles.feedbackBotaoTexto}>
-                {feedback.tipo === 'sucesso' ? 'Ir para currículos' : 'Entendi'}
+              {/* mensagem */}
+              <Text style={styles.rotulo}>
+                Mensagem <Text style={styles.opcional}>(opcional)</Text>
               </Text>
-            </Pressable>
+              <TextInput
+                style={[styles.input, styles.inputMensagem]}
+                placeholder="Conte um pouco sobre você e por que quer fazer parte da nossa equipe."
+                placeholderTextColor={cores.texto}
+                value={mensagem}
+                onChangeText={(t) => setMensagem(t.slice(0, LIMITE_MENSAGEM))}
+                multiline
+                textAlignVertical="top"
+              />
+              <Text style={styles.contador}>
+                {mensagem.length}/{LIMITE_MENSAGEM}
+              </Text>
+
+              {/* enviar */}
+              <BotaoAnimado style={styles.botao} onPress={enviar}>
+                <Text style={styles.botaoTexto}>Enviar</Text>
+              </BotaoAnimado>
+            </View>
+          </ScrollView>
+
+          {/* Botão de voltar flutuante, no canto inferior esquerdo */}
+          <BotaoAnimado
+            style={styles.botaoVoltar}
+            onPress={() => router.push('/vagasinformacao')}
+            hitSlop={8}
+          >
+            <Image
+              source={require('../../assets/images/voltar.png')}
+              style={styles.iconeVoltar}
+              resizeMode="contain"
+            />
+          </BotaoAnimado>
+        </KeyboardAvoidingView>
+        {feedback && (
+          <View style={styles.feedbackFundo} accessibilityLiveRegion="polite">
+            <View style={styles.feedbackCartao}>
+              <View
+                style={[
+                  styles.feedbackIcone,
+                  feedback.tipo === 'sucesso' ? styles.feedbackIconeSucesso : styles.feedbackIconeErro,
+                ]}
+              >
+                <Ionicons
+                  name={feedback.tipo === 'sucesso' ? 'checkmark' : 'alert'}
+                  size={30}
+                  color={cores.branco}
+                />
+              </View>
+              <Text style={styles.feedbackTitulo}>{feedback.titulo}</Text>
+              <Text style={styles.feedbackTexto}>{feedback.mensagem}</Text>
+              <Pressable
+                style={styles.feedbackBotao}
+                onPress={feedback.tipo === 'sucesso' ? irParaCurriculos : () => setFeedback(null)}
+                accessibilityRole="button"
+              >
+                <Text style={styles.feedbackBotaoTexto}>
+                  {feedback.tipo === 'sucesso' ? 'Ir para currículos' : 'Entendi'}
+                </Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      )}
+        )}</AnimacaoConteudoPagina>
+
     </SafeAreaView>
   );
 }

@@ -1,17 +1,12 @@
+import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
 import { useMemo, useState } from 'react';
-import {
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Header } from '../../components/header';
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 type Matricula = {
   id: string;
@@ -145,76 +140,78 @@ export default function AnalisarMatriculas() {
   return (
     <SafeAreaView style={styles.tela} edges={['top']}>
       <Header />
-      <View style={styles.fundoRoxo}>
-        <FlatList
-          data={listaFiltrada}
-          keyExtractor={(item) => item.id}
-          ListHeaderComponent={cabecalho}
-          ListEmptyComponent={
-            <Text style={styles.vazio}>
-              {matriculas.length === 0
-                ? 'Nenhuma pessoa matriculada neste curso.'
-                : 'Nenhuma pessoa encontrada.'}
-            </Text>
-          }
-          ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
-          contentContainerStyle={styles.lista}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <Pressable
-              style={styles.card}
-              onPress={() =>
-                router.push({
-                  pathname: '/infomatricula',
-                  params: { dados: JSON.stringify(item) },
-                })
-              }
-              accessibilityRole="button"
-              accessibilityLabel={`Ver dados da matrícula de ${item.nome}`}
-            >
-              <View style={styles.avatar}>
-                <Image
-                  source={require('../../assets/images/iconeperfil.png')}
-                  style={styles.avatarIcone}
-                  resizeMode="contain"
-                />
-              </View>
 
-              <View style={styles.info}>
-                <Text style={styles.nome}>{item.nome}</Text>
-                <View style={styles.linhaMatricula}>
+        <AnimacaoConteudoPagina><View style={styles.fundoRoxo}>
+          <FlatList
+            data={listaFiltrada}
+            keyExtractor={(item) => item.id}
+            ListHeaderComponent={cabecalho}
+            ListEmptyComponent={
+              <Text style={styles.vazio}>
+                {matriculas.length === 0
+                  ? 'Nenhuma pessoa matriculada neste curso.'
+                  : 'Nenhuma pessoa encontrada.'}
+              </Text>
+            }
+            ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
+            contentContainerStyle={styles.lista}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <Pressable
+                style={styles.card}
+                onPress={() =>
+                  router.push({
+                    pathname: '/infomatricula',
+                    params: { dados: JSON.stringify(item) },
+                  })
+                }
+                accessibilityRole="button"
+                accessibilityLabel={`Ver dados da matrícula de ${item.nome}`}
+              >
+                <View style={styles.avatar}>
                   <Image
-                    source={require('../../assets/images/pdf.png')}
-                    style={styles.iconeMatricula}
+                    source={require('../../assets/images/iconeperfil.png')}
+                    style={styles.avatarIcone}
                     resizeMode="contain"
                   />
-                  <Text style={styles.textoMatricula}>Enviou a matrícula</Text>
                 </View>
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={20}
-                color={stylesConstantes.preto}
-              />
-            </Pressable>
-          )}
-        />
-      </View>
 
-      <Pressable
-        style={styles.botaoVoltar}
-        onPress={() => router.push('/curriculo')}
-        accessibilityRole="button"
-        accessibilityLabel="Voltar para currículos"
-        hitSlop={10}
-      >
-        <Image
-          source={require('../../assets/images/voltar.png')}
-          style={styles.voltarIcone}
-          resizeMode="contain"
-        />
-      </Pressable>
+                <View style={styles.info}>
+                  <Text style={styles.nome}>{item.nome}</Text>
+                  <View style={styles.linhaMatricula}>
+                    <Image
+                      source={require('../../assets/images/pdf.png')}
+                      style={styles.iconeMatricula}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.textoMatricula}>Enviou a matrícula</Text>
+                  </View>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color={stylesConstantes.preto}
+                />
+              </Pressable>
+            )}
+          />
+        </View>
+
+        <Pressable
+          style={styles.botaoVoltar}
+          onPress={() => router.push('/curriculo')}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar para currículos"
+          hitSlop={10}
+        >
+          <Image
+            source={require('../../assets/images/voltar.png')}
+            style={styles.voltarIcone}
+            resizeMode="contain"
+          />
+        </Pressable></AnimacaoConteudoPagina>
+
     </SafeAreaView>
   );
 }

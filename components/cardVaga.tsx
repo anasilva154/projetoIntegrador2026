@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacityComEfeito as TouchableOpacity } from './botaoInterativo';
+import { View, Text, StyleSheet } from 'react-native';
 
 export type Vaga = {
   id: string;

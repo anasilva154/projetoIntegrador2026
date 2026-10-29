@@ -1,8 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { TouchableOpacityComEfeito as TouchableOpacity } from '../../../components/botaoInterativo';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../../../components/header';
 import { BotaoVoltar } from '../../botaoVoltar';
+import { AnimacaoConteudoPagina } from '../../../components/animacaoConteudoPagina';
+
 
 export default function Enviados() {
   const router = useRouter();
@@ -11,83 +14,85 @@ export default function Enviados() {
     <View style={styles.tela}>
       <Header />
 
-      <View pointerEvents="none" style={styles.decoracao}>
-        <View style={styles.circuloGrande} />
-        <View style={styles.circuloPequeno} />
-        <View style={styles.pontoDecorativo} />
-      </View>
 
-      <ScrollView
-        contentContainerStyle={styles.conteudo}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.introducao}>
-          <View style={styles.selo}>
-            <Ionicons name="folder-open" size={15} color="#F2BE35" />
-            <Text style={styles.seloTexto}>SEU ESPAÇO</Text>
+        <AnimacaoConteudoPagina><View pointerEvents="none" style={styles.decoracao}>
+          <View style={styles.circuloGrande} />
+          <View style={styles.circuloPequeno} />
+          <View style={styles.pontoDecorativo} />
+        </View>
+
+        <ScrollView
+          contentContainerStyle={styles.conteudo}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.introducao}>
+            <View style={styles.selo}>
+              <Ionicons name="folder-open" size={15} color="#F2BE35" />
+              <Text style={styles.seloTexto}>SEU ESPAÇO</Text>
+            </View>
+
+            <Text style={styles.titulo}>Seus envios</Text>
+            <Text style={styles.paragrafo}>
+              Tudo o que você enviou, organizado em um só lugar.
+            </Text>
           </View>
 
-          <Text style={styles.titulo}>Seus envios</Text>
-          <Text style={styles.paragrafo}>
-            Tudo o que você enviou, organizado em um só lugar.
-          </Text>
-        </View>
+          <View style={styles.lista}>
+            <TouchableOpacity
+              style={styles.cartao}
+              activeOpacity={0.85}
+              onPress={() => router.push('/matriculas')}
+            >
+              <View style={[styles.iconeContainer, styles.iconeMatriculas]}>
+                <Ionicons name="school-outline" size={27} color="#7B2FF7" />
+              </View>
 
-        <View style={styles.lista}>
-          <TouchableOpacity
-            style={styles.cartao}
-            activeOpacity={0.85}
-            onPress={() => router.push('/matriculas')}
-          >
-            <View style={[styles.iconeContainer, styles.iconeMatriculas]}>
-              <Ionicons name="school-outline" size={27} color="#7B2FF7" />
-            </View>
+              <View style={styles.detalhesCartao}>
+                <Text style={styles.etiqueta}>EDUCAÇÃO</Text>
+                <Text style={styles.tituloCartao}>Matrículas</Text>
+                <Text style={styles.descricaoCartao}>
+                  Consulte suas solicitações de matrícula.
+                </Text>
+              </View>
 
-            <View style={styles.detalhesCartao}>
-              <Text style={styles.etiqueta}>EDUCAÇÃO</Text>
-              <Text style={styles.tituloCartao}>Matrículas</Text>
-              <Text style={styles.descricaoCartao}>
-                Consulte suas solicitações de matrícula.
-              </Text>
-            </View>
+              <View style={styles.seta}>
+                <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
+              </View>
+            </TouchableOpacity>
 
-            <View style={styles.seta}>
-              <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
-            </View>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.cartao}
+              activeOpacity={0.85}
+              onPress={() => router.push('/curriculos')}
+            >
+              <View style={[styles.iconeContainer, styles.iconeCurriculos]}>
+                <Ionicons name="document-text-outline" size={27} color="#8B5A00" />
+              </View>
 
-          <TouchableOpacity
-            style={styles.cartao}
-            activeOpacity={0.85}
-            onPress={() => router.push('/curriculos')}
-          >
-            <View style={[styles.iconeContainer, styles.iconeCurriculos]}>
-              <Ionicons name="document-text-outline" size={27} color="#8B5A00" />
-            </View>
+              <View style={styles.detalhesCartao}>
+                <Text style={styles.etiqueta}>OPORTUNIDADES</Text>
+                <Text style={styles.tituloCartao}>Currículos</Text>
+                <Text style={styles.descricaoCartao}>
+                  Acompanhe os currículos que você enviou.
+                </Text>
+              </View>
 
-            <View style={styles.detalhesCartao}>
-              <Text style={styles.etiqueta}>OPORTUNIDADES</Text>
-              <Text style={styles.tituloCartao}>Currículos</Text>
-              <Text style={styles.descricaoCartao}>
-                Acompanhe os currículos que você enviou.
-              </Text>
-            </View>
+              <View style={styles.seta}>
+                <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
+              </View>
+            </TouchableOpacity>
+          </View>
 
-            <View style={styles.seta}>
-              <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
-            </View>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.ajuda}>
+            <Ionicons name="information-circle-outline" size={20} color="#F2BE35" />
+            <Text style={styles.ajudaTexto}>
+              Toque em uma categoria para ver os detalhes dos seus envios.
+            </Text>
+          </View>
+        </ScrollView>
 
-        <View style={styles.ajuda}>
-          <Ionicons name="information-circle-outline" size={20} color="#F2BE35" />
-          <Text style={styles.ajudaTexto}>
-            Toque em uma categoria para ver os detalhes dos seus envios.
-          </Text>
-        </View>
-      </ScrollView>
+        <BotaoVoltar /></AnimacaoConteudoPagina>
 
-      <BotaoVoltar />
     </View>
   );
 }

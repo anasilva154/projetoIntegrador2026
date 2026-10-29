@@ -1,4 +1,5 @@
-import { View, Image, Pressable, StyleSheet } from 'react-native';
+import { PressableComEfeito as Pressable } from './botaoInterativo';
+import { View, Image, StyleSheet } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 

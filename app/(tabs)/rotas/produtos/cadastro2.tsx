@@ -1,16 +1,9 @@
+import { TouchableOpacityComEfeito as TouchableOpacity } from '../../../../components/botaoInterativo';
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  ScrollView,
-} from 'react-native';
+import { View, Text, Image, TextInput, StyleSheet, SafeAreaView, StatusBar, ScrollView } from 'react-native';
 import { Link, useRouter } from 'expo-router';
+import { AnimacaoConteudoPagina } from '../../../../components/animacaoConteudoPagina';
+
 
 export default function Cadastro1() {
   const router = useRouter();
@@ -25,92 +18,94 @@ export default function Cadastro1() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={cores.roxo} />
 
-      <ScrollView
-        contentContainerStyle={styles.conteudo}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <Text style={styles.titulo}>Cadastro para Pessoa Física</Text>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor={cores.roxo} />
 
-        <View style={styles.card}>
-          <Image
-            source={require('../../../../assets/images/vooa.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+        <ScrollView
+          contentContainerStyle={styles.conteudo}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <AnimacaoConteudoPagina><Text style={styles.titulo}>Cadastro para Pessoa Física</Text>
 
-          <View style={styles.campo}>
-            <Text style={styles.label}>Nome Completo:</Text>
-            <TextInput
-              style={styles.input}
-              value={nome}
-              onChangeText={setNome}
-              autoCapitalize="words"
+          <View style={styles.card}>
+            <Image
+              source={require('../../../../assets/images/vooa.png')}
+              style={styles.logo}
+              resizeMode="contain"
             />
+
+            <View style={styles.campo}>
+              <Text style={styles.label}>Nome Completo:</Text>
+              <TextInput
+                style={styles.input}
+                value={nome}
+                onChangeText={setNome}
+                autoCapitalize="words"
+              />
+            </View>
+
+            <View style={styles.campo}>
+              <Text style={styles.label}>E-mail:</Text>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+
+            <View style={styles.campo}>
+              <Text style={styles.label}>CPF:</Text>
+              <TextInput
+                style={styles.input}
+                value={cnpj}
+                onChangeText={setCnpj}
+                keyboardType="numeric"
+                maxLength={18}
+              />
+            </View>
+
+            <View style={styles.campo}>
+              <Text style={styles.label}>Crie uma senha:</Text>
+              <TextInput
+                style={styles.input}
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry
+                autoCapitalize="none"
+              />
+            </View>
+
+            <View style={styles.campo}>
+              <Text style={styles.label}>Confirmar Senha:</Text>
+              <TextInput
+                style={styles.input}
+                value={confirmarSenha}
+                onChangeText={setConfirmarSenha}
+                secureTextEntry
+                autoCapitalize="none"
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.botao}
+              onPress={cadastrar}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.textoBotao}>Cadastrar</Text>
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.campo}>
-            <Text style={styles.label}>E-mail:</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
+          <Text style={styles.rodape}>
+            Já possui cadastro? Vá para o{' '}
+            <Link href="/logincontrado" style={styles.link}>login.</Link>
+          </Text></AnimacaoConteudoPagina>
+        </ScrollView>
+      </SafeAreaView>
 
-          <View style={styles.campo}>
-            <Text style={styles.label}>CPF:</Text>
-            <TextInput
-              style={styles.input}
-              value={cnpj}
-              onChangeText={setCnpj}
-              keyboardType="numeric"
-              maxLength={18}
-            />
-          </View>
-
-          <View style={styles.campo}>
-            <Text style={styles.label}>Crie uma senha:</Text>
-            <TextInput
-              style={styles.input}
-              value={senha}
-              onChangeText={setSenha}
-              secureTextEntry
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View style={styles.campo}>
-            <Text style={styles.label}>Confirmar Senha:</Text>
-            <TextInput
-              style={styles.input}
-              value={confirmarSenha}
-              onChangeText={setConfirmarSenha}
-              secureTextEntry
-              autoCapitalize="none"
-            />
-          </View>
-
-          <TouchableOpacity
-            style={styles.botao}
-            onPress={cadastrar}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.textoBotao}>Cadastrar</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.rodape}>
-          Já possui cadastro? Vá para o{' '}
-          <Link href="/logincontrado" style={styles.link}>login.</Link>
-        </Text>
-      </ScrollView>
-    </SafeAreaView>
   );
 }
 

@@ -1,15 +1,9 @@
-import {
-  Alert,
-  Image,
-  Linking,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { PressableComEfeito as Pressable } from '../../components/botaoInterativo';
+import { Alert, Image, Linking, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { AnimacaoConteudoPagina } from '../../components/animacaoConteudoPagina';
+
 
 const cores = {
   fundo: "#7B2FF7",
@@ -120,60 +114,62 @@ export default function PdfCurriculoScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.conteudoScroll}>
-        <Text style={styles.titulo}>Currículo</Text>
-        <Text style={styles.subtitulo}>
-          Confira o arquivo enviado pelo candidato.
-        </Text>
 
-        <View style={styles.cardDados}>
-          {dadosCandidato.map((item, index) => (
-            <View key={item.rotulo}>
-              {index > 0 && <View style={styles.divisor} />}
-              <View style={styles.campo}>
-                <Ionicons name={item.icone} size={22} color={cores.fundo} />
-                <View style={styles.campoTextos}>
-                  <Text style={styles.rotulo}>{item.rotulo}</Text>
-                  <Text style={styles.valor}>{item.valor}</Text>
+      <View style={styles.container}>
+        <AnimacaoConteudoPagina><ScrollView contentContainerStyle={styles.conteudoScroll}>
+          <Text style={styles.titulo}>Currículo</Text>
+          <Text style={styles.subtitulo}>
+            Confira o arquivo enviado pelo candidato.
+          </Text>
+
+          <View style={styles.cardDados}>
+            {dadosCandidato.map((item, index) => (
+              <View key={item.rotulo}>
+                {index > 0 && <View style={styles.divisor} />}
+                <View style={styles.campo}>
+                  <Ionicons name={item.icone} size={22} color={cores.fundo} />
+                  <View style={styles.campoTextos}>
+                    <Text style={styles.rotulo}>{item.rotulo}</Text>
+                    <Text style={styles.valor}>{item.valor}</Text>
+                  </View>
                 </View>
               </View>
+            ))}
+          </View>
+
+          <Pressable style={styles.cardArquivo} onPress={abrirCurriculo}>
+            <View style={styles.pdfIcone}>
+              <Text style={styles.pdfIconeTexto}>PDF</Text>
             </View>
-          ))}
-        </View>
+            <View style={styles.arquivoInfo}>
+              <Text style={styles.arquivoNome} numberOfLines={1}>
+                {candidato.curriculo.nome}
+              </Text>
+              <Text style={styles.arquivoDetalhe}>
+                {candidato.curriculo.detalhe}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={22} color={cores.escuro} />
+          </Pressable>
 
-        <Pressable style={styles.cardArquivo} onPress={abrirCurriculo}>
-          <View style={styles.pdfIcone}>
-            <Text style={styles.pdfIconeTexto}>PDF</Text>
-          </View>
-          <View style={styles.arquivoInfo}>
-            <Text style={styles.arquivoNome} numberOfLines={1}>
-              {candidato.curriculo.nome}
-            </Text>
-            <Text style={styles.arquivoDetalhe}>
-              {candidato.curriculo.detalhe}
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={22} color={cores.escuro} />
-        </Pressable>
+        </ScrollView>
 
-      </ScrollView>
+        <Pressable
+          style={styles.botaoVoltar}
+          onPress={() => router.push('/analisarcurri')}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+          hitSlop={10}
+        >
+          <Image
+            source={require("../../assets/voltar 1.png")}
+            style={styles.voltarIcone}
+            resizeMode="contain"
+            accessibilityLabel="Seta para voltar"
+          />
+        </Pressable></AnimacaoConteudoPagina>
+      </View>
 
-      <Pressable
-        style={styles.botaoVoltar}
-        onPress={() => router.push('/analisarcurri')}
-        accessibilityRole="button"
-        accessibilityLabel="Voltar"
-        hitSlop={10}
-      >
-        <Image
-          source={require("../../assets/voltar 1.png")}
-          style={styles.voltarIcone}
-          resizeMode="contain"
-          accessibilityLabel="Seta para voltar"
-        />
-      </Pressable>
-    </View>
   );
 }
 
