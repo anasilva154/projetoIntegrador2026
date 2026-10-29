@@ -7,6 +7,17 @@ export type Envio = {
   empresa: string;
   data_envio: string;
   status?: "enviado" | "visualizado" | "aprovado" | "recusado";
+  nome?: string;
+  email?: string;
+  telefone?: string;
+  idade?: string;
+  cidade?: string;
+  nascimento?: string;
+  cpf?: string;
+  endereco?: string;
+  escolaridade?: string;
+  turno?: string;
+  arquivo_nome?: string;
 };
 
 const CHAVE_ENVIOS = "@vooa/envios";
@@ -20,6 +31,19 @@ function validarEnvio(valor: unknown): valor is Envio {
     ["enviado", "visualizado", "aprovado", "recusado"].includes(
       String(envio.status),
     );
+  const camposTextoOpcionais = [
+    "nome",
+    "email",
+    "telefone",
+    "idade",
+    "cidade",
+    "nascimento",
+    "cpf",
+    "endereco",
+    "escolaridade",
+    "turno",
+    "arquivo_nome",
+  ];
 
   return (
     typeof envio.id === "number" &&
@@ -27,6 +51,9 @@ function validarEnvio(valor: unknown): valor is Envio {
     typeof envio.titulo === "string" &&
     typeof envio.empresa === "string" &&
     typeof envio.data_envio === "string" &&
+    camposTextoOpcionais.every(
+      (campo) => envio[campo] === undefined || typeof envio[campo] === "string",
+    ) &&
     statusValido
   );
 }

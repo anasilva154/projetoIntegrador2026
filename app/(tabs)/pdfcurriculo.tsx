@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 const cores = {
@@ -22,35 +22,96 @@ const cores = {
   vermelho: "#FF5A5F",
 };
 
-const candidato = {
-  nome: "Ana Beatriz Souza",
-  email: "ana.beatriz@email.com",
-  telefone: "(48) 99999-1234",
+type CandidatoDetalhes = {
+  nome: string;
+  email: string;
+  telefone: string;
+  idade: string;
+  bairro: string;
+  curriculo: {
+    nome: string;
+    detalhe: string;
+    url: string;
+  };
+};
+
+const candidatoPadrao: CandidatoDetalhes = {
+  nome: "Ana Beatriz",
+  email: "ana.beatriz@example.com",
+  telefone: "(48) 90000-0001",
   idade: "19 anos",
   bairro: "Centro",
   curriculo: {
-    nome: "Curriculo_AnaBeatriz.pdf",
-    detalhe: "PDF • 245 KB",
-    url: "https://exemplo.com/Curriculo_AnaBeatriz.pdf",
+    nome: "Curriculo_Ana_Beatriz.pdf",
+    detalhe: "Arquivo demonstrativo",
+    url: "",
   },
 };
 
-const dadosCandidato: {
-  rotulo: string;
-  valor: string;
-  icone: keyof typeof Ionicons.glyphMap;
-}[] = [
-  { rotulo: "Nome completo", valor: candidato.nome, icone: "person" },
-  { rotulo: "E-mail", valor: candidato.email, icone: "mail" },
-  { rotulo: "Telefone", valor: candidato.telefone, icone: "call" },
-  { rotulo: "Idade", valor: candidato.idade, icone: "calendar" },
-  { rotulo: "Bairro", valor: candidato.bairro, icone: "location" },
-];
+function ehRegistro(valor: unknown): valor is Record<string, unknown> {
+  return valor !== null && typeof valor === "object" && !Array.isArray(valor);
+}
+
+function lerCandidato(valor: string | string[] | undefined): CandidatoDetalhes | null {
+  if (typeof valor !== "string") return null;
+
+  try {
+    const dado: unknown = JSON.parse(valor);
+    if (!ehRegistro(dado) || !ehRegistro(dado.curriculo)) return null;
+    const curriculo = dado.curriculo;
+
+    if (
+      typeof dado.nome !== "string" ||
+      typeof dado.email !== "string" ||
+      typeof dado.telefone !== "string" ||
+      typeof dado.idade !== "string" ||
+      typeof dado.bairro !== "string" ||
+      typeof curriculo.nome !== "string" ||
+      typeof curriculo.detalhe !== "string" ||
+      typeof curriculo.url !== "string"
+    ) {
+      return null;
+    }
+
+    return {
+      nome: dado.nome,
+      email: dado.email,
+      telefone: dado.telefone,
+      idade: dado.idade,
+      bairro: dado.bairro,
+      curriculo: {
+        nome: curriculo.nome,
+        detalhe: curriculo.detalhe,
+        url: curriculo.url,
+      },
+    };
+  } catch {
+    return null;
+  }
+}
 
 export default function PdfCurriculoScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ candidato?: string }>();
+  const candidato = lerCandidato(params.candidato) ?? candidatoPadrao;
+  const dadosCandidato: {
+    rotulo: string;
+    valor: string;
+    icone: keyof typeof Ionicons.glyphMap;
+  }[] = [
+    { rotulo: "Nome completo", valor: candidato.nome, icone: "person" },
+    { rotulo: "E-mail", valor: candidato.email, icone: "mail" },
+    { rotulo: "Telefone", valor: candidato.telefone, icone: "call" },
+    { rotulo: "Idade", valor: candidato.idade, icone: "calendar" },
+    { rotulo: "Bairro", valor: candidato.bairro, icone: "location" },
+  ];
 
   async function abrirCurriculo() {
+    if (!candidato.curriculo.url) {
+      Alert.alert("Arquivo demonstrativo", "O PDF deste currículo não está disponível.");
+      return;
+    }
+
     try {
       await Linking.openURL(candidato.curriculo.url);
     } catch {
@@ -155,7 +216,7 @@ const styles = StyleSheet.create({
   },
   pdfIconeTexto: { color: cores.branco, fontSize: 13, fontWeight: "800" },
   arquivoInfo: { flex: 1, gap: 4 },
-  arquivoNome: { fontSize: 16, fontWeight: "800", color: cores.escuro },
+  arquivoNome: { fontSize: 16, fontWeight: "800", color: "#000000" },
   arquivoDetalhe: { fontSize: 13, color: cores.texto },
   cardDados: {
     backgroundColor: cores.cinzaCard,

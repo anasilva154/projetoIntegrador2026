@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Header } from '../../components/header';
 
 /* ---------- cores ---------- */
@@ -29,31 +29,122 @@ const cores = {
 /* ---------- dados de exemplo ---------- */
 const vaga = {
   titulo: 'Jovem Aprendiz - Auxiliar',
-  empresa: 'Nova Geração Soluções',
+  area: 'Administrativo',
 };
 
 type Candidato = {
   id: string;
   nome: string;
+  email: string;
+  telefone: string;
+  idade: string;
+  bairro: string;
+  curriculo: {
+    nome: string;
+    detalhe: string;
+    url: string;
+  };
 };
 
 const candidatos: Candidato[] = [
-  { id: '1', nome: 'Ana Beatriz' },
-  { id: '2', nome: 'João Pedro' },
-  { id: '3', nome: 'Maria Clara' },
-  { id: '4', nome: 'Lucas Ferreira' },
+  {
+    id: '1',
+    nome: 'Ana Beatriz',
+    email: 'ana.beatriz@example.com',
+    telefone: '(48) 90000-0001',
+    idade: '19 anos',
+    bairro: 'Centro',
+    curriculo: { nome: 'Curriculo_Ana_Beatriz.pdf', detalhe: 'Arquivo demonstrativo', url: '' },
+  },
+  {
+    id: '2',
+    nome: 'João Pedro',
+    email: 'joao.pedro@example.com',
+    telefone: '(48) 90000-0002',
+    idade: '21 anos',
+    bairro: 'Trindade',
+    curriculo: { nome: 'Curriculo_Joao_Pedro.pdf', detalhe: 'Arquivo demonstrativo', url: '' },
+  },
+  {
+    id: '3',
+    nome: 'Maria Clara',
+    email: 'maria.clara@example.com',
+    telefone: '(48) 90000-0003',
+    idade: '20 anos',
+    bairro: 'Itacorubi',
+    curriculo: { nome: 'Curriculo_Maria_Clara.pdf', detalhe: 'Arquivo demonstrativo', url: '' },
+  },
+  {
+    id: '4',
+    nome: 'Lucas Ferreira',
+    email: 'lucas.ferreira@example.com',
+    telefone: '(48) 90000-0004',
+    idade: '22 anos',
+    bairro: 'Saco dos Limões',
+    curriculo: { nome: 'Curriculo_Lucas_Ferreira.pdf', detalhe: 'Arquivo demonstrativo', url: '' },
+  },
 ];
+
+function lerCandidatos(valor: string | string[] | undefined): Candidato[] {
+  if (typeof valor !== 'string') return [];
+
+  try {
+    const dados: unknown = JSON.parse(valor);
+    if (!Array.isArray(dados)) return [];
+
+    return dados.filter(
+      (item): item is Candidato =>
+        item !== null &&
+        typeof item === 'object' &&
+        'id' in item &&
+        'nome' in item &&
+        'email' in item &&
+        'telefone' in item &&
+        'idade' in item &&
+        'bairro' in item &&
+        'curriculo' in item &&
+        typeof item.id === 'string' &&
+        typeof item.nome === 'string' &&
+        typeof item.email === 'string' &&
+        typeof item.telefone === 'string' &&
+        typeof item.idade === 'string' &&
+        typeof item.bairro === 'string' &&
+        item.curriculo !== null &&
+        typeof item.curriculo === 'object' &&
+        'nome' in item.curriculo &&
+        'detalhe' in item.curriculo &&
+        'url' in item.curriculo &&
+        typeof item.curriculo.nome === 'string' &&
+        typeof item.curriculo.detalhe === 'string' &&
+        typeof item.curriculo.url === 'string',
+    );
+  } catch {
+    return [];
+  }
+}
 
 /* ---------- tela ---------- */
 export default function Candidatos() {
   const router = useRouter();
+  const params = useLocalSearchParams<{
+    vaga?: string;
+    area?: string;
+    candidatos?: string;
+  }>();
   const [busca, setBusca] = useState('');
+  const tituloVaga = typeof params.vaga === 'string' ? params.vaga : vaga.titulo;
+  const areaVaga = typeof params.area === 'string' ? params.area : vaga.area;
+  const listaCandidatos = useMemo(() => {
+    return typeof params.candidatos === 'string'
+      ? lerCandidatos(params.candidatos)
+      : candidatos;
+  }, [params.candidatos]);
 
   const listaFiltrada = useMemo(() => {
     const termo = busca.trim().toLowerCase();
-    if (termo === '') return candidatos;
-    return candidatos.filter((c) => c.nome.toLowerCase().includes(termo));
-  }, [busca]);
+    if (termo === '') return listaCandidatos;
+    return listaCandidatos.filter((c) => c.nome.toLowerCase().includes(termo));
+  }, [busca, listaCandidatos]);
 
   const cabecalho = (
     <View>
@@ -66,8 +157,8 @@ export default function Candidatos() {
 
       {/* vaga */}
       <View style={styles.blocoVaga}>
-        <Text style={styles.tituloVaga}>{vaga.titulo}</Text>
-        <Text style={styles.empresa}>{vaga.empresa}</Text>
+        <Text style={styles.tituloVaga}>{tituloVaga}</Text>
+        <Text style={styles.empresa}>{areaVaga}</Text>
       </View>
 
       {/* quantidade */}
@@ -77,7 +168,10 @@ export default function Candidatos() {
           style={styles.quantidadeIcone}
           resizeMode="contain"
         />
-        <Text style={styles.quantidade}>{candidatos.length} candidatos</Text>
+        <Text style={styles.quantidade}>
+          {listaCandidatos.length}{' '}
+          {listaCandidatos.length === 1 ? 'candidato' : 'candidatos'}
+        </Text>
       </View>
 
       {/* busca (branca) */}
@@ -117,7 +211,10 @@ export default function Candidatos() {
             <Pressable
               style={styles.card}
               onPress={() => {
-                if (item.id === '1') router.push('/pdfcurriculo');
+                router.push({
+                  pathname: '/pdfcurriculo',
+                  params: { candidato: JSON.stringify(item) },
+                });
               }}
               accessibilityRole="button"
               accessibilityLabel={`Abrir currículo de ${item.nome}`}
@@ -142,7 +239,7 @@ export default function Candidatos() {
                 </View>
               </View>
 
-              <Ionicons name="chevron-forward" size={24} color={cores.titulo} />
+              <Ionicons name="chevron-forward" size={20} color={cores.preto} />
             </Pressable>
           )}
         />

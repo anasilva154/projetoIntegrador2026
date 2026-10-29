@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 const cores = {
@@ -22,39 +22,118 @@ const cores = {
   vermelho: "#FF5A5F",
 };
 
-const matricula = {
+type MatriculaDetalhes = {
+  nome: string;
+  nascimento: string;
+  cpf: string;
+  email: string;
+  telefone: string;
+  escolaridade: string;
+  turno: string;
+  curso: string;
+  area: string;
+  documento: {
+    nome: string;
+    detalhe: string;
+    url: string;
+  };
+};
+
+const matriculaPadrao: MatriculaDetalhes = {
   nome: "Ana Beatriz Souza",
   nascimento: "12/03/2006",
-  cpf: "123.456.789-00",
-  email: "ana.beatriz@email.com",
-  telefone: "(48) 99999-1234",
+  cpf: "000.000.000-01",
+  email: "ana.beatriz@example.com",
+  telefone: "(48) 90000-0001",
   escolaridade: "Ensino Médio completo",
   turno: "Manhã",
+  curso: "Curso Técnico em Informática",
+  area: "Tecnologia da Informação",
   documento: {
-    nome: "Documento_AnaBeatriz.pdf",
-    detalhe: "PDF • 312 KB",
-    url: "https://exemplo.com/Documento_AnaBeatriz.pdf",
+    nome: "Matricula_Ana_Beatriz.pdf",
+    detalhe: "Documento demonstrativo",
+    url: "",
   },
 };
 
-const dadosMatricula: {
-  rotulo: string;
-  valor: string;
-  icone: keyof typeof Ionicons.glyphMap;
-}[] = [
-  { rotulo: "Nome completo", valor: matricula.nome, icone: "person" },
-  { rotulo: "Nascimento", valor: matricula.nascimento, icone: "calendar" },
-  { rotulo: "CPF", valor: matricula.cpf, icone: "card" },
-  { rotulo: "E-mail", valor: matricula.email, icone: "mail" },
-  { rotulo: "Telefone", valor: matricula.telefone, icone: "call" },
-  { rotulo: "Escolaridade", valor: matricula.escolaridade, icone: "school" },
-  { rotulo: "Turno", valor: matricula.turno, icone: "time" },
-];
+function lerMatricula(valor: string | string[] | undefined): MatriculaDetalhes | null {
+  if (typeof valor !== "string") return null;
+
+  try {
+    const dado: unknown = JSON.parse(valor);
+    if (!ehRegistro(dado)) return null;
+    const item = dado;
+    const documento = item.documento;
+    if (!ehRegistro(documento)) return null;
+    const arquivo = documento;
+    if (
+      typeof item.nome !== "string" ||
+      typeof item.nascimento !== "string" ||
+      typeof item.cpf !== "string" ||
+      typeof item.email !== "string" ||
+      typeof item.telefone !== "string" ||
+      typeof item.escolaridade !== "string" ||
+      typeof item.turno !== "string" ||
+      typeof item.curso !== "string" ||
+      typeof item.area !== "string" ||
+      typeof arquivo.nome !== "string" ||
+      typeof arquivo.detalhe !== "string" ||
+      typeof arquivo.url !== "string"
+    ) {
+      return null;
+    }
+
+    return {
+      nome: item.nome,
+      nascimento: item.nascimento,
+      cpf: item.cpf,
+      email: item.email,
+      telefone: item.telefone,
+      escolaridade: item.escolaridade,
+      turno: item.turno,
+      curso: item.curso,
+      area: item.area,
+      documento: {
+        nome: arquivo.nome,
+        detalhe: arquivo.detalhe,
+        url: arquivo.url,
+      },
+    };
+  } catch {
+    return null;
+  }
+}
+
+function ehRegistro(valor: unknown): valor is Record<string, unknown> {
+  return valor !== null && typeof valor === "object" && !Array.isArray(valor);
+}
 
 export default function PdfMatriculaScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ dados?: string }>();
+  const matricula = lerMatricula(params.dados) ?? matriculaPadrao;
+  const dadosMatricula: {
+    rotulo: string;
+    valor: string;
+    icone: keyof typeof Ionicons.glyphMap;
+  }[] = [
+    { rotulo: "Nome completo", valor: matricula.nome, icone: "person" },
+    { rotulo: "Nascimento", valor: matricula.nascimento, icone: "calendar" },
+    { rotulo: "CPF", valor: matricula.cpf, icone: "card" },
+    { rotulo: "E-mail", valor: matricula.email, icone: "mail" },
+    { rotulo: "Telefone", valor: matricula.telefone, icone: "call" },
+    { rotulo: "Escolaridade", valor: matricula.escolaridade, icone: "school" },
+    { rotulo: "Turno", valor: matricula.turno, icone: "time" },
+    { rotulo: "Curso", valor: matricula.curso, icone: "book" },
+    { rotulo: "Área", valor: matricula.area, icone: "briefcase" },
+  ];
 
   async function abrirDocumento() {
+    if (!matricula.documento.url) {
+      Alert.alert("Documento demonstrativo", "O arquivo desta matrícula não está disponível.");
+      return;
+    }
+
     try {
       await Linking.openURL(matricula.documento.url);
     } catch {
@@ -103,7 +182,7 @@ export default function PdfMatriculaScreen() {
 
       <Pressable
         style={styles.botaoVoltar}
-        onPress={() => router.back()}
+        onPress={() => router.push('/analisarmatri')}
         accessibilityRole="button"
         accessibilityLabel="Voltar"
         hitSlop={10}
@@ -158,7 +237,7 @@ const styles = StyleSheet.create({
   },
   pdfIconeTexto: { color: cores.branco, fontSize: 13, fontWeight: "800" },
   arquivoInfo: { flex: 1, gap: 4 },
-  arquivoNome: { fontSize: 16, fontWeight: "800", color: cores.escuro },
+  arquivoNome: { fontSize: 16, fontWeight: "800", color: "#000000" },
   arquivoDetalhe: { fontSize: 13, color: cores.texto },
   cardDados: {
     backgroundColor: cores.cinzaCard,

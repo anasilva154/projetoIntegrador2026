@@ -175,6 +175,12 @@ export default function Candidatar() {
         tipo: 'vaga',
         titulo: 'Candidatura para vaga',
         empresa: 'Oportunidade de emprego',
+        nome: nome.trim(),
+        email: email.trim(),
+        telefone: telefone.trim(),
+        idade: idade.trim(),
+        cidade: cidade.trim(),
+        arquivo_nome: anexo.name,
       });
       setFeedback({
         tipo: 'sucesso',

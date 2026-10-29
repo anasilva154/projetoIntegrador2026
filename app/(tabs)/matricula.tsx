@@ -21,6 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../components/header';
+import { salvarEnvio } from '../rotaServidor/envios';
 
 /* ---------- cores ---------- */
 const cores = {
@@ -125,7 +126,7 @@ export default function Candidatar() {
     }
   }
 
-  function enviar() {
+  async function enviar() {
     const emailValido = /^\S+@\S+\.\S+$/.test(email.trim());
 
     if (
@@ -146,8 +147,28 @@ export default function Candidatar() {
       return;
     }
 
-    // TODO: enviar os dados para o servidor
-    setEnviado(true);
+    try {
+      await salvarEnvio({
+        tipo: 'curso',
+        titulo: 'Curso Técnico em Informática',
+        empresa: 'Faculdade Senac',
+        nome: nome.trim(),
+        nascimento: nascimento.trim(),
+        cpf: cpf.trim(),
+        email: email.trim(),
+        telefone: telefone.trim(),
+        endereco: endereco.trim(),
+        escolaridade: escolaridade.trim(),
+        turno: turno.trim(),
+        arquivo_nome: documento?.name ?? '',
+      });
+      setEnviado(true);
+    } catch (error) {
+      Alert.alert(
+        'Não foi possível salvar',
+        error instanceof Error ? error.message : 'Tente novamente.',
+      );
+    }
   }
 
   function fecharAviso() {

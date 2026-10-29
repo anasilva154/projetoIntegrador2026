@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Header } from '../../components/header';
-import { RodapeFlutuante } from '../../components/rodapeperfil';
+import { RodapeFlutuante } from '../../components/rodapeFlutuante';
  
 /* ---------- cores ---------- */
 const cores = {
@@ -31,11 +31,25 @@ const cores = {
 };
  
 /* ---------- dados de exemplo ---------- */
+type CandidatoVaga = {
+  id: string;
+  nome: string;
+  email: string;
+  telefone: string;
+  idade: string;
+  bairro: string;
+  curriculo: {
+    nome: string;
+    detalhe: string;
+    url: string;
+  };
+};
+
 type Vaga = {
   id: string;
   titulo: string;
   area: string;
-  candidatos: number;
+  candidatos: CandidatoVaga[];
 };
  
 type MatriculaEnviada = {
@@ -43,6 +57,17 @@ type MatriculaEnviada = {
   nome: string;
   curso: string;
   area: string;
+  nascimento: string;
+  cpf: string;
+  email: string;
+  telefone: string;
+  escolaridade: string;
+  turno: string;
+  documento: {
+    nome: string;
+    detalhe: string;
+    url: string;
+  };
 };
 
 type CursoComMatriculas = {
@@ -54,15 +79,83 @@ type CursoComMatriculas = {
 };
 
 type ItemEnvio =
-  | { tipo: 'curriculo'; id: string; titulo: string; area: string; candidatos: number }
+  | { tipo: 'curriculo'; id: string; titulo: string; area: string; candidatos: CandidatoVaga[] }
   | CursoComMatriculas;
+
+function criarCandidato(
+  id: string,
+  nome: string,
+  email: string,
+  telefone: string,
+  idade: string,
+  bairro: string,
+): CandidatoVaga {
+  const nomeArquivo = nome.replace(/\s+/g, '_');
+
+  return {
+    id,
+    nome,
+    email,
+    telefone,
+    idade,
+    bairro,
+    curriculo: {
+      nome: `Curriculo_${nomeArquivo}.pdf`,
+      detalhe: 'Arquivo demonstrativo',
+      url: '',
+    },
+  };
+}
  
 const vagas: Vaga[] = [
-  { id: '1', titulo: 'Estagiário de TI', area: 'Tecnologia da Informação', candidatos: 0 },
-  { id: '2', titulo: 'Auxiliar Administrativo', area: 'Administrativo', candidatos: 0 },
-  { id: '4', titulo: 'Desenvolvedor Front-end', area: 'Tecnologia da Informação', candidatos: 0 },
-  { id: '5', titulo: 'Assistente de Marketing', area: 'Marketing', candidatos: 0 },
-  { id: '6', titulo: 'Jovem Aprendiz - Auxiliar', area: 'Administrativo', candidatos: 4 },
+  {
+    id: '1',
+    titulo: 'Estagiário de TI',
+    area: 'Tecnologia da Informação',
+    candidatos: [
+      criarCandidato('ti-1', 'Ana Beatriz Souza', 'ana.beatriz@example.com', '(48) 90000-0001', '19 anos', 'Centro'),
+      criarCandidato('ti-2', 'João Pedro', 'joao.pedro@example.com', '(48) 90000-0002', '21 anos', 'Trindade'),
+      criarCandidato('ti-3', 'Maria Clara', 'maria.clara@example.com', '(48) 90000-0003', '20 anos', 'Itacorubi'),
+    ],
+  },
+  {
+    id: '2',
+    titulo: 'Auxiliar Administrativo',
+    area: 'Administrativo',
+    candidatos: [
+      criarCandidato('adm-1', 'Lucas Ferreira', 'lucas.ferreira@example.com', '(48) 90000-0004', '22 anos', 'Saco dos Limões'),
+      criarCandidato('adm-2', 'Mariana Costa', 'mariana.costa@example.com', '(48) 90000-0005', '23 anos', 'Estreito'),
+    ],
+  },
+  {
+    id: '4',
+    titulo: 'Desenvolvedor Front-end',
+    area: 'Tecnologia da Informação',
+    candidatos: [
+      criarCandidato('front-1', 'Pedro Henrique', 'pedro.henrique@example.com', '(48) 90000-0006', '24 anos', 'Coqueiros'),
+      criarCandidato('front-2', 'Camila Oliveira', 'camila.oliveira@example.com', '(48) 90000-0007', '22 anos', 'Capoeiras'),
+    ],
+  },
+  {
+    id: '5',
+    titulo: 'Assistente de Marketing',
+    area: 'Marketing',
+    candidatos: [
+      criarCandidato('mkt-1', 'Beatriz Almeida', 'beatriz.almeida@example.com', '(48) 90000-0008', '21 anos', 'Centro'),
+      criarCandidato('mkt-2', 'Rafael Santos', 'rafael.santos@example.com', '(48) 90000-0009', '25 anos', 'Abraão'),
+    ],
+  },
+  {
+    id: '6',
+    titulo: 'Jovem Aprendiz - Auxiliar',
+    area: 'Administrativo',
+    candidatos: [
+      criarCandidato('jovem-1', 'Ana Beatriz', 'ana.beatriz.jovem@example.com', '(48) 90000-0010', '18 anos', 'Centro'),
+      criarCandidato('jovem-2', 'João Pedro', 'joao.pedro.jovem@example.com', '(48) 90000-0011', '17 anos', 'Trindade'),
+      criarCandidato('jovem-3', 'Maria Clara', 'maria.clara.jovem@example.com', '(48) 90000-0012', '18 anos', 'Itacorubi'),
+      criarCandidato('jovem-4', 'Lucas Ferreira', 'lucas.ferreira.jovem@example.com', '(48) 90000-0013', '19 anos', 'Estreito'),
+    ],
+  },
 ];
  
 const matriculasEnviadas: MatriculaEnviada[] = [
@@ -71,18 +164,78 @@ const matriculasEnviadas: MatriculaEnviada[] = [
     nome: 'Ana Beatriz Souza',
     curso: 'Curso Técnico em Informática',
     area: 'Tecnologia da Informação',
+    nascimento: '12/03/2006',
+    cpf: '000.000.000-01',
+    email: 'ana.beatriz@example.com',
+    telefone: '(48) 90000-0001',
+    escolaridade: 'Ensino Médio completo',
+    turno: 'Manhã',
+    documento: { nome: 'Matricula_Ana_Beatriz.pdf', detalhe: 'Documento demonstrativo', url: '' },
+  },
+  {
+    id: '4',
+    nome: 'João Pedro',
+    curso: 'Curso Técnico em Informática',
+    area: 'Tecnologia da Informação',
+    nascimento: '25/08/2005',
+    cpf: '000.000.000-02',
+    email: 'joao.pedro@example.com',
+    telefone: '(48) 90000-0002',
+    escolaridade: 'Ensino Médio cursando',
+    turno: 'Tarde',
+    documento: { nome: 'Matricula_Joao_Pedro.pdf', detalhe: 'Documento demonstrativo', url: '' },
+  },
+  {
+    id: '5',
+    nome: 'Maria Clara',
+    curso: 'Curso Técnico em Informática',
+    area: 'Tecnologia da Informação',
+    nascimento: '07/11/2006',
+    cpf: '000.000.000-03',
+    email: 'maria.clara@example.com',
+    telefone: '(48) 90000-0003',
+    escolaridade: 'Ensino Médio completo',
+    turno: 'Noite',
+    documento: { nome: 'Matricula_Maria_Clara.pdf', detalhe: 'Documento demonstrativo', url: '' },
+  },
+  {
+    id: '6',
+    nome: 'Lucas Ferreira',
+    curso: 'Curso Técnico em Informática',
+    area: 'Tecnologia da Informação',
+    nascimento: '14/01/2005',
+    cpf: '000.000.000-04',
+    email: 'lucas.ferreira@example.com',
+    telefone: '(48) 90000-0004',
+    escolaridade: 'Ensino Médio cursando',
+    turno: 'Manhã',
+    documento: { nome: 'Matricula_Lucas_Ferreira.pdf', detalhe: 'Documento demonstrativo', url: '' },
   },
   {
     id: '2',
     nome: 'Mariana Costa',
     curso: 'Curso de Língua Inglesa',
     area: 'Idiomas',
+    nascimento: '03/06/2004',
+    cpf: '000.000.000-05',
+    email: 'mariana.costa@example.com',
+    telefone: '(48) 90000-0005',
+    escolaridade: 'Ensino Médio completo',
+    turno: 'Tarde',
+    documento: { nome: 'Matricula_Mariana_Costa.pdf', detalhe: 'Documento demonstrativo', url: '' },
   },
   {
     id: '3',
     nome: 'Lucas Ferreira',
     curso: 'Curso de Língua Espanhola',
     area: 'Idiomas',
+    nascimento: '19/09/2003',
+    cpf: '000.000.000-06',
+    email: 'lucas.ferreira.espanhol@example.com',
+    telefone: '(48) 90000-0006',
+    escolaridade: 'Ensino Médio completo',
+    turno: 'Noite',
+    documento: { nome: 'Matricula_Lucas_Ferreira_Espanhol.pdf', detalhe: 'Documento demonstrativo', url: '' },
   },
 ];
  
@@ -159,13 +312,26 @@ export default function Inicio() {
   }, [busca, areaSelecionada, categoriaSelecionada]);
  
   const abrirVaga = (item: ItemEnvio) => {
-    if (item.tipo !== 'curriculo') return;
- 
-    if (item.id === '6') {
-      router.push('/analisarcurri');
-    } else {
-      router.push(`/rotas/vagas/${item.id}`);
+    if (item.tipo === 'matricula') {
+      router.push({
+        pathname: '/analisarmatri',
+        params: {
+          curso: item.curso,
+          area: item.area,
+          matriculados: JSON.stringify(item.alunos),
+        },
+      });
+      return;
     }
+
+    router.push({
+      pathname: '/analisarcurri',
+      params: {
+        vaga: item.titulo,
+        area: item.area,
+        candidatos: JSON.stringify(item.candidatos),
+      },
+    });
   };
   const cabecalho = (
     <View style={styles.cabecalhoLista}>
@@ -264,8 +430,7 @@ export default function Inicio() {
           renderItem={({ item }) => (
             <Pressable
               style={styles.item}
-              onPress={item.tipo === 'curriculo' ? () => abrirVaga(item) : undefined}
-              disabled={item.tipo === 'matricula'}
+              onPress={() => abrirVaga(item)}
             >
               <View style={styles.avatar}>
                 <Image
@@ -282,7 +447,7 @@ export default function Inicio() {
                 <Text style={styles.cargo}>
                   {item.tipo === 'matricula'
                     ? `${item.alunos.length} ${item.alunos.length === 1 ? 'matriculado' : 'matriculados'} · ${item.area}`
-                    : `${item.candidatos} ${item.candidatos === 1 ? 'candidato' : 'candidatos'} · ${item.area}`}
+                    : `${item.candidatos.length} ${item.candidatos.length === 1 ? 'candidato' : 'candidatos'} · ${item.area}`}
                 </Text>
               </View>
  
