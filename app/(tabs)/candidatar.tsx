@@ -1,5 +1,5 @@
 ﻿// app/candidatar.tsx
-import { useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Animated,
   View,
@@ -10,7 +10,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Alert,
   StyleSheet,
   type StyleProp,
   type ViewStyle,
@@ -20,6 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../components/header';
+import { salvarEnvio } from '../rotaServidor/envios';
 
 /* ---------- cores ---------- */
 const cores = {
@@ -35,6 +35,12 @@ const cores = {
 
 const LIMITE_MB = 5;
 const LIMITE_MENSAGEM = 500;
+
+type Feedback = {
+  tipo: 'erro' | 'sucesso';
+  titulo: string;
+  mensagem: string;
+} | null;
 
 function BotaoAnimado({
   children,
@@ -83,6 +89,12 @@ export default function Candidatar() {
   const [cidade, setCidade] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [anexo, setAnexo] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
+  const [feedback, setFeedback] = useState<Feedback>(null);
+  const redirecionamento = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (redirecionamento.current) clearTimeout(redirecionamento.current);
+  }, []);
 
   async function selecionarAnexo() {
     try {
@@ -102,45 +114,89 @@ export default function Candidatar() {
         : extensaoPermitida;
 
       if (!tipoPermitido) {
-        Alert.alert('Formato não permitido', 'Selecione um arquivo PDF ou uma imagem.');
+        setFeedback({
+          tipo: 'erro',
+          titulo: 'Formato não permitido',
+          mensagem: 'Selecione um arquivo PDF ou uma imagem.',
+        });
         return;
       }
 
       const tamanho = arquivo.size ?? arquivo.file?.size;
       if (tamanho !== undefined && tamanho > LIMITE_MB * 1024 * 1024) {
-        Alert.alert('Arquivo muito grande', `O anexo deve ter no máximo ${LIMITE_MB} MB.`);
+        setFeedback({
+          tipo: 'erro',
+          titulo: 'Arquivo muito grande',
+          mensagem: `O anexo deve ter no máximo ${LIMITE_MB} MB.`,
+        });
         return;
       }
 
       setAnexo(arquivo);
     } catch (error) {
-      Alert.alert(
-        'Erro ao selecionar anexo',
-        error instanceof Error ? error.message : 'Tente novamente.',
-      );
+      setFeedback({
+        tipo: 'erro',
+        titulo: 'Erro ao selecionar anexo',
+        mensagem: error instanceof Error ? error.message : 'Tente novamente.',
+      });
     }
   }
 
-  function enviar() {
+  async function enviar() {
     const emailValido = /^\S+@\S+\.\S+$/.test(email.trim());
 
     if (!nome.trim() || !email.trim() || !telefone.trim() || !idade.trim() || !cidade.trim()) {
-      Alert.alert('Campos obrigatórios', 'Preencha todos os campos marcados com *.');
+      setFeedback({
+        tipo: 'erro',
+        titulo: 'Campos obrigatórios',
+        mensagem: 'Preencha todos os campos marcados com *.',
+      });
       return;
     }
     if (!emailValido) {
-      Alert.alert('E-mail inválido', 'Digite um e-mail válido.');
+      setFeedback({
+        tipo: 'erro',
+        titulo: 'E-mail inválido',
+        mensagem: 'Digite um e-mail válido.',
+      });
       return;
     }
     if (!anexo) {
-      Alert.alert('Anexo obrigatório', 'Selecione seu currículo em PDF ou uma imagem.');
+      setFeedback({
+        tipo: 'erro',
+        titulo: 'Anexo obrigatório',
+        mensagem: 'Selecione seu currículo em PDF ou uma imagem.',
+      });
       return;
     }
 
-    // TODO: enviar os dados para o servidor
-    Alert.alert('Candidatura enviada!', 'Boa sorte!', [
-      { text: 'OK', onPress: () => router.back() },
-    ]);
+    try {
+      await salvarEnvio({
+        tipo: 'vaga',
+        titulo: 'Candidatura para vaga',
+        empresa: 'Oportunidade de emprego',
+      });
+      setFeedback({
+        tipo: 'sucesso',
+        titulo: 'Candidatura registrada',
+        mensagem: 'O registro ficou salvo neste aparelho; o currículo não foi enviado a um servidor.',
+      });
+      redirecionamento.current = setTimeout(irParaCurriculos, 1500);
+    } catch (error) {
+      setFeedback({
+        tipo: 'erro',
+        titulo: 'Não foi possível salvar',
+        mensagem: error instanceof Error ? error.message : 'Tente novamente.',
+      });
+    }
+  }
+
+  function irParaCurriculos() {
+    if (redirecionamento.current) {
+      clearTimeout(redirecionamento.current);
+      redirecionamento.current = null;
+    }
+    router.replace('/curriculos');
   }
 
   return (
@@ -319,6 +375,35 @@ export default function Candidatar() {
           />
         </BotaoAnimado>
       </KeyboardAvoidingView>
+      {feedback && (
+        <View style={styles.feedbackFundo} accessibilityLiveRegion="polite">
+          <View style={styles.feedbackCartao}>
+            <View
+              style={[
+                styles.feedbackIcone,
+                feedback.tipo === 'sucesso' ? styles.feedbackIconeSucesso : styles.feedbackIconeErro,
+              ]}
+            >
+              <Ionicons
+                name={feedback.tipo === 'sucesso' ? 'checkmark' : 'alert'}
+                size={30}
+                color={cores.branco}
+              />
+            </View>
+            <Text style={styles.feedbackTitulo}>{feedback.titulo}</Text>
+            <Text style={styles.feedbackTexto}>{feedback.mensagem}</Text>
+            <Pressable
+              style={styles.feedbackBotao}
+              onPress={feedback.tipo === 'sucesso' ? irParaCurriculos : () => setFeedback(null)}
+              accessibilityRole="button"
+            >
+              <Text style={styles.feedbackBotaoTexto}>
+                {feedback.tipo === 'sucesso' ? 'Ir para currículos' : 'Entendi'}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -327,6 +412,63 @@ export default function Candidatar() {
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
 
+  feedbackFundo: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
+    elevation: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  feedbackCartao: {
+    width: '100%',
+    maxWidth: 360,
+    alignItems: 'center',
+    padding: 24,
+    borderRadius: 20,
+    backgroundColor: cores.branco,
+  },
+  feedbackIcone: {
+    width: 58,
+    height: 58,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 29,
+  },
+  feedbackIconeSucesso: {
+    backgroundColor: '#28A745',
+  },
+  feedbackIconeErro: {
+    backgroundColor: cores.erro,
+  },
+  feedbackTitulo: {
+    marginTop: 16,
+    color: cores.titulo,
+    fontSize: 20,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  feedbackTexto: {
+    marginTop: 8,
+    color: cores.texto,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  feedbackBotao: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 48,
+    marginTop: 20,
+    borderRadius: 12,
+    backgroundColor: cores.roxo,
+  },
+  feedbackBotaoTexto: {
+    color: cores.branco,
+    fontSize: 15,
+    fontWeight: '700',
+  },
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo },
   scroll: { padding: 16, paddingBottom: 96 },
 
