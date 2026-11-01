@@ -98,7 +98,7 @@ export default function Enviados() {
 
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: '#7B2FF7' },
-  decoracao: { ...StyleSheet.absoluteFillObject, overflow: 'hidden' },
+  decoracao: { ...StyleSheet.absoluteFill, overflow: 'hidden' },
   circuloGrande: {
     position: 'absolute',
     top: 140,

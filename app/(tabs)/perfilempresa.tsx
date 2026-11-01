@@ -18,6 +18,7 @@ import { Header as HeaderLogo } from '../../components/header';
 import {
   atualizarUsuarioLogado,
   logoutUsuario,
+  obterUsuarioLogado,
   useProtegerRota,
 } from '../rotaServidor/usuarioController';
 
@@ -175,8 +176,13 @@ export default function PerfilEmpresaScreen() {
       email: usuario.email || '',
       endereco: usuario.endereco || LOCALIZACAO_PADRAO,
     };
-    setPerfil(dadosEmpresa);
-    setRascunho(dadosEmpresa);
+    obterUsuarioLogado().then((logado) => {
+      if (!logado) return;
+      setPerfil(dadosEmpresa);
+      setRascunho(dadosEmpresa);
+  
+    });
+
   }, [usuario]);
 
   if (!usuario) return null;

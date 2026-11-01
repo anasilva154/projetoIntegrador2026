@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Animated,
+  useAnimatedValue,
   View,
   Text,
   TextInput,
@@ -20,7 +21,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../components/header';
 import { salvarEnvio } from '../rotaServidor/envios';
-import { useProtegerRota } from '../rotaServidor/usuarioController';
+import { obterUsuarioLogado, useProtegerRota } from '../rotaServidor/usuarioController';
 
 const cores = {
   roxo: '#7B2FF7',
@@ -53,7 +54,7 @@ function BotaoAnimado({
   style: StyleProp<ViewStyle>;
   hitSlop?: number;
 }) {
-  const escala = useRef(new Animated.Value(1)).current;
+  const escala = useAnimatedValue(1);
 
   const animarEscala = (toValue: number) => {
     Animated.spring(escala, {
@@ -101,9 +102,14 @@ export default function Candidatar() {
   // Preenche automaticamente os dados básicos do usuário logado
   useEffect(() => {
     if (!usuario) return;
-    setNome((atual) => atual || usuario.nome || '');
-    setEmail((atual) => atual || usuario.email || '');
-    setTelefone((atual) => atual || usuario.telefone || '');
+    obterUsuarioLogado().then((logado) => {
+      if (!logado) return;
+      setNome((atual) => atual || logado.nome || '');
+      setEmail((atual) => atual || logado.email || '');
+      setTelefone((atual) => atual || logado.telefone || '');
+    });
+
+
   }, [usuario]);
 
   useEffect(() => () => {
@@ -435,7 +441,7 @@ export default function Candidatar() {
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
   feedbackFundo: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 10,
     elevation: 10,
     justifyContent: 'center',

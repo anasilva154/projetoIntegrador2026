@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import bcrypt from 'bcryptjs';
-import { useRouter } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
+import { useRouter, useIsFocused } from 'expo-router';
+
 import dadosIniciais from './dadosIniciais.json';
 
 // Garante funcionamento do bcrypt no React Native (Android/iOS/Web)

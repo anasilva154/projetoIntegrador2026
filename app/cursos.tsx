@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
+import { useRouter, useIsFocused } from 'expo-router';
+
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
 import { listarCursos, type CursoItem } from './rotaServidor/cursosController';

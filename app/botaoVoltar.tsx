@@ -37,3 +37,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 2, height: 4 },
   },
 });
+
+export default BotaoVoltar;
+

@@ -1,11 +1,12 @@
 // app/(tabs)/vagasinformacao.tsx
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { useIsFocused } from '@react-navigation/native';
+import { useLocalSearchParams, useRouter, useIsFocused } from 'expo-router';
+import { useEffect, useState, type ReactNode } from 'react';
+
 import { Header } from '../../components/header';
 import {
   Animated,
+  useAnimatedValue,
   View,
   Text,
   Pressable,
@@ -42,7 +43,7 @@ function BotaoAnimado({
   style: StyleProp<ViewStyle>;
   hitSlop?: number;
 }) {
-  const escala = useRef(new Animated.Value(1)).current;
+  const escala = useAnimatedValue(1);
 
   const animarEscala = (toValue: number) => {
     Animated.spring(escala, {

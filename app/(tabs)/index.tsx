@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Animated,
   FlatList,
@@ -9,8 +9,8 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
-import { Link, useRouter } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
+import { Link, useRouter, useIsFocused } from 'expo-router';
+
 import {
   inicializarUsuarios,
   obterUsuarioLogado,
@@ -49,8 +49,8 @@ function Topo() {
 
 // Rodapé da tela: botão Começar + link de login
 function Rodape() {
-  const escalaComecar = useRef(new Animated.Value(1)).current;
-  const escalaLogin = useRef(new Animated.Value(1)).current;
+  const [escalaComecar] = useState(() => new Animated.Value(1));
+  const [escalaLogin] = useState(() => new Animated.Value(1));
 
   return (
     <View style={styles.rodape}>
@@ -73,12 +73,12 @@ function Rodape() {
         </Pressable>
       </Link>
 
-      <View style={styles.loginRow}>
-        <Text style={styles.loginTexto}>Já possui cadastro?</Text>
+      <Text style={styles.loginTexto}>
+        Já possui conta?{' '}
         <Link href="/escolhaLogin" asChild>
           <Pressable
-            style={styles.loginPressable}
-            onPressIn={() => animarPressao(escalaLogin, Platform.OS === 'web' ? 0.72 : 0.96)}
+            hitSlop={8}
+            onPressIn={() => animarPressao(escalaLogin, Platform.OS === 'web' ? 0.78 : 0.96)}
             onPressOut={() => animarPressao(escalaLogin, 1)}
           >
             <Animated.View
@@ -92,122 +92,123 @@ function Rodape() {
             </Animated.View>
           </Pressable>
         </Link>
-      </View>
+      </Text>
     </View>
   );
 }
 
-// Como desenhar cada item da lista
-function renderItem({ item }: { item: (typeof dados)[number] }) {
-  return (
-    <View style={styles.textos}>
-      <Text style={styles.titulo}>{item.titulo}</Text>
-      <Text style={styles.subtitulo}>{item.subtitulo}</Text>
-    </View>
-  );
-}
-
-export default function Boasvindas() {
+export default function Index() {
   const router = useRouter();
   const telaEmFoco = useIsFocused();
 
   useEffect(() => {
     if (!telaEmFoco) return;
 
-    async function carregarBaseESessao() {
-      // Inicializa os dados estáticos no AsyncStorage na primeira execução
+    async function prepararApp() {
       await inicializarUsuarios();
       await inicializarVagas();
       await inicializarCursos();
       await inicializarEnvios();
 
-      // Se já houver usuário logado, direciona para a área correspondente
       const usuarioLogado = await obterUsuarioLogado();
-      if (usuarioLogado) {
-        if (usuarioLogado.tipo === 'empresa') {
-          router.replace('/curriculo');
-        } else {
-          router.replace('/rotas/inicialpessoa');
-        }
+      if (!usuarioLogado) return;
+
+      if (usuarioLogado.tipo === 'empresa') {
+        router.replace('/curriculo');
+      } else {
+        router.replace('/rotas/inicialpessoa');
       }
     }
 
-    carregarBaseESessao();
+    prepararApp();
   }, [telaEmFoco, router]);
 
+  const item = dados[0];
+
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={dados}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        ListHeaderComponent={<Topo />}
-        ListFooterComponent={<Rodape />}
-      />
-    </View>
+    <FlatList
+      data={dados}
+      keyExtractor={(i) => i.id}
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+      ListHeaderComponent={Topo}
+      renderItem={() => (
+        <View style={styles.centro}>
+          <Text style={styles.titulo}>{item.titulo}</Text>
+          <Text style={styles.subtitulo}>{item.subtitulo}</Text>
+        </View>
+      )}
+      ListFooterComponent={Rodape}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#7B2FF7',
-    paddingTop: 20,
-    paddingHorizontal: 24,
+    paddingHorizontal: 28,
+    paddingTop: 36,
+    paddingBottom: 44,
   },
   imagem: {
     width: '100%',
-    height: 440,
+    height: 380,
+    marginTop: -8,
+    marginBottom: -40,
+    alignSelf: 'center',
   },
-  textos: {
+  centro: {
     alignItems: 'center',
+    marginBottom: 4,
   },
   titulo: {
-    color: '#FFFFFF',
-    fontSize: 40,
+    color: '#FFC83D',
+    fontSize: 28,
     fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
   },
   subtitulo: {
     color: '#FFFFFF',
-    fontSize: 22,
+    fontSize: 16,
+    lineHeight: 23,
     textAlign: 'center',
-    marginTop: 12,
+    paddingHorizontal: 8,
   },
   rodape: {
     alignItems: 'center',
-    marginTop: 32,
+    marginTop: 20,
+    paddingBottom: 16,
   },
-  botaoPressable: { width: '100%' },
-  botao: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
+  botaoPressable: {
     width: '100%',
-    padding: 18,
-    borderRadius: 40,
-    backgroundColor: '#F4C242',
+  },
+  botao: {
+    backgroundColor: '#FFC83D',
+    paddingVertical: 13,
+    paddingHorizontal: 48,
+    borderRadius: 24,
+    width: '100%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
   botaoTexto: {
-    color: '#000000',
-    fontSize: 20,
+    color: '#7B2FF7',
+    fontSize: 18,
     fontWeight: 'bold',
   },
   loginTexto: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 14,
+    marginTop: 18,
   },
-  loginRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginTop: 20,
-  },
-  loginPressable: { alignItems: 'center', justifyContent: 'center' },
   loginLink: {
-    color: '#FFD21F',
+    color: '#FFC83D',
     fontWeight: 'bold',
   },
 });

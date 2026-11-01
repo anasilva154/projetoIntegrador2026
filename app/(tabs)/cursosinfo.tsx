@@ -1,8 +1,8 @@
 // app/(tabs)/cursosinfo.tsx
 import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
+import { useLocalSearchParams, useRouter, useIsFocused } from 'expo-router';
+
 import { View, Text, Pressable, Image, ScrollView, StyleSheet } from 'react-native';
 import { Header } from '../../components/header';
 import { buscarCursoPorId, type CursoItem } from '../rotaServidor/cursosController';

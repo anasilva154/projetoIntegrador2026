@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
+import { useRouter, useIsFocused } from 'expo-router';
+
 import { RodapeFlutuante } from '../../../../components/rodapeFlutuante';
 import { Header } from '../../../../components/header';
 import {
@@ -144,7 +144,7 @@ export default function GerenciarOportunidades() {
 
   useEffect(() => {
     if (!telaEmFoco || !usuario) return;
-    carregarDados();
+    Promise.resolve().then(() => carregarDados());
   }, [telaEmFoco, usuario]);
 
   if (!usuario) return null;

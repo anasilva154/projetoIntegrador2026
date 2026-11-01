@@ -1,7 +1,8 @@
 // app/(tabs)/matricula.tsx
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
   Animated,
+  useAnimatedValue,
   View,
   Text,
   TextInput,
@@ -22,7 +23,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../components/header';
 import { salvarEnvio } from '../rotaServidor/envios';
-import { useProtegerRota } from '../rotaServidor/usuarioController';
+import { obterUsuarioLogado, useProtegerRota } from '../rotaServidor/usuarioController';
 
 const cores = {
   roxo: '#7B2FF7',
@@ -49,7 +50,7 @@ function BotaoAnimado({
   style: StyleProp<ViewStyle>;
   hitSlop?: number;
 }) {
-  const escala = useRef(new Animated.Value(1)).current;
+  const escala = useAnimatedValue(1);
 
   const animarEscala = (toValue: number) => {
     Animated.spring(escala, {
@@ -98,10 +99,16 @@ export default function Matricula() {
   // Preenche automaticamente os dados do usuário logado
   useEffect(() => {
     if (!usuario) return;
-    setNome((atual) => atual || usuario.nome || '');
-    setCpf((atual) => atual || usuario.cpf || '');
-    setEmail((atual) => atual || usuario.email || '');
-    setTelefone((atual) => atual || usuario.telefone || '');
+    obterUsuarioLogado().then((logado) => {
+      if (!logado) return;
+      setNome((atual) => atual || logado.nome || '');
+      setCpf((atual) => atual || logado.cpf || '');
+      setEmail((atual) => atual || logado.email || '');
+      setTelefone((atual) => atual || logado.telefone || '');
+    });
+
+
+
   }, [usuario]);
 
   if (!usuario) return null;

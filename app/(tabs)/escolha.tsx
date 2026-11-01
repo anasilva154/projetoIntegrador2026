@@ -5,9 +5,10 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
+
   StatusBar,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 export default function Index() {
@@ -23,7 +24,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={cores.roxo} />
+      <StatusBar barStyle="light-content" />
 
       <View style={styles.conteudo}>
         <Text style={styles.titulo}>O App para encontrar</Text>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
+import { useLocalSearchParams, useIsFocused } from 'expo-router';
+
 import { buscarVagaPorId, type VagaItem } from '@/app/rotaServidor/vagasController';
 import { useProtegerRota } from '@/app/rotaServidor/usuarioController';
 

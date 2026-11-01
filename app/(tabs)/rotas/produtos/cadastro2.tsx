@@ -7,10 +7,11 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
+
   StatusBar,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useRouter } from 'expo-router';
 import { cadastrarCliente } from '../../../rotaServidor/usuarioController';
 
@@ -73,7 +74,7 @@ export default function Cadastro2() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={cores.roxo} />
+      <StatusBar barStyle="light-content" />
 
       <ScrollView
         contentContainerStyle={styles.conteudo}

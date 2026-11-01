@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
+import { useRouter, useIsFocused } from 'expo-router';
+
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
 import { BotaoVoltar } from './botaoVoltar';
@@ -129,7 +129,7 @@ export default function Matriculas() {
 
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: '#7B2FF7' },
-  decoracao: { ...StyleSheet.absoluteFillObject, overflow: 'hidden' },
+  decoracao: { ...StyleSheet.absoluteFill, overflow: 'hidden' },
   circuloGrande: {
     position: 'absolute',
     top: 150,

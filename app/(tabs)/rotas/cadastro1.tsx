@@ -8,10 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
+
   StatusBar,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastrarEmpresa } from '../../rotaServidor/usuarioController';
 
 export default function Cadastro1() {
@@ -73,7 +74,7 @@ export default function Cadastro1() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={cores.amarelo} />
+      <StatusBar barStyle="dark-content" />
 
       <ScrollView
         contentContainerStyle={styles.conteudo}

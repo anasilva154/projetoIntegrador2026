@@ -1,5 +1,5 @@
 // app/(tabs)/curriculo.tsx
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type ComponentRef, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   View,
@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
+import { useRouter, useIsFocused } from 'expo-router';
+
 import { Header } from '../../components/header';
 import { RodapeFlutuante } from '../../components/rodapeFlutuante';
 import { listarEnvios, type Envio } from '../rotaServidor/envios';
@@ -95,7 +95,7 @@ export default function InicioEmpresa() {
   const [areaSelecionada, setAreaSelecionada] = useState('Todos');
   const [mostrarCategorias, setMostrarCategorias] = useState(false);
   const [posicaoMenu, setPosicaoMenu] = useState({ top: 0, left: 0 });
-  const seletorRef = useRef<View>(null);
+  const seletorRef = useRef<ComponentRef<typeof View>>(null);
   const [categoriaSelecionada, setCategoriaSelecionada] =
     useState<(typeof categoriasEnvio)[number]>('Currículos');
 
