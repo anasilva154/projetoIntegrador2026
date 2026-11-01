@@ -48,7 +48,7 @@ export function RodapeFlutuante({
   return (
     <View
       pointerEvents="box-none"
-      style={[styles.posicionamento, { paddingBottom: insets.bottom + 12 }]}
+      style={[styles.posicionamento, { paddingBottom: insets.bottom + 1 }]}
     >
       <View style={styles.barra}>
         {ABAS.map((aba) => {

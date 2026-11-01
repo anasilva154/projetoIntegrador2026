@@ -6,8 +6,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Header } from '../../components/header';
 import {
   Animated,
-  useAnimatedValue,
-  View,
+    View,
   Text,
   Pressable,
   Image,
@@ -43,7 +42,7 @@ function BotaoAnimado({
   style: StyleProp<ViewStyle>;
   hitSlop?: number;
 }) {
-  const escala = useAnimatedValue(1);
+  const [escala] = useState(() => new Animated.Value(1));
 
   const animarEscala = (toValue: number) => {
     Animated.spring(escala, {

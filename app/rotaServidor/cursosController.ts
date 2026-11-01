@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DadosCursos from './dadoscursos';
+import { DadosCursos } from './dadoscursos';
 
 const CHAVE_CURSOS = '@vooa/cursos';
 

@@ -1,4 +1,4 @@
-export default function DadosVagas() {
+export function DadosVagas() {
   return [
     {
       "id": "1",
@@ -578,4 +578,9 @@ export default function DadosVagas() {
       "categoria": ""
     }
   ];
+}
+
+
+export default function RotaDadosVagas() {
+  return null;
 }

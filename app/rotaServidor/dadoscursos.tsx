@@ -1,4 +1,4 @@
-export default function DadosCursos() {
+export function DadosCursos() {
   return [
     {
       "id": "1",
@@ -661,4 +661,9 @@ export default function DadosCursos() {
       "beneficios": ""
     }
   ];
+}
+
+
+export default function RotaDadosCursos() {
+  return null;
 }

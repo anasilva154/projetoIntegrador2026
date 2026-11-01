@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 2,
     transform: [{ translateY: -15 }],
   },
   titulo: {
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   card: {
-    width: '70%',
+    width: '85%',
     backgroundColor: cores.branco,
     borderRadius: 32,
     alignItems: 'center',
@@ -125,12 +125,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   botao: {
-    width: '70%',
+    width: '80%',
     height: 44,
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 18,
+    marginBottom: 15,
   },
   botaoRoxo: {
     backgroundColor: cores.roxo,

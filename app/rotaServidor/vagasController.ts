@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DadosVagas from './dados';
+import { DadosVagas } from './dados';
 
 const CHAVE_VAGAS = '@vooa/vagas';
 
