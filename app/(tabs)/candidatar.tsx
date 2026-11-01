@@ -1,4 +1,4 @@
-﻿// app/candidatar.tsx
+// app/(tabs)/candidatar.tsx
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Animated,
@@ -16,12 +16,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../components/header';
 import { salvarEnvio } from '../rotaServidor/envios';
+import { useProtegerRota } from '../rotaServidor/usuarioController';
 
-/* ---------- cores ---------- */
 const cores = {
   roxo: '#7B2FF7',
   roxoClaro: '#F8F8F8',
@@ -78,9 +78,15 @@ function BotaoAnimado({
   );
 }
 
-/* ---------- tela ---------- */
 export default function Candidatar() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('cliente');
+  const params = useLocalSearchParams<{
+    vagaId?: string;
+    titulo?: string;
+    empresa?: string;
+    area?: string;
+  }>();
 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
@@ -92,9 +98,19 @@ export default function Candidatar() {
   const [feedback, setFeedback] = useState<Feedback>(null);
   const redirecionamento = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Preenche automaticamente os dados básicos do usuário logado
+  useEffect(() => {
+    if (!usuario) return;
+    setNome((atual) => atual || usuario.nome || '');
+    setEmail((atual) => atual || usuario.email || '');
+    setTelefone((atual) => atual || usuario.telefone || '');
+  }, [usuario]);
+
   useEffect(() => () => {
     if (redirecionamento.current) clearTimeout(redirecionamento.current);
   }, []);
+
+  if (!usuario) return null;
 
   async function selecionarAnexo() {
     try {
@@ -173,19 +189,21 @@ export default function Candidatar() {
     try {
       await salvarEnvio({
         tipo: 'vaga',
-        titulo: 'Candidatura para vaga',
-        empresa: 'Oportunidade de emprego',
+        titulo: params.titulo || 'Candidatura para vaga',
+        empresa: params.empresa || 'Empresa Parceira',
+        area: params.area || 'Geral',
         nome: nome.trim(),
         email: email.trim(),
         telefone: telefone.trim(),
         idade: idade.trim(),
         cidade: cidade.trim(),
         arquivo_nome: anexo.name,
+        usuarioEmail: usuario?.email,
       });
       setFeedback({
         tipo: 'sucesso',
         titulo: 'Candidatura registrada',
-        mensagem: 'O registro ficou salvo neste aparelho; o currículo não foi enviado a um servidor.',
+        mensagem: 'Sua candidatura foi salva com sucesso!',
       });
       redirecionamento.current = setTimeout(irParaCurriculos, 1500);
     } catch (error) {
@@ -207,10 +225,8 @@ export default function Candidatar() {
 
   return (
     <SafeAreaView style={styles.tela} edges={['top', 'bottom']}>
-      {/* Barra de topo branca, igual às outras páginas */}
       <Header />
 
-      {/* Área roxa */}
       <KeyboardAvoidingView
         style={styles.fundoRoxo}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -221,28 +237,30 @@ export default function Candidatar() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.cartao}>
-            {/* Título */}
             <View style={styles.cabecalho}>
               <Text style={styles.titulo}>Candidatar-se</Text>
+              {params.titulo ? (
+                <Text style={styles.vagaNome}>
+                  {params.titulo} · {params.empresa}
+                </Text>
+              ) : null}
               <Text style={styles.subtitulo}>
                 Preencha seus dados e anexe seu currículo em PDF ou uma foto para se candidatar a esta vaga.
               </Text>
             </View>
 
-            {/* nome */}
             <Text style={styles.rotulo}>
               Nome completo <Text style={styles.obrigatorio}>*</Text>
             </Text>
             <TextInput
               style={styles.input}
               placeholder="Digite seu nome completo"
-              placeholderTextColor={cores.texto}
+              placeholderTextColor="#777"
               value={nome}
               onChangeText={setNome}
               autoCapitalize="words"
             />
 
-            {/* e-mail e telefone */}
             <View style={styles.linha}>
               <View style={styles.coluna}>
                 <Text style={styles.rotulo}>
@@ -251,7 +269,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Digite seu e-mail"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
@@ -267,7 +285,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Digite seu telefone"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={telefone}
                   onChangeText={setTelefone}
                   keyboardType="phone-pad"
@@ -275,7 +293,6 @@ export default function Candidatar() {
               </View>
             </View>
 
-            {/* idade e cidade */}
             <View style={styles.linha}>
               <View style={styles.coluna}>
                 <Text style={styles.rotulo}>
@@ -284,7 +301,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Digite sua idade"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={idade}
                   onChangeText={setIdade}
                   keyboardType="number-pad"
@@ -298,7 +315,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Digite seu bairro"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={cidade}
                   onChangeText={setCidade}
                   autoCapitalize="words"
@@ -306,7 +323,6 @@ export default function Candidatar() {
               </View>
             </View>
 
-            {/* Anexo do currículo */}
             <Text style={styles.rotulo}>
               Currículo ou foto <Text style={styles.obrigatorio}>*</Text>
             </Text>
@@ -344,14 +360,13 @@ export default function Candidatar() {
               </Pressable>
             )}
 
-            {/* mensagem */}
             <Text style={styles.rotulo}>
               Mensagem <Text style={styles.opcional}>(opcional)</Text>
             </Text>
             <TextInput
               style={[styles.input, styles.inputMensagem]}
               placeholder="Conte um pouco sobre você e por que quer fazer parte da nossa equipe."
-              placeholderTextColor={cores.texto}
+              placeholderTextColor="#777"
               value={mensagem}
               onChangeText={(t) => setMensagem(t.slice(0, LIMITE_MENSAGEM))}
               multiline
@@ -361,17 +376,20 @@ export default function Candidatar() {
               {mensagem.length}/{LIMITE_MENSAGEM}
             </Text>
 
-            {/* enviar */}
             <BotaoAnimado style={styles.botao} onPress={enviar}>
               <Text style={styles.botaoTexto}>Enviar</Text>
             </BotaoAnimado>
           </View>
         </ScrollView>
 
-        {/* Botão de voltar flutuante, no canto inferior esquerdo */}
         <BotaoAnimado
           style={styles.botaoVoltar}
-          onPress={() => router.push('/vagasinformacao')}
+          onPress={() =>
+            router.push({
+              pathname: '/vagasinformacao',
+              params: params.vagaId ? { id: params.vagaId } : {},
+            })
+          }
           hitSlop={8}
         >
           <Image
@@ -404,7 +422,7 @@ export default function Candidatar() {
               accessibilityRole="button"
             >
               <Text style={styles.feedbackBotaoTexto}>
-                {feedback.tipo === 'sucesso' ? 'Ir para currículos' : 'Entendi'}
+                {feedback.tipo === 'sucesso' ? 'Ir para meus envios' : 'Entendi'}
               </Text>
             </Pressable>
           </View>
@@ -414,10 +432,8 @@ export default function Candidatar() {
   );
 }
 
-/* ---------- estilos ---------- */
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
-
   feedbackFundo: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 10,
@@ -442,12 +458,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 29,
   },
-  feedbackIconeSucesso: {
-    backgroundColor: '#28A745',
-  },
-  feedbackIconeErro: {
-    backgroundColor: cores.erro,
-  },
+  feedbackIconeSucesso: { backgroundColor: '#28A745' },
+  feedbackIconeErro: { backgroundColor: cores.erro },
   feedbackTitulo: {
     marginTop: 16,
     color: cores.titulo,
@@ -470,24 +482,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: cores.roxo,
   },
-  feedbackBotaoTexto: {
-    color: cores.branco,
-    fontSize: 15,
-    fontWeight: '700',
-  },
+  feedbackBotaoTexto: { color: cores.branco, fontSize: 15, fontWeight: '700' },
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo },
   scroll: { padding: 16, paddingBottom: 96 },
-
-  cartao: {
-    backgroundColor: cores.branco,
-    borderRadius: 24,
-    padding: 20,
-  },
-
+  cartao: { backgroundColor: cores.branco, borderRadius: 24, padding: 20 },
   cabecalho: { marginBottom: 8 },
   titulo: { fontSize: 26, fontWeight: '800', color: cores.amarelo },
+  vagaNome: { fontSize: 14, fontWeight: '700', color: cores.roxo, marginTop: 4 },
   subtitulo: { fontSize: 13, color: cores.texto, lineHeight: 18, marginTop: 4 },
-
   rotulo: {
     fontSize: 14,
     fontWeight: '800',
@@ -497,7 +499,6 @@ const styles = StyleSheet.create({
   },
   obrigatorio: { color: cores.erro },
   opcional: { fontWeight: '400', color: cores.texto },
-
   input: {
     height: 50,
     borderWidth: 1,
@@ -508,10 +509,8 @@ const styles = StyleSheet.create({
     color: cores.titulo,
     backgroundColor: cores.branco,
   },
-
   linha: { flexDirection: 'row', gap: 12 },
   coluna: { flex: 1 },
-
   upload: {
     borderWidth: 1.5,
     borderStyle: 'dashed',
@@ -534,10 +533,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   removerAnexoTexto: { color: cores.erro, fontSize: 12, fontWeight: '700' },
-
   inputMensagem: { height: 110, paddingTop: 12 },
   contador: { alignSelf: 'flex-end', fontSize: 12, color: cores.texto, marginTop: 6 },
-
   botao: {
     backgroundColor: cores.amarelo,
     borderRadius: 30,
@@ -548,8 +545,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   botaoTexto: { fontSize: 16, fontWeight: '800', color: cores.titulo },
-
-  // Botão de voltar: círculo roxo com o PNG preenchendo, fixo no canto inferior esquerdo
   botaoVoltar: {
     position: 'absolute',
     left: 6,
@@ -561,11 +556,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000', // sombra no iOS
+    shadowColor: '#000',
     shadowOpacity: 0.35,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 4 },
-    elevation: 8, // sombra no Android
+    elevation: 8,
   },
   iconeVoltar: { width: 48, height: 48 },
 });

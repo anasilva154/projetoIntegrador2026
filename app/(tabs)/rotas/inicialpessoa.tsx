@@ -4,25 +4,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../../../components/header';
 import { Botao } from '../../../components/botao';
 import { RodapeFlutuante } from '../../../components/rodapeperfil';
- 
+import { useProtegerRota } from '../../rotaServidor/usuarioController';
+
 export default function Inicio() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('cliente');
   const { width } = useWindowDimensions();
   const larguraBotao = Math.min(width - 48, 320);
- 
+
+  if (!usuario) return null;
+
   return (
     <View style={styles.tela}>
       <Header />
- 
+
       {/* Circulos decorativos dentro dos limites da tela */}
       <View style={styles.circuloPequeno} />
       <View style={styles.circuloMedio} />
       <View style={styles.circuloGrande} />
- 
+
       <ScrollView
         contentContainerStyle={styles.conteudo}
         showsVerticalScrollIndicator={false}
       >
+        <Text style={styles.saudacao}>Olá, {usuario.nome}!</Text>
+
         {/* Texto aninhado com estilos mistos */}
         <Text style={styles.paragrafo}>
           A plataforma que reúne{' '}
@@ -31,7 +37,7 @@ export default function Inicio() {
           <Text style={styles.destaqueNegrito}>facilitando a busca</Text>{' '}
           por aquilo que combina com os interesses e objetivos de cada pessoa.
         </Text>
- 
+
         <View style={styles.botoes}>
           <Botao
             titulo="vagas de emprego"
@@ -46,7 +52,7 @@ export default function Inicio() {
             size={larguraBotao}
           />
         </View>
- 
+
         <View style={styles.rodapeInfo}>
           <Ionicons name="shield-checkmark-outline" size={18} color="#F2BE35" />
           <Text style={styles.textoRodape}>
@@ -63,19 +69,26 @@ export default function Inicio() {
     </View>
   );
 }
- 
+
 const styles = StyleSheet.create({
   tela: {
     flex: 1,
     backgroundColor: '#7B2FF7',
-    overflow: 'hidden', // corta as formas que ultrapassam a tela
+    overflow: 'hidden',
   },
   conteudo: {
     flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 110,
+    paddingTop: 70,
     paddingBottom: 100,
+  },
+  saudacao: {
+    alignSelf: 'flex-start',
+    color: '#F2BE35',
+    fontSize: 24,
+    fontWeight: '800',
+    marginBottom: 14,
   },
   paragrafo: {
     color: '#FFFFFF',
@@ -109,9 +122,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
   },
- 
+
   // ---------- circulos decorativos ----------
- 
   circuloPequeno: {
     position: 'absolute',
     left: 28,
@@ -140,5 +152,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2BE35',
   },
 });
- 
- 

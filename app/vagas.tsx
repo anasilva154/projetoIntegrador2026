@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
-import DadosVagas from './rotaServidor/dados';
+import { listarVagas, type VagaItem } from './rotaServidor/vagasController';
+import { useProtegerRota } from './rotaServidor/usuarioController';
 
 const normalizar = (texto: string) =>
   texto
@@ -14,9 +16,22 @@ const normalizar = (texto: string) =>
 
 export default function Vagas() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('cliente');
+  const telaEmFoco = useIsFocused();
 
-  const vagas = useMemo(() => DadosVagas(), []);
+  const [vagas, setVagas] = useState<VagaItem[]>([]);
   const [busca, setBusca] = useState('');
+
+  useEffect(() => {
+    if (!telaEmFoco || !usuario) return;
+
+    async function carregar() {
+      const lista = await listarVagas();
+      setVagas(lista);
+    }
+
+    carregar();
+  }, [telaEmFoco, usuario]);
 
   const vagasFiltradas = useMemo(() => {
     const termo = normalizar(busca);
@@ -28,6 +43,8 @@ export default function Vagas() {
         normalizar(v.categoria).includes(termo)
     );
   }, [vagas, busca]);
+
+  if (!usuario) return null;
 
   return (
     <View style={styles.tela}>
@@ -53,7 +70,7 @@ export default function Vagas() {
 
       <FlatList
         data={vagasFiltradas}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.tituloLinha}>
@@ -68,12 +85,17 @@ export default function Vagas() {
 
             <TouchableOpacity
               style={styles.cardSubtitulo}
-              onPress={() => router.push('/vagasinformacao')}
+              onPress={() =>
+                router.push({
+                  pathname: '/vagasinformacao',
+                  params: { id: String(item.id) },
+                })
+              }
               activeOpacity={0.8}
               accessibilityRole="button"
               accessibilityLabel={`Ver detalhes da vaga ${item.titulo}`}
             >
-              {item.topicos.slice(0, 4).map((topico, index) => (
+              {(item.topicos || []).slice(0, 4).map((topico, index) => (
                 <View key={index} style={styles.topicoLinha}>
                   <Text style={styles.bolinhaTopico}>•</Text>
                   <Text style={styles.topicoTexto} numberOfLines={1}>
@@ -113,7 +135,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#7B2FF7',
   },
-
   buscaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -132,7 +153,6 @@ const styles = StyleSheet.create({
     color: '#000000',
     paddingVertical: 0,
   },
-
   lista: {
     paddingHorizontal: 16,
     paddingBottom: 110,
@@ -145,7 +165,6 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
   },
-
   tituloLinha: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -169,7 +188,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 10,
   },
-
   cardSubtitulo: {
     width: '100%',
     backgroundColor: '#EBEBEB',
@@ -195,7 +213,6 @@ const styles = StyleSheet.create({
     color: '#000',
     lineHeight: 18,
   },
-
   saibaMaisContainer: {
     alignItems: 'flex-end',
     marginTop: 14,
@@ -206,16 +223,14 @@ const styles = StyleSheet.create({
     color: '#9A9A9A',
     textDecorationLine: 'underline',
   },
-
   vazio: {
     textAlign: 'center',
     color: '#FFFFFF',
     fontSize: 15,
     marginTop: 30,
   },
-
   botaoVoltar: {
-   position: 'absolute',
+    position: 'absolute',
     left: 6,
     bottom: 50,
     width: 60,

@@ -1,11 +1,31 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
 import { BotaoVoltar } from './botaoVoltar';
+import { listarEnviosPorUsuario, type Envio } from './rotaServidor/envios';
+import { useProtegerRota } from './rotaServidor/usuarioController';
 
 export default function Matriculas() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('cliente');
+  const telaEmFoco = useIsFocused();
+  const [matriculas, setMatriculas] = useState<Envio[]>([]);
+
+  useEffect(() => {
+    if (!telaEmFoco || !usuario) return;
+
+    async function carregar() {
+      const envios = await listarEnviosPorUsuario(usuario!.email);
+      setMatriculas(envios.filter((e) => e.tipo === 'curso'));
+    }
+
+    carregar();
+  }, [telaEmFoco, usuario]);
+
+  if (!usuario) return null;
 
   return (
     <View style={styles.tela}>
@@ -31,44 +51,68 @@ export default function Matriculas() {
           Acompanhe por aqui as solicitações de matrícula que você enviar.
         </Text>
 
-        <View style={styles.cartaoVazio}>
-          <View style={styles.iconePrincipal}>
-            <Ionicons name="school" size={36} color="#7B2FF7" />
-            <View style={styles.iconeSelo}>
-              <Ionicons name="add" size={16} color="#FFFFFF" />
+        {matriculas.length === 0 ? (
+          <View style={styles.cartaoVazio}>
+            <View style={styles.iconePrincipal}>
+              <Ionicons name="school" size={36} color="#7B2FF7" />
+              <View style={styles.iconeSelo}>
+                <Ionicons name="add" size={16} color="#FFFFFF" />
+              </View>
             </View>
-          </View>
 
-          <View style={styles.etiquetaStatus}>
-            <View style={styles.pontoStatus} />
-            <Text style={styles.etiquetaStatusTexto}>ÁREA DE MATRÍCULAS</Text>
-          </View>
+            <View style={styles.etiquetaStatus}>
+              <View style={styles.pontoStatus} />
+              <Text style={styles.etiquetaStatusTexto}>ÁREA DE MATRÍCULAS</Text>
+            </View>
 
-          <Text style={styles.tituloCartao}>Seu próximo passo começa aqui</Text>
-          <Text style={styles.textoCartao}>
-            Quando você solicitar uma matrícula, poderá acompanhar os detalhes e
-            atualizações nesta página.
-          </Text>
-
-          <View style={styles.divisor} />
-
-          <View style={styles.dica}>
-            <Ionicons name="bulb-outline" size={20} color="#8A5B00" />
-            <Text style={styles.dicaTexto}>
-              Explore os cursos disponíveis e encontre uma oportunidade para você.
+            <Text style={styles.tituloCartao}>Seu próximo passo começa aqui</Text>
+            <Text style={styles.textoCartao}>
+              Quando você solicitar uma matrícula, poderá acompanhar os detalhes e
+              atualizações nesta página.
             </Text>
-          </View>
 
-          <TouchableOpacity
-            style={styles.botaoAcao}
-            activeOpacity={0.85}
-            onPress={() => router.push('/cursos')}
-          >
-            <Ionicons name="search-outline" size={19} color="#FFFFFF" />
-            <Text style={styles.textoBotao}>Explorar cursos</Text>
-            <Ionicons name="arrow-forward" size={18} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.divisor} />
+
+            <View style={styles.dica}>
+              <Ionicons name="bulb-outline" size={20} color="#8A5B00" />
+              <Text style={styles.dicaTexto}>
+                Explore os cursos disponíveis e encontre uma oportunidade para você.
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.botaoAcao}
+              activeOpacity={0.85}
+              onPress={() => router.push('/cursos')}
+            >
+              <Ionicons name="search-outline" size={19} color="#FFFFFF" />
+              <Text style={styles.textoBotao}>Explorar cursos</Text>
+              <Ionicons name="arrow-forward" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={{ gap: 12 }}>
+            {matriculas.map((item) => (
+              <Pressable
+                key={item.id}
+                style={styles.cartaoItem}
+                onPress={() =>
+                  router.push({
+                    pathname: '/rotas/envios/[id]',
+                    params: { id: String(item.id), dados: JSON.stringify(item) },
+                  })
+                }
+              >
+                <Ionicons name="school-outline" size={28} color="#7B2FF7" />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.itemTitulo}>{item.titulo}</Text>
+                  <Text style={styles.itemSub}>{item.empresa}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#333" />
+              </Pressable>
+            ))}
+          </View>
+        )}
 
         <View style={styles.rodapeInfo}>
           <Ionicons name="shield-checkmark-outline" size={18} color="#F2BE35" />
@@ -84,14 +128,8 @@ export default function Matriculas() {
 }
 
 const styles = StyleSheet.create({
-  tela: {
-    flex: 1,
-    backgroundColor: '#7B2FF7',
-  },
-  decoracao: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
-  },
+  tela: { flex: 1, backgroundColor: '#7B2FF7' },
+  decoracao: { ...StyleSheet.absoluteFillObject, overflow: 'hidden' },
   circuloGrande: {
     position: 'absolute',
     top: 150,
@@ -135,19 +173,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,0.14)',
   },
-  seloTexto: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-  },
-  titulo: {
-    color: '#FFFFFF',
-    fontSize: 34,
-    fontWeight: '800',
-    letterSpacing: -0.7,
-    marginTop: 18,
-  },
+  seloTexto: { color: '#FFFFFF', fontSize: 10, fontWeight: '700', letterSpacing: 0.8 },
+  titulo: { color: '#FFFFFF', fontSize: 34, fontWeight: '800', letterSpacing: -0.7, marginTop: 18 },
   subtitulo: {
     maxWidth: 310,
     color: 'rgba(255,255,255,0.82)',
@@ -156,6 +183,16 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 26,
   },
+  cartaoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    backgroundColor: '#FFFFFF',
+    padding: 18,
+    borderRadius: 20,
+  },
+  itemTitulo: { color: '#25164F', fontSize: 16, fontWeight: '800' },
+  itemSub: { color: '#6B6B80', fontSize: 13, marginTop: 2 },
   cartaoVazio: {
     alignItems: 'center',
     padding: 22,
@@ -199,38 +236,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: '#F8F8F8',
   },
-  pontoStatus: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: '#7B2FF7',
-  },
-  etiquetaStatusTexto: {
-    color: '#7B2FF7',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.7,
-  },
-  tituloCartao: {
-    color: '#7B2FF7',
-    fontSize: 21,
-    fontWeight: '800',
-    textAlign: 'center',
-    marginTop: 16,
-  },
-  textoCartao: {
-    color: '#7B2FF7',
-    fontSize: 14,
-    lineHeight: 21,
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  divisor: {
-    alignSelf: 'stretch',
-    height: 1,
-    backgroundColor: '#E5E5E5',
-    marginVertical: 19,
-  },
+  pontoStatus: { width: 7, height: 7, borderRadius: 4, backgroundColor: '#7B2FF7' },
+  etiquetaStatusTexto: { color: '#7B2FF7', fontSize: 10, fontWeight: '700', letterSpacing: 0.7 },
+  tituloCartao: { color: '#7B2FF7', fontSize: 21, fontWeight: '800', textAlign: 'center', marginTop: 16 },
+  textoCartao: { color: '#7B2FF7', fontSize: 14, lineHeight: 21, textAlign: 'center', marginTop: 8 },
+  divisor: { alignSelf: 'stretch', height: 1, backgroundColor: '#E5E5E5', marginVertical: 19 },
   dica: {
     alignSelf: 'stretch',
     flexDirection: 'row',
@@ -240,12 +250,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#FFF7E5',
   },
-  dicaTexto: {
-    flex: 1,
-    color: '#69572D',
-    fontSize: 13,
-    lineHeight: 19,
-  },
+  dicaTexto: { flex: 1, color: '#69572D', fontSize: 13, lineHeight: 19 },
   botaoAcao: {
     alignSelf: 'stretch',
     minHeight: 52,
@@ -258,12 +263,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#7B2FF7',
     marginTop: 17,
   },
-  textoBotao: {
-    flex: 1,
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '700',
-  },
+  textoBotao: { flex: 1, color: '#FFFFFF', fontSize: 15, fontWeight: '700' },
   rodapeInfo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -272,9 +272,5 @@ const styles = StyleSheet.create({
     marginTop: 21,
     paddingHorizontal: 6,
   },
-  textoRodape: {
-    color: 'rgba(255,255,255,0.82)',
-    fontSize: 12,
-    lineHeight: 18,
-  },
+  textoRodape: { color: 'rgba(255,255,255,0.82)', fontSize: 12, lineHeight: 18 },
 });

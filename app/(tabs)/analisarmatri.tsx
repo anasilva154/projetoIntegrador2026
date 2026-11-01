@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Header } from '../../components/header';
+import { useProtegerRota } from '../rotaServidor/usuarioController';
 
 type Matricula = {
   id: string;
@@ -37,34 +38,7 @@ function lerMatriculas(valor: string | string[] | undefined, curso: string): Mat
   try {
     const dados: unknown = JSON.parse(valor);
     if (!Array.isArray(dados)) return [];
-
-    return dados.filter(
-      (item): item is Matricula =>
-        item !== null &&
-        typeof item === 'object' &&
-        'id' in item &&
-        'nome' in item &&
-        'area' in item &&
-        typeof item.id === 'string' &&
-        typeof item.nome === 'string' &&
-        typeof item.area === 'string' &&
-        typeof item.curso === 'string' &&
-        typeof item.nascimento === 'string' &&
-        typeof item.cpf === 'string' &&
-        typeof item.email === 'string' &&
-        typeof item.telefone === 'string' &&
-        typeof item.escolaridade === 'string' &&
-        typeof item.turno === 'string' &&
-        'documento' in item &&
-        item.documento !== null &&
-        typeof item.documento === 'object' &&
-        'nome' in item.documento &&
-        'detalhe' in item.documento &&
-        'url' in item.documento &&
-        typeof item.documento.nome === 'string' &&
-        typeof item.documento.detalhe === 'string' &&
-        typeof item.documento.url === 'string',
-    ).map((item) => ({ ...item, curso }));
+    return (dados as Matricula[]).map((item) => ({ ...item, curso }));
   } catch {
     return [];
   }
@@ -72,6 +46,7 @@ function lerMatriculas(valor: string | string[] | undefined, curso: string): Mat
 
 export default function AnalisarMatriculas() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('empresa');
   const params = useLocalSearchParams<{
     curso?: string;
     area?: string;
@@ -80,11 +55,11 @@ export default function AnalisarMatriculas() {
   const curso =
     typeof params.curso === 'string'
       ? params.curso
-      : 'Curso Técnico em Informática';
+      : 'Curso de Qualificação';
   const area =
     typeof params.area === 'string'
       ? params.area
-      : 'Tecnologia da Informação';
+      : 'Qualificação';
   const matriculas = useMemo(
     () => lerMatriculas(params.matriculados, curso),
     [params.matriculados, curso],
@@ -100,6 +75,8 @@ export default function AnalisarMatriculas() {
         .includes(termo),
     );
   }, [busca, matriculas]);
+
+  if (!usuario) return null;
 
   const cabecalho = (
     <View>
@@ -131,7 +108,7 @@ export default function AnalisarMatriculas() {
         <TextInput
           style={styles.buscaInput}
           placeholder="Buscar pessoa matriculada..."
-          placeholderTextColor={stylesConstantes.preto}
+          placeholderTextColor="#666"
           value={busca}
           onChangeText={setBusca}
           autoCorrect={false}

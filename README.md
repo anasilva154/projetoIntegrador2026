@@ -30,7 +30,7 @@ O backend e o banco de dados são gerenciados centralmente pelo professor e já 
 1. **Fork do Projeto:** O gestor ou um membro representante da equipe deve criar um **Fork** deste repositório na sua conta do GitHub/GitLab.
 2. **Gerenciamento de Membros:** O gestor da equipe deve adicionar os demais integrantes como colaboradores do fork.
 3. **Autonomia:** A equipe pode criar suas próprias branches, issues, quadros Kanban e convenções internas de commits.
-4. **Token de Acesso:** O `EXPO_PUBLIC_API_TOKEN` para autenticação na API será repassado pelo professor diretamente ao **gestor de cada equipe**.
+
 
 ---
 
@@ -131,73 +131,11 @@ Assim que o comando for executado, um **QR Code** e um menu interativo aparecer�
 
 ---
 
-## 📡 Como Consumir a API do Servidor
-
-A pasta `app/rotaServidor/` contém serviços prontos que facilitam a comunicação com o servidor `https://senac.pizzarapida.net/api`.
-
-### Exemplo: Listar e Cadastrar Produtos
-```tsx
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from "react-native";
-import produtosService, { Produto } from "@/app/rotaServidor/produtos";
-
-export default function CatalogoScreen() {
-  const [produtos, setProdutos] = useState<Produto[]>([]);
-  const [carregando, setCarregando] = useState(true);
-
-  useEffect(() => {
-    async function carregar() {
-      try {
-        const dados = await produtosService.listarTodos();
-        setProdutos(dados);
-      } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
-      } finally {
-        setCarregando(false);
-      }
-    }
-
-    carregar();
-  }, []);
-
-  if (carregando) {
-    return <ActivityIndicator size="large" color="#0066cc" style={{ flex: 1 }} />;
-  }
-
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={produtos}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.titulo}>{item.nome}</Text>
-            <Text style={styles.preco}>R$ {Number(item.preco).toFixed(2)}</Text>
-            {item.descricao && <Text style={styles.descricao}>{item.descricao}</Text>}
-          </View>
-        )}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#f5f5f5" },
-  card: { backgroundColor: "#fff", padding: 16, borderRadius: 8, marginBottom: 12, elevation: 2 },
-  titulo: { fontSize: 18, fontWeight: "bold", color: "#333" },
-  preco: { fontSize: 16, color: "#008844", marginTop: 4 },
-  descricao: { fontSize: 14, color: "#666", marginTop: 4 },
-});
-```
-
----
-
 ## 💡 Dicas de Sucesso para a Equipe
 
 1. **Personalização:** Atualize o `app.json` com o nome da sua aplicação e o nome da sua equipe.
 2. **Design e Usabilidade:** Utilize componentes modernos, boas cores e tipografia clara para valorizar a apresentação do projeto integrador.
 3. **Divisão de Tarefas:** Dividam as telas e componentes entre os membros da equipe para que todos participem ativamente do desenvolvimento.
-4. **Dúvidas com a API:** O gestor da equipe deve alinhar com o professor caso necessitem de novos endpoints ou ajustes nos modelos de dados.
 
 ---
 

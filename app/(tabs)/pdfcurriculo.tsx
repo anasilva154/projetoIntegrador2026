@@ -7,19 +7,20 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+} from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useProtegerRota } from '../rotaServidor/usuarioController';
 
 const cores = {
-  fundo: "#7B2FF7",
-  escuro: "#7B2FF7",
-  texto: "#7B2FF7",
-  amarelo: "#FFD22E",
-  branco: "#FFFFFF",
-  cinza: "#FFFFFF",
-  cinzaCard: "#FFFFFF",
-  vermelho: "#FF5A5F",
+  fundo: '#7B2FF7',
+  escuro: '#7B2FF7',
+  texto: '#7B2FF7',
+  amarelo: '#FFD22E',
+  branco: '#FFFFFF',
+  cinza: '#FFFFFF',
+  cinzaCard: '#FFFFFF',
+  vermelho: '#FF5A5F',
 };
 
 type CandidatoDetalhes = {
@@ -36,55 +37,23 @@ type CandidatoDetalhes = {
 };
 
 const candidatoPadrao: CandidatoDetalhes = {
-  nome: "Ana Beatriz",
-  email: "ana.beatriz@example.com",
-  telefone: "(48) 90000-0001",
-  idade: "19 anos",
-  bairro: "Centro",
+  nome: 'Ana Silva',
+  email: 'cliente@vooa.com',
+  telefone: '(48) 99999-1234',
+  idade: '18 anos',
+  bairro: 'Centro',
   curriculo: {
-    nome: "Curriculo_Ana_Beatriz.pdf",
-    detalhe: "Arquivo demonstrativo",
-    url: "",
+    nome: 'Curriculo_Ana_Silva.pdf',
+    detalhe: 'Arquivo enviado pelo candidato',
+    url: '',
   },
 };
 
-function ehRegistro(valor: unknown): valor is Record<string, unknown> {
-  return valor !== null && typeof valor === "object" && !Array.isArray(valor);
-}
-
 function lerCandidato(valor: string | string[] | undefined): CandidatoDetalhes | null {
-  if (typeof valor !== "string") return null;
+  if (typeof valor !== 'string') return null;
 
   try {
-    const dado: unknown = JSON.parse(valor);
-    if (!ehRegistro(dado) || !ehRegistro(dado.curriculo)) return null;
-    const curriculo = dado.curriculo;
-
-    if (
-      typeof dado.nome !== "string" ||
-      typeof dado.email !== "string" ||
-      typeof dado.telefone !== "string" ||
-      typeof dado.idade !== "string" ||
-      typeof dado.bairro !== "string" ||
-      typeof curriculo.nome !== "string" ||
-      typeof curriculo.detalhe !== "string" ||
-      typeof curriculo.url !== "string"
-    ) {
-      return null;
-    }
-
-    return {
-      nome: dado.nome,
-      email: dado.email,
-      telefone: dado.telefone,
-      idade: dado.idade,
-      bairro: dado.bairro,
-      curriculo: {
-        nome: curriculo.nome,
-        detalhe: curriculo.detalhe,
-        url: curriculo.url,
-      },
-    };
+    return JSON.parse(valor) as CandidatoDetalhes;
   } catch {
     return null;
   }
@@ -92,30 +61,34 @@ function lerCandidato(valor: string | string[] | undefined): CandidatoDetalhes |
 
 export default function PdfCurriculoScreen() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('empresa');
   const params = useLocalSearchParams<{ candidato?: string }>();
   const candidato = lerCandidato(params.candidato) ?? candidatoPadrao;
+
+  if (!usuario) return null;
+
   const dadosCandidato: {
     rotulo: string;
     valor: string;
     icone: keyof typeof Ionicons.glyphMap;
   }[] = [
-    { rotulo: "Nome completo", valor: candidato.nome, icone: "person" },
-    { rotulo: "E-mail", valor: candidato.email, icone: "mail" },
-    { rotulo: "Telefone", valor: candidato.telefone, icone: "call" },
-    { rotulo: "Idade", valor: candidato.idade, icone: "calendar" },
-    { rotulo: "Bairro", valor: candidato.bairro, icone: "location" },
+    { rotulo: 'Nome completo', valor: candidato.nome, icone: 'person' },
+    { rotulo: 'E-mail', valor: candidato.email, icone: 'mail' },
+    { rotulo: 'Telefone', valor: candidato.telefone, icone: 'call' },
+    { rotulo: 'Idade', valor: candidato.idade, icone: 'calendar' },
+    { rotulo: 'Bairro', valor: candidato.bairro, icone: 'location' },
   ];
 
   async function abrirCurriculo() {
     if (!candidato.curriculo.url) {
-      Alert.alert("Arquivo demonstrativo", "O PDF deste currículo não está disponível.");
+      Alert.alert('Arquivo salvo localmente', `Arquivo anexado: ${candidato.curriculo.nome}`);
       return;
     }
 
     try {
       await Linking.openURL(candidato.curriculo.url);
     } catch {
-      Alert.alert("Erro", "Não foi possível baixar o currículo.");
+      Alert.alert('Erro', 'Não foi possível abrir o currículo.');
     }
   }
 
@@ -156,18 +129,17 @@ export default function PdfCurriculoScreen() {
           </View>
           <Ionicons name="chevron-forward" size={22} color={cores.escuro} />
         </Pressable>
-
       </ScrollView>
 
       <Pressable
         style={styles.botaoVoltar}
-        onPress={() => router.push('/analisarcurri')}
+        onPress={() => router.back()}
         accessibilityRole="button"
         accessibilityLabel="Voltar"
         hitSlop={10}
       >
         <Image
-          source={require("../../assets/voltar 1.png")}
+          source={require('../../assets/voltar 1.png')}
           style={styles.voltarIcone}
           resizeMode="contain"
           accessibilityLabel="Seta para voltar"
@@ -184,24 +156,15 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingHorizontal: 20,
   },
-  conteudoScroll: {
-    flexGrow: 1,
-    paddingTop: 12,
-    // paddingBottom: 120,
-  },
-  titulo: { fontSize: 24, fontWeight: "800", color: cores.branco },
-  subtitulo: {
-    fontSize: 15,
-    color: cores.branco,
-    marginTop: 2,
-    marginBottom: 16,
-  },
+  conteudoScroll: { flexGrow: 1, paddingTop: 12 },
+  titulo: { fontSize: 24, fontWeight: '800', color: cores.branco },
+  subtitulo: { fontSize: 15, color: cores.branco, marginTop: 2, marginBottom: 16 },
   cardArquivo: {
     backgroundColor: cores.branco,
     borderRadius: 20,
     padding: 18,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
     marginBottom: 4,
   },
@@ -210,13 +173,13 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: 8,
     backgroundColor: cores.vermelho,
-    alignItems: "center",
-    justifyContent: "flex-end",
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     paddingBottom: 8,
   },
-  pdfIconeTexto: { color: cores.branco, fontSize: 13, fontWeight: "800" },
+  pdfIconeTexto: { color: cores.branco, fontSize: 13, fontWeight: '800' },
   arquivoInfo: { flex: 1, gap: 4 },
-  arquivoNome: { fontSize: 16, fontWeight: "800", color: "#000000" },
+  arquivoNome: { fontSize: 16, fontWeight: '800', color: '#000000' },
   arquivoDetalhe: { fontSize: 13, color: cores.texto },
   cardDados: {
     backgroundColor: cores.cinzaCard,
@@ -225,26 +188,26 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   campo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 14,
     paddingVertical: 12,
   },
   campoTextos: { flex: 1 },
-  rotulo: { color: "#777777", fontSize: 12 },
-  valor: { color: "#333333", fontSize: 16, fontWeight: "500" },
-  divisor: { height: 1, backgroundColor: "#D6D6D6" },
+  rotulo: { color: '#777777', fontSize: 12 },
+  valor: { color: '#333333', fontSize: 16, fontWeight: '500' },
+  divisor: { height: 1, backgroundColor: '#D6D6D6' },
   botaoVoltar: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 82,
     left: 6,
     width: 60,
     height: 60,
     borderRadius: 30,
     backgroundColor: cores.amarelo,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
     shadowOpacity: 0.35,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 4 },

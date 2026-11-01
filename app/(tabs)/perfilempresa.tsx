@@ -1,6 +1,5 @@
-// app/(tabs)/perfil.tsx
-
-import { useState } from 'react';
+// app/(tabs)/perfilempresa.tsx
+import { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -16,32 +15,32 @@ import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { RodapeFlutuante } from '../../components/rodapeFlutuante';
 import { Header as HeaderLogo } from '../../components/header';
+import {
+  atualizarUsuarioLogado,
+  logoutUsuario,
+  useProtegerRota,
+} from '../rotaServidor/usuarioController';
 
-/* ------------------------------------------------------------------
-   CORES (as mesmas da tela de cadastro)
------------------------------------------------------------------- */
 const ROXO = '#7B2FF7';
 const AMARELO = '#FFC700';
 const CINZA_CARD = '#EBEBEB';
 const CINZA_INPUT = '#F8F8F8';
 const TEXTO = '#333333';
-const LOCALIZACAO_EMPRESA =
+const LOCALIZACAO_PADRAO =
   'Rua Exemplo, 123, próximo ao Senac, Criciúma - SC';
 
-/* ------------------------------------------------------------------
-   TIPOS
------------------------------------------------------------------- */
 type Perfil = {
   nome: string;
   cnpj: string;
   telefone: string;
-  email: string; // é por este array que a empresa vai filtrar
+  email: string;
+  endereco: string;
 };
 
-type ChaveTexto = 'nome' | 'cnpj' | 'telefone' | 'email';
+type ChaveTexto = 'nome' | 'cnpj' | 'telefone' | 'email' | 'endereco';
 
 type ItemCampo = {
-  id: string; // keyExtractor precisa de STRING
+  id: string;
   chave: ChaveTexto;
   icone: keyof typeof Ionicons.glyphMap;
   rotulo: string;
@@ -49,12 +48,6 @@ type ItemCampo = {
   teclado: KeyboardTypeOptions;
 };
 
-/* ------------------------------------------------------------------
-   COMPONENTES REUTILIZÁVEIS
-   (depois você pode mover cada um para a pasta components/)
------------------------------------------------------------------- */
-
-// Header: título + lápis (vira X quando está editando)
 type HeaderProps = {
   titulo: string;
   editando: boolean;
@@ -77,7 +70,6 @@ function Header({ titulo, editando, onEditar }: HeaderProps) {
   );
 }
 
-// Foto do perfil: por enquanto é só um ícone (sem função)
 type AvatarProps = {
   editando: boolean;
 };
@@ -85,7 +77,7 @@ type AvatarProps = {
 function Avatar({ editando }: AvatarProps) {
   return (
     <View style={styles.avatar}>
-      <Ionicons name="person" size={52} color="#808080" />
+      <Ionicons name="business" size={48} color="#808080" />
 
       {editando && (
         <View style={styles.avatarCamera}>
@@ -96,7 +88,6 @@ function Avatar({ editando }: AvatarProps) {
   );
 }
 
-// Uma linha: ícone + rótulo + (texto ou campo de digitação)
 type CampoProps = {
   icone: keyof typeof Ionicons.glyphMap;
   rotulo: string;
@@ -133,7 +124,7 @@ function Campo({
             autoCapitalize="none"
           />
         ) : (
-          <Text style={styles.valor}>{valor}</Text>
+          <Text style={styles.valor}>{valor || 'Não informado'}</Text>
         )}
       </View>
       {rotulo === 'CNPJ' && !editando && (
@@ -154,44 +145,74 @@ function Campo({
   );
 }
 
-// Linha fina entre os itens
 function Divisor() {
   return <View style={styles.divisor} />;
 }
 
-/* ------------------------------------------------------------------
-   TELA DE PERFIL
------------------------------------------------------------------- */
-export default function PerfilScreen() {
+export default function PerfilEmpresaScreen() {
   const router = useRouter();
+  const { usuario, setUsuario } = useProtegerRota('empresa');
 
-  // perfil = dados salvos | rascunho = o que está sendo editado
   const [perfil, setPerfil] = useState<Perfil>({
-    nome: 'nome da empresa',
-    cnpj: '11.222.333/0001-81',
-    telefone: '(48) 99999-0000',
-    email: 'email.empresa@voou.com',
+    nome: '',
+    cnpj: '',
+    telefone: '',
+    email: '',
+    endereco: LOCALIZACAO_PADRAO,
   });
   const [rascunho, setRascunho] = useState<Perfil>(perfil);
   const [editando, setEditando] = useState(false);
   const [mostrarCnpj, setMostrarCnpj] = useState(false);
 
-  // Editando mostra o rascunho; senão mostra o perfil salvo
+  // Carrega os dados da empresa logada a partir do AsyncStorage
+  useEffect(() => {
+    if (!usuario) return;
+
+    const dadosEmpresa: Perfil = {
+      nome: usuario.nome || '',
+      cnpj: usuario.cnpj || '',
+      telefone: usuario.telefone || '',
+      email: usuario.email || '',
+      endereco: usuario.endereco || LOCALIZACAO_PADRAO,
+    };
+    setPerfil(dadosEmpresa);
+    setRascunho(dadosEmpresa);
+  }, [usuario]);
+
+  if (!usuario) return null;
+
   const atual = editando ? rascunho : perfil;
 
-  /* ---------- ações ---------- */
   const iniciarEdicao = () => {
-    setRascunho(perfil); // começa a edição com uma cópia dos dados
+    setRascunho(perfil);
     setEditando(true);
   };
 
   const cancelarEdicao = () => {
-    setEditando(false); // joga o rascunho fora
+    setEditando(false);
   };
 
-  const salvar = () => {
-    setPerfil(rascunho);
-    setEditando(false);
+  const salvar = async () => {
+    try {
+      const atualizado = await atualizarUsuarioLogado({
+        nome: rascunho.nome,
+        cnpj: rascunho.cnpj,
+        telefone: rascunho.telefone,
+        email: rascunho.email,
+        endereco: rascunho.endereco,
+      });
+      setUsuario(atualizado);
+      setPerfil(rascunho);
+      setEditando(false);
+      Alert.alert('Sucesso', 'Dados da empresa atualizados!');
+    } catch {
+      Alert.alert('Erro', 'Não foi possível salvar os dados.');
+    }
+  };
+
+  const sair = async () => {
+    await logoutUsuario();
+    router.replace('/' as Href);
   };
 
   const atualizarTexto = (chave: ChaveTexto, texto: string) => {
@@ -199,7 +220,8 @@ export default function PerfilScreen() {
   };
 
   const abrirLocalizacao = async () => {
-    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(LOCALIZACAO_EMPRESA)}`;
+    const enderecoBusca = atual.endereco || LOCALIZACAO_PADRAO;
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(enderecoBusca)}`;
 
     try {
       await Linking.openURL(url);
@@ -208,15 +230,14 @@ export default function PerfilScreen() {
     }
   };
 
-  /* ---------- data da FlatList ---------- */
   const cnpjMascarado = '••.•••.•••/••••-••';
 
   const dados: ItemCampo[] = [
     {
       id: '1',
       chave: 'nome',
-      icone: 'person',
-      rotulo: 'Nome completo',
+      icone: 'business',
+      rotulo: 'Nome da empresa',
       valor: atual.nome,
       teclado: 'default',
     },
@@ -259,33 +280,44 @@ export default function PerfilScreen() {
     />
   );
 
-  /* ---------- topo da lista ---------- */
   const Topo = (
     <View style={styles.topo}>
       <Avatar editando={editando} />
-
       <Text style={styles.nome}>{atual.nome}</Text>
     </View>
   );
 
-  /* ---------- rodapé da lista ---------- */
   const Rodape = (
     <View>
       <Divisor />
 
-      <Pressable
-        style={styles.localizacao}
-        onPress={abrirLocalizacao}
-        accessibilityRole="link"
-        accessibilityLabel={`Abrir localização: ${LOCALIZACAO_EMPRESA} no Google Maps`}
-      >
-        <Ionicons name="location" size={22} color={ROXO} />
-        <View style={styles.localizacaoTextos}>
-          <Text style={styles.rotulo}>Localização</Text>
-          <Text style={styles.valor}>{LOCALIZACAO_EMPRESA}</Text>
+      {editando ? (
+        <View style={styles.campo}>
+          <Ionicons name="location" size={22} color={ROXO} />
+          <View style={styles.campoTextos}>
+            <Text style={styles.rotulo}>Localização</Text>
+            <TextInput
+              style={styles.input}
+              value={atual.endereco}
+              onChangeText={(texto) => atualizarTexto('endereco', texto)}
+            />
+          </View>
         </View>
-        <Ionicons name="open-outline" size={18} color={ROXO} />
-      </Pressable>
+      ) : (
+        <Pressable
+          style={styles.localizacao}
+          onPress={abrirLocalizacao}
+          accessibilityRole="link"
+          accessibilityLabel={`Abrir localização: ${atual.endereco} no Google Maps`}
+        >
+          <Ionicons name="location" size={22} color={ROXO} />
+          <View style={styles.localizacaoTextos}>
+            <Text style={styles.rotulo}>Localização</Text>
+            <Text style={styles.valor}>{atual.endereco || LOCALIZACAO_PADRAO}</Text>
+          </View>
+          <Ionicons name="open-outline" size={18} color={ROXO} />
+        </Pressable>
+      )}
 
       {editando ? (
         <View>
@@ -298,10 +330,7 @@ export default function PerfilScreen() {
           </Pressable>
         </View>
       ) : (
-        <Pressable
-          style={styles.botaoRoxo}
-          onPress={() => router.replace('/' as Href)}
-        >
+        <Pressable style={styles.botaoRoxo} onPress={sair}>
           <Text style={styles.botaoRoxoTexto}>Sair</Text>
         </Pressable>
       )}
@@ -343,30 +372,9 @@ export default function PerfilScreen() {
   );
 }
 
-/* ------------------------------------------------------------------
-   ESTILOS
------------------------------------------------------------------- */
 const styles = StyleSheet.create({
-  // flex: 1 para a tela (e a lista) aparecerem
-  container: {
-    flex: 1,
-    backgroundColor: AMARELO,
-  },
-  conteudo: {
-    flex: 1,
-    paddingTop: 30,
-    paddingHorizontal: 20,
-  },
-cabeçalho: {
-    height: 56,
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-  
-  // Header
+  container: { flex: 1, backgroundColor: AMARELO },
+  conteudo: { flex: 1, paddingTop: 30, paddingHorizontal: 20 },
   header: {
     height: 56,
     flexDirection: 'row',
@@ -374,13 +382,7 @@ cabeçalho: {
     justifyContent: 'space-between',
     marginBottom: 20,
   },
-  headerTitulo: {
-    color: ROXO,
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-
-  // Card cinza que guarda a lista
+  headerTitulo: { color: ROXO, fontSize: 22, fontWeight: 'bold' },
   card: {
     flex: 1,
     backgroundColor: CINZA_CARD,
@@ -388,12 +390,7 @@ cabeçalho: {
     padding: 20,
     marginBottom: 10,
   },
-
-  // Topo do card 
-  topo: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
+  topo: { alignItems: 'center', marginBottom: 20 },
   avatar: {
     width: 100,
     height: 100,
@@ -423,50 +420,22 @@ cabeçalho: {
     textAlign: 'center',
     marginBottom: 6,
   },
-  selo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginTop: 6,
-    marginBottom: 12,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    backgroundColor: '#FFF1B3',
-  },
-  seloTexto: {
-    color: ROXO,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  // Campo
   campo: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
     paddingVertical: 12,
   },
-  campoTextos: {
-    flex: 1,
-  },
+  campoTextos: { flex: 1 },
   localizacao: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
     paddingVertical: 12,
   },
-  localizacaoTextos: {
-    flex: 1,
-  },
-  rotulo: {
-    color: '#777',
-    fontSize: 12,
-  },
-  valor: {
-    color: TEXTO,
-    fontSize: 16,
-    fontWeight: '500',
-  },
+  localizacaoTextos: { flex: 1 },
+  rotulo: { color: '#777', fontSize: 12 },
+  valor: { color: TEXTO, fontSize: 16, fontWeight: '500' },
   input: {
     backgroundColor: CINZA_INPUT,
     borderRadius: 12,
@@ -476,15 +445,7 @@ cabeçalho: {
     fontSize: 16,
     color: TEXTO,
   },
-
-  // Divisor
-  divisor: {
-    height: 1,
-    backgroundColor: '#D6D6D6',
-  },
-
-  // Seções com chips
-  // Botões (mesmo estilo do botão "Cadastrar")
+  divisor: { height: 1, backgroundColor: '#D6D6D6' },
   botaoRoxo: {
     backgroundColor: ROXO,
     borderRadius: 24,
@@ -492,18 +453,7 @@ cabeçalho: {
     alignItems: 'center',
     marginTop: 16,
   },
-  botaoRoxoTexto: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  botaoCancelar: {
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  botaoCancelarTexto: {
-    color: '#777',
-    fontSize: 15,
-    fontWeight: '600',
-  },
+  botaoRoxoTexto: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  botaoCancelar: { paddingVertical: 12, alignItems: 'center' },
+  botaoCancelarTexto: { color: '#777', fontSize: 15, fontWeight: '600' },
 });

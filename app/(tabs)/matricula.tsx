@@ -1,5 +1,5 @@
-﻿// app/matricula.tsx
-import { useRef, useState, type ReactNode } from 'react';
+// app/(tabs)/matricula.tsx
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Animated,
   View,
@@ -18,12 +18,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../components/header';
 import { salvarEnvio } from '../rotaServidor/envios';
+import { useProtegerRota } from '../rotaServidor/usuarioController';
 
-/* ---------- cores ---------- */
 const cores = {
   roxo: '#7B2FF7',
   roxoClaro: '#F8F8F8',
@@ -74,9 +74,15 @@ function BotaoAnimado({
   );
 }
 
-/* ---------- tela ---------- */
-export default function Candidatar() {
+export default function Matricula() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('cliente');
+  const params = useLocalSearchParams<{
+    cursoId?: string;
+    titulo?: string;
+    empresa?: string;
+    area?: string;
+  }>();
 
   const [nome, setNome] = useState('');
   const [nascimento, setNascimento] = useState('');
@@ -88,6 +94,17 @@ export default function Candidatar() {
   const [turno, setTurno] = useState('');
   const [enviado, setEnviado] = useState(false);
   const [documento, setDocumento] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
+
+  // Preenche automaticamente os dados do usuário logado
+  useEffect(() => {
+    if (!usuario) return;
+    setNome((atual) => atual || usuario.nome || '');
+    setCpf((atual) => atual || usuario.cpf || '');
+    setEmail((atual) => atual || usuario.email || '');
+    setTelefone((atual) => atual || usuario.telefone || '');
+  }, [usuario]);
+
+  if (!usuario) return null;
 
   async function selecionarDocumento() {
     try {
@@ -150,8 +167,9 @@ export default function Candidatar() {
     try {
       await salvarEnvio({
         tipo: 'curso',
-        titulo: 'Curso Técnico em Informática',
-        empresa: 'Faculdade Senac',
+        titulo: params.titulo || 'Curso de Qualificação',
+        empresa: params.empresa || 'Instituição Parceira',
+        area: params.area || 'Qualificação Profissional',
         nome: nome.trim(),
         nascimento: nascimento.trim(),
         cpf: cpf.trim(),
@@ -161,6 +179,7 @@ export default function Candidatar() {
         escolaridade: escolaridade.trim(),
         turno: turno.trim(),
         arquivo_nome: documento?.name ?? '',
+        usuarioEmail: usuario?.email,
       });
       setEnviado(true);
     } catch (error) {
@@ -173,15 +192,13 @@ export default function Candidatar() {
 
   function fecharAviso() {
     setEnviado(false);
-    router.replace('/cursosinfo');
+    router.replace('/curriculos');
   }
 
   return (
     <SafeAreaView style={styles.tela} edges={['top', 'bottom']}>
-      {/* Barra de topo branca, igual às outras páginas */}
       <Header />
 
-      {/* Área roxa */}
       <KeyboardAvoidingView
         style={styles.fundoRoxo}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -192,28 +209,30 @@ export default function Candidatar() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.cartao}>
-            {/* Título */}
             <View style={styles.cabecalho}>
               <Text style={styles.titulo}>Matricular-se</Text>
+              {params.titulo ? (
+                <Text style={styles.cursoNome}>
+                  {params.titulo} · {params.empresa}
+                </Text>
+              ) : null}
               <Text style={styles.subtitulo}>
                 Preencha seus dados para realizar a matrícula neste curso.
               </Text>
             </View>
 
-            {/* nome */}
             <Text style={styles.rotulo}>
               Nome completo <Text style={styles.obrigatorio}>*</Text>
             </Text>
             <TextInput
               style={styles.input}
               placeholder="Digite seu nome completo"
-              placeholderTextColor={cores.texto}
+              placeholderTextColor="#777"
               value={nome}
               onChangeText={setNome}
               autoCapitalize="words"
             />
 
-            {/* data de nascimento e CPF */}
             <View style={styles.linha}>
               <View style={styles.coluna}>
                 <Text style={styles.rotulo}>
@@ -222,7 +241,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="dd/mm/aaaa"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={nascimento}
                   onChangeText={setNascimento}
                   keyboardType="number-pad"
@@ -236,7 +255,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Digite seu CPF"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={cpf}
                   onChangeText={setCpf}
                   keyboardType="number-pad"
@@ -244,7 +263,6 @@ export default function Candidatar() {
               </View>
             </View>
 
-            {/* e-mail e telefone */}
             <View style={styles.linha}>
               <View style={styles.coluna}>
                 <Text style={styles.rotulo}>
@@ -253,7 +271,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Digite seu e-mail"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
@@ -269,7 +287,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Digite seu telefone"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={telefone}
                   onChangeText={setTelefone}
                   keyboardType="phone-pad"
@@ -277,20 +295,18 @@ export default function Candidatar() {
               </View>
             </View>
 
-            {/* Endereço */}
             <Text style={styles.rotulo}>
               Endereço completo <Text style={styles.obrigatorio}>*</Text>
             </Text>
             <TextInput
               style={styles.input}
               placeholder="Rua, número, bairro, cidade"
-              placeholderTextColor={cores.texto}
+              placeholderTextColor="#777"
               value={endereco}
               onChangeText={setEndereco}
               autoCapitalize="words"
             />
 
-            {/* escolaridade e turno */}
             <View style={styles.linha}>
               <View style={styles.coluna}>
                 <Text style={styles.rotulo}>
@@ -299,7 +315,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Ex.: Ensino médio"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={escolaridade}
                   onChangeText={setEscolaridade}
                   autoCapitalize="sentences"
@@ -313,7 +329,7 @@ export default function Candidatar() {
                 <TextInput
                   style={styles.input}
                   placeholder="Ex.: Noturno"
-                  placeholderTextColor={cores.texto}
+                  placeholderTextColor="#777"
                   value={turno}
                   onChangeText={setTurno}
                   autoCapitalize="sentences"
@@ -321,10 +337,7 @@ export default function Candidatar() {
               </View>
             </View>
 
-            {/* documento de identidade */}
-            <Text style={styles.rotulo}>
-              Documento
-            </Text>
+            <Text style={styles.rotulo}>Documento</Text>
             <Pressable
               style={styles.upload}
               onPress={selecionarDocumento}
@@ -348,17 +361,20 @@ export default function Candidatar() {
               </Text>
             </Pressable>
 
-            {/* enviar */}
             <BotaoAnimado style={styles.botao} onPress={enviar}>
               <Text style={styles.botaoTexto}>Matricular-se</Text>
             </BotaoAnimado>
           </View>
         </ScrollView>
 
-        {/* Botão de voltar flutuante: leva para a tela do curso */}
         <BotaoAnimado
           style={styles.botaoVoltar}
-          onPress={() => router.replace('/cursosinfo')}
+          onPress={() =>
+            router.replace({
+              pathname: '/cursosinfo',
+              params: params.cursoId ? { id: params.cursoId } : {},
+            })
+          }
           hitSlop={8}
         >
           <Image
@@ -369,7 +385,6 @@ export default function Candidatar() {
         </BotaoAnimado>
       </KeyboardAvoidingView>
 
-      {/* Aviso de matrícula enviada */}
       <Modal visible={enviado} transparent animationType="fade" onRequestClose={fecharAviso}>
         <View style={styles.avisoFundo}>
           <View style={styles.avisoCartao}>
@@ -378,10 +393,10 @@ export default function Candidatar() {
             </View>
             <Text style={styles.avisoTitulo}>Matrícula enviada!</Text>
             <Text style={styles.avisoTexto}>
-              Recebemos os seus dados. Em breve entraremos em contato.
+              Recebemos os seus dados. Você pode acompanhar nos seus envios!
             </Text>
             <Pressable style={styles.avisoBotao} onPress={fecharAviso}>
-              <Text style={styles.avisoBotaoTexto}>OK</Text>
+              <Text style={styles.avisoBotaoTexto}>Ver meus envios</Text>
             </Pressable>
           </View>
         </View>
@@ -390,23 +405,15 @@ export default function Candidatar() {
   );
 }
 
-/* ---------- estilos ---------- */
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.branco },
-
   fundoRoxo: { flex: 1, backgroundColor: cores.roxo },
   scroll: { padding: 16, paddingBottom: 96 },
-
-  cartao: {
-    backgroundColor: cores.branco,
-    borderRadius: 24,
-    padding: 20,
-  },
-
+  cartao: { backgroundColor: cores.branco, borderRadius: 24, padding: 20 },
   cabecalho: { marginBottom: 8 },
   titulo: { fontSize: 26, fontWeight: '800', color: cores.amarelo },
+  cursoNome: { fontSize: 14, fontWeight: '700', color: cores.roxo, marginTop: 4 },
   subtitulo: { fontSize: 13, color: cores.texto, lineHeight: 18, marginTop: 4 },
-
   rotulo: {
     fontSize: 14,
     fontWeight: '800',
@@ -415,8 +422,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   obrigatorio: { color: cores.erro },
-  opcional: { fontWeight: '400', color: cores.texto },
-
   input: {
     height: 50,
     borderWidth: 1,
@@ -427,11 +432,8 @@ const styles = StyleSheet.create({
     color: cores.titulo,
     backgroundColor: cores.branco,
   },
-
   linha: { flexDirection: 'row', gap: 12 },
-  // justifyContent: 'flex-end' alinha os campos pela base, mesmo se um rótulo quebrar
   coluna: { flex: 1, justifyContent: 'flex-end' },
-
   upload: {
     borderWidth: 1.5,
     borderStyle: 'dashed',
@@ -446,7 +448,6 @@ const styles = StyleSheet.create({
   },
   uploadTitulo: { fontSize: 14, fontWeight: '800', color: cores.roxo },
   uploadInfo: { fontSize: 12, color: cores.texto },
-
   botao: {
     backgroundColor: cores.amarelo,
     borderRadius: 30,
@@ -457,8 +458,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   botaoTexto: { fontSize: 16, fontWeight: '800', color: cores.titulo },
-
-  // Botão de voltar: círculo roxo com o PNG preenchendo, fixo no canto inferior esquerdo
   botaoVoltar: {
     position: 'absolute',
     left: 6,
@@ -470,15 +469,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000', // sombra no iOS
+    shadowColor: '#000',
     shadowOpacity: 0.35,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 4 },
-    elevation: 8, // sombra no Android
+    elevation: 8,
   },
   iconeVoltar: { width: 48, height: 48 },
-
-  // Aviso de matrícula enviada
   avisoFundo: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.55)',

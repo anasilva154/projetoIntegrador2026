@@ -14,11 +14,11 @@ export default function Index() {
   const router = useRouter();
 
   const serContratado = () => {
-    router.push('/(tabs)/rotas/produtos/cadastro2');
+    router.push('/logincontrado');
   };
 
   const contratar = () => {
-    router.push('/(tabs)/rotas/cadastro1');
+    router.push('/logincontratar');
   };
 
   return (
@@ -46,7 +46,7 @@ export default function Index() {
             onPress={serContratado}
             activeOpacity={0.85}
           >
-            <Text style={styles.textoBotao}>ser contratado</Text>
+            <Text style={styles.textoBotao}>Buscar Oportunidades</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -54,7 +54,7 @@ export default function Index() {
             onPress={contratar}
             activeOpacity={0.85}
           >
-            <Text style={styles.textoBotao}>contratar</Text>
+            <Text style={styles.textoBotao}>Ofertar Oportundiades</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -65,8 +65,8 @@ export default function Index() {
 const cores = {
   roxo: '#7B2FF7',
   roxoEscuro: '#7B2FF7',
-  amarelo: '#F4C242',
-  branco: '#FFFFFF',
+  amarelo: '#e7a90cff',
+  branco: '#ffffffff',
 };
 
 const styles = StyleSheet.create({

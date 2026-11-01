@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { RodapeFlutuante } from "../../../../components/rodapeFlutuante";
-import { Header } from "../../../../components/header";
+import { useEffect, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
+import { RodapeFlutuante } from '../../../../components/rodapeFlutuante';
+import { Header } from '../../../../components/header';
 import {
+  Alert,
   FlatList,
   KeyboardAvoidingView,
   Modal,
@@ -15,12 +17,25 @@ import {
   TextInput,
   TextInputProps,
   View,
-} from "react-native";
+} from 'react-native';
+import {
+  adicionarVaga,
+  editarVaga,
+  listarVagas,
+  removerVaga,
+} from '../../../rotaServidor/vagasController';
+import {
+  adicionarCurso,
+  editarCurso,
+  listarCursos,
+  removerCurso,
+} from '../../../rotaServidor/cursosController';
+import { useProtegerRota } from '../../../rotaServidor/usuarioController';
 
-type Tipo = "vaga" | "curso";
+type Tipo = 'vaga' | 'curso';
 
 type Item = {
-  id: number;
+  id: string;
   tipo: Tipo;
   titulo: string;
   empresa: string;
@@ -29,89 +44,120 @@ type Item = {
   presencial: boolean;
   sobre: string;
   setor: string;
-  requisitos: string; // só vaga
-  salario: string; // só vaga
-  periodo: string; // só curso
-  duracao: string; // só curso
+  requisitos: string;
+  salario: string;
+  periodo: string;
+  duracao: string;
   cargaHoraria: string;
 };
 
-type Form = Omit<Item, "id" | "tipo" | "quantidade"> & { quantidade: string };
-type CampoTexto = Exclude<keyof Form, "presencial">;
+type Form = Omit<Item, 'id' | 'tipo' | 'quantidade'> & { quantidade: string };
+type CampoTexto = Exclude<keyof Form, 'presencial'>;
 
-const ROXO = "#7B2FF7";
-const ROXO_CLARO = "#F8F8F8";
-const AMARELO = "#F5B81C";
-const AMARELO_ESCURO = "#B77900";
-const CINZA_MODAL = "#F5F5F5";
-const CINZA_TEXTO = "#000000";
-const MARINHO = "#000000";
-const BORDA = "#E5E5E5";
-const VERMELHO = "#D92D43";
-const VERMELHO_CLARO = "#FDE8EB";
-const BRANCO = "#FFFFFF";
-
-const BASE = {
-  tipo: "vaga" as Tipo,
-  quantidade: 1,
-  presencial: true,
-  sobre: "",
-  setor: "",
-  requisitos: "",
-  salario: "",
-  periodo: "",
-  duracao: "",
-  cargaHoraria: "",
-};
-
-function criar(
-  dados: Pick<Item, "id" | "titulo" | "empresa" | "cidade"> & Partial<Item>
-): Item {
-  return { ...BASE, ...dados };
-}
-
-const VAGAS_INICIAIS: Item[] = [
-  criar({ id: 1, titulo: "Jovem Aprendiz / Auxiliar", empresa: "Nova Geração Soluções", cidade: "Criciúma - SC", quantidade: 1 }),
-  criar({ id: 2, titulo: "Assistente Administrativo", empresa: "Nova Geração Soluções", cidade: "Criciúma - SC", quantidade: 2 }),
-  criar({ id: 3, titulo: "Auxiliar de Produção", empresa: "Nova Geração Soluções", cidade: "Forquilhinha - SC", quantidade: 1 }),
-  criar({ id: 4, titulo: "Estagiário de Marketing", empresa: "Nova Geração Soluções", cidade: "Criciúma - SC", quantidade: 1 }),
-];
+const ROXO = '#7B2FF7';
+const ROXO_CLARO = '#F8F8F8';
+const AMARELO = '#F5B81C';
+const AMARELO_ESCURO = '#B77900';
+const CINZA_MODAL = '#F5F5F5';
+const CINZA_TEXTO = '#000000';
+const MARINHO = '#000000';
+const BORDA = '#E5E5E5';
+const VERMELHO = '#D92D43';
+const VERMELHO_CLARO = '#FDE8EB';
+const BRANCO = '#FFFFFF';
 
 const FORM_VAZIO: Form = {
-  titulo: "",
-  empresa: "",
-  cidade: "",
-  quantidade: "1",
+  titulo: '',
+  empresa: '',
+  cidade: 'Criciúma - SC',
+  quantidade: '1',
   presencial: true,
-  sobre: "",
-  setor: "",
-  requisitos: "",
-  salario: "",
-  periodo: "",
-  duracao: "",
-  cargaHoraria: "",
+  sobre: '',
+  setor: '',
+  requisitos: '',
+  salario: '',
+  periodo: '',
+  duracao: '',
+  cargaHoraria: '',
 };
 
 function textoVagas(n: number) {
-  return `${n} ${n === 1 ? "vaga" : "vagas"}`;
+  return `${n} ${n === 1 ? 'vaga' : 'vagas'}`;
 }
 
-export default function Vagas() {
+export default function GerenciarOportunidades() {
   const router = useRouter();
-  const [vagas, setVagas] = useState<Item[]>(VAGAS_INICIAIS);
-  const [busca, setBusca] = useState("");
+  const { usuario } = useProtegerRota('empresa');
+  const telaEmFoco = useIsFocused();
+
+  const [itens, setItens] = useState<Item[]>([]);
+  const [busca, setBusca] = useState('');
+  const [filtroTipo, setFiltroTipo] = useState<'todos' | Tipo>('todos');
 
   const [escolhaAberta, setEscolhaAberta] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
-  const [editandoId, setEditandoId] = useState<number | null>(null);
-  const [tipoForm, setTipoForm] = useState<Tipo>("vaga");
+  const [editandoId, setEditandoId] = useState<string | null>(null);
+  const [tipoForm, setTipoForm] = useState<Tipo>('vaga');
   const [form, setForm] = useState<Form>(FORM_VAZIO);
 
-  const ehCurso = tipoForm === "curso";
+  // Carrega vagas e cursos salvos no AsyncStorage
+  async function carregarDados() {
+    const listaVagas = await listarVagas();
+    const listaCursos = await listarCursos();
 
-  const vagasFiltradas = vagas.filter((v) =>
-    v.titulo.toLowerCase().includes(busca.toLowerCase())
-  );
+    const vagasMapeadas: Item[] = listaVagas.map((v) => ({
+      id: String(v.id),
+      tipo: 'vaga',
+      titulo: v.titulo,
+      empresa: v.empresa,
+      cidade: v.cidade || 'Criciúma - SC',
+      quantidade: v.quantidade || 1,
+      presencial: v.presencial !== false,
+      sobre: v.sobre || '',
+      setor: v.categoria || '',
+      requisitos: v.requisitos || '',
+      salario: v.salario || '',
+      periodo: '',
+      duracao: '',
+      cargaHoraria: v.cargaHoraria || '',
+    }));
+
+    const cursosMapeados: Item[] = listaCursos.map((c) => ({
+      id: String(c.id),
+      tipo: 'curso',
+      titulo: c.titulo,
+      empresa: c.empresa,
+      cidade: c.cidade || 'Criciúma - SC',
+      quantidade: c.quantidade || 20,
+      presencial: c.presencial !== false,
+      sobre: c.sobre || '',
+      setor: c.categoria || '',
+      requisitos: c.requisitos || '',
+      salario: '',
+      periodo: c.periodo || '',
+      duracao: c.duracao || '',
+      cargaHoraria: c.cargaHoraria || '',
+    }));
+
+    setItens([...vagasMapeadas, ...cursosMapeados]);
+  }
+
+  useEffect(() => {
+    if (!telaEmFoco || !usuario) return;
+    carregarDados();
+  }, [telaEmFoco, usuario]);
+
+  if (!usuario) return null;
+
+  const ehCurso = tipoForm === 'curso';
+
+  const itensFiltrados = itens.filter((item) => {
+    const bateTipo = filtroTipo === 'todos' || item.tipo === filtroTipo;
+    const bateBusca =
+      item.titulo.toLowerCase().includes(busca.toLowerCase()) ||
+      item.empresa.toLowerCase().includes(busca.toLowerCase());
+    return bateTipo && bateBusca;
+  });
 
   function atualizar<K extends keyof Form>(chave: K, valor: Form[K]) {
     setForm((f) => ({ ...f, [chave]: valor }));
@@ -121,7 +167,10 @@ export default function Vagas() {
     setEscolhaAberta(false);
     setEditandoId(null);
     setTipoForm(tipo);
-    setForm(FORM_VAZIO);
+    setForm({
+      ...FORM_VAZIO,
+      empresa: usuario?.nome || '',
+    });
     setModalAberto(true);
   }
 
@@ -132,37 +181,74 @@ export default function Vagas() {
     setModalAberto(true);
   }
 
-  function salvar() {
-    if (!form.titulo.trim()) return;
-
-    const t = (s: string) => s.trim();
-
-    const dados: Omit<Item, "id" | "tipo"> = {
-      titulo: t(form.titulo),
-      empresa: t(form.empresa),
-      cidade: t(form.cidade),
-      quantidade: Math.max(1, parseInt(form.quantidade, 10) || 1),
-      presencial: form.presencial,
-      sobre: t(form.sobre),
-      setor: t(form.setor),
-      requisitos: t(form.requisitos),
-      salario: t(form.salario),
-      periodo: t(form.periodo),
-      duracao: t(form.duracao),
-      cargaHoraria: t(form.cargaHoraria),
-    };
-
-    if (editandoId === null) {
-      setVagas([...vagas, { id: Date.now(), tipo: tipoForm, ...dados }]);
-    } else {
-      setVagas(vagas.map((v) => (v.id === editandoId ? { ...v, ...dados } : v)));
+  async function salvar() {
+    if (!form.titulo.trim()) {
+      Alert.alert('Campo obrigatório', 'Informe o título antes de salvar.');
+      return;
     }
 
+    const t = (s: string) => s.trim();
+    const quantidadeNum = Math.max(1, parseInt(form.quantidade, 10) || 1);
+
+    if (tipoForm === 'vaga') {
+      const dadosVaga = {
+        titulo: t(form.titulo),
+        empresa: t(form.empresa) || usuario?.nome || 'Empresa Parceira',
+        categoria: t(form.setor) || 'Geral',
+        cidade: t(form.cidade) || 'Criciúma - SC',
+        quantidade: quantidadeNum,
+        presencial: form.presencial,
+        sobre: t(form.sobre),
+        cargaHoraria: t(form.cargaHoraria) || 'A combinar',
+        salario: t(form.salario) || 'A combinar',
+        idade: 'A partir de 16 anos',
+        escolaridade: 'Ensino médio',
+        requisitos: t(form.requisitos) || 'Não informado',
+        beneficios: 'Vale transporte',
+      };
+
+      if (editandoId === null) {
+        await adicionarVaga(dadosVaga);
+      } else {
+        await editarVaga(editandoId, dadosVaga);
+      }
+    } else {
+      const dadosCurso = {
+        titulo: t(form.titulo),
+        empresa: t(form.empresa) || usuario?.nome || 'Instituição Parceira',
+        categoria: t(form.setor) || 'Qualificação Profissional',
+        cidade: t(form.cidade) || 'Criciúma - SC',
+        quantidade: quantidadeNum,
+        presencial: form.presencial,
+        sobre: t(form.sobre),
+        periodo: t(form.periodo) || 'Livre',
+        duracao: t(form.duracao) || t(form.cargaHoraria) || '60 horas',
+        cargaHoraria: t(form.cargaHoraria) || '60 horas',
+        valor: 'Gratuito',
+        idade: 'A partir de 14 anos',
+        escolaridade: 'Livre',
+        requisitos: 'Nenhum requisito específico',
+        beneficios: 'Certificado de conclusão',
+      };
+
+      if (editandoId === null) {
+        await adicionarCurso(dadosCurso);
+      } else {
+        await editarCurso(editandoId, dadosCurso);
+      }
+    }
+
+    await carregarDados();
     setModalAberto(false);
   }
 
-  function excluirVaga(id: number) {
-    setVagas(vagas.filter((v) => v.id !== id));
+  async function excluirItem(item: Item) {
+    if (item.tipo === 'vaga') {
+      await removerVaga(item.id);
+    } else {
+      await removerCurso(item.id);
+    }
+    await carregarDados();
   }
 
   function campo(chave: CampoTexto, placeholder: string, props: TextInputProps = {}) {
@@ -170,6 +256,7 @@ export default function Vagas() {
       <TextInput
         style={[styles.modalCampo, props.multiline && styles.modalCampoGrande]}
         placeholder={placeholder}
+        placeholderTextColor="#777"
         value={form[chave]}
         onChangeText={(texto) => atualizar(chave, texto)}
         {...props}
@@ -178,13 +265,13 @@ export default function Vagas() {
   }
 
   const tituloModal =
-    (editandoId === null ? "Novo" : "Editar") + (ehCurso ? " curso" : " vaga de emprego");
+    (editandoId === null ? 'Novo' : 'Editar') + (ehCurso ? ' curso' : ' vaga de emprego');
 
   const topoDaLista = (
     <View>
       <View style={styles.conteudoTopo}>
         <View style={styles.linhaTitulo}>
-          <Text style={styles.titulo}>Vagas disponíveis</Text>
+          <Text style={styles.titulo}>Vagas e Cursos</Text>
           <Pressable
             style={styles.botaoAdicionar}
             onPress={() => setEscolhaAberta(true)}
@@ -195,7 +282,7 @@ export default function Vagas() {
         </View>
 
         <Text style={styles.subtitulo}>
-          Gerencie as vagas da sua equipe e mantenha tudo organizado.
+          Gerencie as vagas e cursos de {usuario.nome}. Os cadastros ficam salvos localmente.
         </Text>
 
         <View style={styles.busca}>
@@ -203,10 +290,28 @@ export default function Vagas() {
           <TextInput
             style={styles.campoBusca}
             placeholder="Buscar por cargo ou curso..."
-            placeholderTextColor="#000000"
+            placeholderTextColor="#666666"
             value={busca}
             onChangeText={setBusca}
           />
+        </View>
+
+        <View style={styles.filtrosTipo}>
+          {(['todos', 'vaga', 'curso'] as const).map((op) => {
+            const ativo = filtroTipo === op;
+            const rotulo = op === 'todos' ? 'Todos' : op === 'vaga' ? 'Vagas' : 'Cursos';
+            return (
+              <Pressable
+                key={op}
+                style={[styles.chipFiltro, ativo && styles.chipFiltroAtivo]}
+                onPress={() => setFiltroTipo(op)}
+              >
+                <Text style={[styles.chipFiltroTexto, ativo && styles.chipFiltroTextoAtivo]}>
+                  {rotulo}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
       </View>
     </View>
@@ -216,8 +321,8 @@ export default function Vagas() {
     <View style={styles.tela}>
       <Header />
       <FlatList
-        data={vagasFiltradas}
-        keyExtractor={(item) => String(item.id)}
+        data={itensFiltrados}
+        keyExtractor={(item) => `${item.tipo}-${item.id}`}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={topoDaLista}
         contentContainerStyle={styles.lista}
@@ -225,6 +330,9 @@ export default function Vagas() {
           <View style={styles.card}>
             <View style={styles.cardCorpo}>
               <View style={styles.cardInfo}>
+                <Text style={styles.etiquetaTipo}>
+                  {item.tipo === 'curso' ? 'CURSO' : 'VAGA'}
+                </Text>
                 <Text style={styles.cardTitulo}>{item.titulo}</Text>
                 <Text style={styles.cardEmpresa}>{item.empresa}</Text>
 
@@ -240,7 +348,7 @@ export default function Vagas() {
               </View>
 
               <View style={styles.cardAcoes}>
-                <Pressable style={styles.botaoRemover} onPress={() => excluirVaga(item.id)}>
+                <Pressable style={styles.botaoRemover} onPress={() => excluirItem(item)}>
                   <Ionicons name="trash-outline" size={14} color={VERMELHO} />
                   <Text style={styles.botaoRemoverTexto}>Remover</Text>
                 </Pressable>
@@ -251,7 +359,6 @@ export default function Vagas() {
                 </Pressable>
               </View>
             </View>
-
           </View>
         )}
       />
@@ -267,12 +374,12 @@ export default function Vagas() {
           <View style={styles.modalCaixa}>
             <Text style={styles.modalTitulo}>O que deseja adicionar?</Text>
 
-            <Pressable style={styles.opcao} onPress={() => escolherTipo("vaga")}>
+            <Pressable style={styles.opcao} onPress={() => escolherTipo('vaga')}>
               <Ionicons name="briefcase-outline" size={24} color={AMARELO_ESCURO} />
               <Text style={styles.opcaoTexto}>Vaga de emprego</Text>
             </Pressable>
 
-            <Pressable style={styles.opcao} onPress={() => escolherTipo("curso")}>
+            <Pressable style={styles.opcao} onPress={() => escolherTipo('curso')}>
               <Ionicons name="school-outline" size={24} color={AMARELO_ESCURO} />
               <Text style={styles.opcaoTexto}>Curso</Text>
             </Pressable>
@@ -295,7 +402,7 @@ export default function Vagas() {
       >
         <KeyboardAvoidingView
           style={styles.modalFundo}
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <View style={styles.modalCaixa}>
             <Text style={styles.modalTitulo}>{tituloModal}</Text>
@@ -304,11 +411,11 @@ export default function Vagas() {
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
             >
-              {campo("titulo", ehCurso ? "Nome do curso" : "Título da vaga")}
-              {campo("empresa", ehCurso ? "Nome da instituição" : "Nome da empresa")}
-              {campo("cidade", "Cidade - UF")}
-              {campo("quantidade", "Quantidade de vagas", { keyboardType: "numeric" })}
-              {campo("sobre", ehCurso ? "Sobre o curso" : "Sobre a vaga", {
+              {campo('titulo', ehCurso ? 'Nome do curso' : 'Título da vaga')}
+              {campo('empresa', ehCurso ? 'Nome da instituição' : 'Nome da empresa')}
+              {campo('cidade', 'Cidade - UF')}
+              {campo('quantidade', 'Quantidade de vagas', { keyboardType: 'numeric' })}
+              {campo('sobre', ehCurso ? 'Sobre o curso (separe tópicos por ;)' : 'Sobre a vaga (separe tópicos por ;)', {
                 multiline: true,
               })}
 
@@ -316,7 +423,7 @@ export default function Vagas() {
               <View style={styles.linhaModalidade}>
                 <Pressable
                   style={[styles.chip, form.presencial && styles.chipAtivo]}
-                  onPress={() => atualizar("presencial", true)}
+                  onPress={() => atualizar('presencial', true)}
                 >
                   <Text style={[styles.chipTexto, form.presencial && styles.chipTextoAtivo]}>
                     Presencial
@@ -325,7 +432,7 @@ export default function Vagas() {
 
                 <Pressable
                   style={[styles.chip, !form.presencial && styles.chipAtivo]}
-                  onPress={() => atualizar("presencial", false)}
+                  onPress={() => atualizar('presencial', false)}
                 >
                   <Text style={[styles.chipTexto, !form.presencial && styles.chipTextoAtivo]}>
                     Não presencial
@@ -333,19 +440,19 @@ export default function Vagas() {
                 </Pressable>
               </View>
 
-              {campo("setor", ehCurso ? "Setor (onde pode atuar)" : "Setor")}
+              {campo('setor', ehCurso ? 'Setor / Categoria' : 'Setor / Categoria')}
 
               {ehCurso ? (
                 <>
-                  {campo("periodo", "Período (ex.: noturno)")}
-                  {campo("duracao", "Duração do curso (ex.: 6 meses)")}
-                  {campo("cargaHoraria", "Carga horária")}
+                  {campo('periodo', 'Período (ex.: noturno)')}
+                  {campo('duracao', 'Duração do curso (ex.: 6 meses)')}
+                  {campo('cargaHoraria', 'Carga horária (ex.: 60 horas)')}
                 </>
               ) : (
                 <>
-                  {campo("requisitos", "Requisitos", { multiline: true })}
-                  {campo("salario", "Salário")}
-                  {campo("cargaHoraria", "Carga horária")}
+                  {campo('requisitos', 'Requisitos (separe por ;)', { multiline: true })}
+                  {campo('salario', 'Salário')}
+                  {campo('cargaHoraria', 'Carga horária')}
                 </>
               )}
             </ScrollView>
@@ -374,49 +481,34 @@ export default function Vagas() {
 }
 
 const styles = StyleSheet.create({
-  tela: {
-    flex: 1,
-    backgroundColor: ROXO,
-  },
-  lista: {
-    paddingBottom: 110,
-  },
-
-  /* Conteúdo roxo */
-  conteudoTopo: {
-    paddingHorizontal: 20,
-    paddingTop: 28,
-    paddingBottom: 8,
-  },
+  tela: { flex: 1, backgroundColor: ROXO },
+  lista: { paddingBottom: 110 },
+  conteudoTopo: { paddingHorizontal: 20, paddingTop: 28, paddingBottom: 8 },
   linhaTitulo: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  titulo: {
-    fontSize: 32,
-    fontWeight: "800",
-    color: "#F5B81C",
-  },
+  titulo: { fontSize: 32, fontWeight: '800', color: '#F5B81C' },
   botaoAdicionar: {
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(255,255,255,0.18)",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
     transform: [{ translateY: 6 }],
   },
   subtitulo: {
     fontSize: 15,
     lineHeight: 21,
-    color: "rgba(255,255,255,0.90)",
+    color: 'rgba(255,255,255,0.90)',
     marginTop: 6,
-    maxWidth: 320,
+    maxWidth: 340,
   },
   busca: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
     backgroundColor: BRANCO,
     borderRadius: 16,
@@ -424,16 +516,20 @@ const styles = StyleSheet.create({
     height: 52,
     marginTop: 22,
   },
-  campoBusca: {
-    flex: 1,
-    fontSize: 16,
-    color: "#000000",
+  campoBusca: { flex: 1, fontSize: 16, color: '#000000' },
+  filtrosTipo: { flexDirection: 'row', gap: 8, marginTop: 14 },
+  chipFiltro: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.18)',
   },
-
-  /* Cards */
+  chipFiltroAtivo: { backgroundColor: AMARELO },
+  chipFiltroTexto: { color: BRANCO, fontSize: 13, fontWeight: '700' },
+  chipFiltroTextoAtivo: { color: MARINHO },
   card: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: BRANCO,
     borderRadius: 18,
     borderWidth: 1,
@@ -442,7 +538,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginHorizontal: 20,
     marginTop: 14,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
@@ -450,90 +546,66 @@ const styles = StyleSheet.create({
   },
   cardCorpo: {
     flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     gap: 10,
-    paddingRight: 22,
+    paddingRight: 10,
   },
-  cardInfo: {
-    flexGrow: 1,
-    flexShrink: 1,
-    minWidth: 140,
+  cardInfo: { flexGrow: 1, flexShrink: 1, minWidth: 140 },
+  etiquetaTipo: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: ROXO,
+    letterSpacing: 0.8,
+    marginBottom: 2,
   },
-  cardTitulo: {
-    fontSize: 16,
-    fontWeight: "800",
-    color: MARINHO,
-  },
-  cardEmpresa: {
-    fontSize: 14,
-    color: CINZA_TEXTO,
-    marginTop: 2,
-    marginBottom: 6,
-  },
-  cardLinha: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 3,
-  },
-  cardDetalhe: {
-    fontSize: 13,
-    color: CINZA_TEXTO,
-  },
+  cardTitulo: { fontSize: 16, fontWeight: '800', color: MARINHO },
+  cardEmpresa: { fontSize: 14, color: CINZA_TEXTO, marginTop: 2, marginBottom: 6 },
+  cardLinha: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 3 },
+  cardDetalhe: { fontSize: 13, color: CINZA_TEXTO },
   cardAcoes: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: 8,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     transform: [{ translateY: 6 }],
   },
   botaoEditar: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 4,
     backgroundColor: ROXO_CLARO,
     borderRadius: 14,
     paddingHorizontal: 10,
     height: 28,
   },
-  botaoEditarTexto: {
-    color: "#000000",
-    fontWeight: "700",
-    fontSize: 12,
-  },
+  botaoEditarTexto: { color: '#000000', fontWeight: '700', fontSize: 12 },
   botaoRemover: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 4,
     backgroundColor: VERMELHO_CLARO,
     borderRadius: 14,
     paddingHorizontal: 10,
     height: 28,
   },
-  botaoRemoverTexto: {
-    color: VERMELHO,
-    fontWeight: "700",
-    fontSize: 12,
-  },
-
-  /* Modais */
+  botaoRemoverTexto: { color: VERMELHO, fontWeight: '700', fontSize: 12 },
   modalFundo: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
     padding: 24,
   },
   modalCaixa: {
     backgroundColor: BRANCO,
     borderRadius: 20,
     padding: 18,
-    maxHeight: "85%",
+    maxHeight: '85%',
   },
   modalTitulo: {
     fontSize: 18,
-    fontWeight: "800",
+    fontWeight: '800',
     color: AMARELO_ESCURO,
     marginBottom: 12,
   },
@@ -546,73 +618,48 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: MARINHO,
   },
-  modalCampoGrande: {
-    minHeight: 80,
-    textAlignVertical: "top",
-  },
+  modalCampoGrande: { minHeight: 80, textAlignVertical: 'top' },
   modalRotulo: {
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: '700',
     color: MARINHO,
     marginBottom: 6,
     marginTop: 2,
   },
-  linhaModalidade: {
-    flexDirection: "row",
-    gap: 8,
-    marginBottom: 10,
-  },
+  linhaModalidade: { flexDirection: 'row', gap: 8, marginBottom: 10 },
   chip: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     paddingVertical: 10,
     borderRadius: 12,
     backgroundColor: CINZA_MODAL,
   },
-  chipAtivo: {
-    backgroundColor: AMARELO,
-  },
-  chipTexto: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: CINZA_TEXTO,
-  },
-  chipTextoAtivo: {
-    color: MARINHO,
-  },
+  chipAtivo: { backgroundColor: AMARELO },
+  chipTexto: { fontSize: 14, fontWeight: '700', color: CINZA_TEXTO },
+  chipTextoAtivo: { color: MARINHO },
   opcao: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
     backgroundColor: CINZA_MODAL,
     borderRadius: 14,
     padding: 14,
     marginBottom: 10,
   },
-  opcaoTexto: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: MARINHO,
-  },
+  opcaoTexto: { fontSize: 15, fontWeight: '700', color: MARINHO },
   modalBotoes: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
     gap: 16,
     marginTop: 4,
   },
-  modalCancelar: {
-    color: CINZA_TEXTO,
-    fontWeight: "700",
-  },
+  modalCancelar: { color: CINZA_TEXTO, fontWeight: '700' },
   modalSalvar: {
     backgroundColor: AMARELO,
     borderRadius: 16,
     paddingHorizontal: 18,
     paddingVertical: 8,
   },
-  modalSalvarTexto: {
-    color: MARINHO,
-    fontWeight: "700",
-  },
+  modalSalvarTexto: { color: MARINHO, fontWeight: '700' },
 });

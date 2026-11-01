@@ -1,7 +1,7 @@
 // app/(tabs)/perfil.tsx
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  Alert,
   View,
   Text,
   FlatList,
@@ -14,6 +14,11 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { RodapeFlutuante } from '../../components/rodapeperfil';
 import { Header as HeaderLogo } from '../../components/header';
+import {
+  atualizarUsuarioLogado,
+  logoutUsuario,
+  useProtegerRota,
+} from '../rotaServidor/usuarioController';
 
 /* ------------------------------------------------------------------
    CORES (as mesmas da tela de cadastro)
@@ -38,7 +43,7 @@ type Perfil = {
 type ChaveTexto = 'nome' | 'cpf' | 'telefone' | 'email';
 
 type ItemCampo = {
-  id: string; // keyExtractor precisa de STRING
+  id: string;
   chave: ChaveTexto;
   icone: keyof typeof Ionicons.glyphMap;
   rotulo: string;
@@ -46,12 +51,6 @@ type ItemCampo = {
   teclado: KeyboardTypeOptions;
 };
 
-/* ------------------------------------------------------------------
-   COMPONENTES REUTILIZÁVEIS
-   (depois você pode mover cada um para a pasta components/)
------------------------------------------------------------------- */
-
-// Header: título + lápis (vira X quando está editando)
 type HeaderProps = {
   titulo: string;
   editando: boolean;
@@ -74,7 +73,6 @@ function Header({ titulo, editando, onEditar }: HeaderProps) {
   );
 }
 
-// Foto do perfil: por enquanto é só um ícone (sem função)
 type AvatarProps = {
   editando: boolean;
 };
@@ -93,7 +91,6 @@ function Avatar({ editando }: AvatarProps) {
   );
 }
 
-// Uma linha: ícone + rótulo + (texto ou campo de digitação)
 type CampoProps = {
   icone: keyof typeof Ionicons.glyphMap;
   rotulo: string;
@@ -130,7 +127,7 @@ function Campo({
             autoCapitalize="none"
           />
         ) : (
-          <Text style={styles.valor}>{valor}</Text>
+          <Text style={styles.valor}>{valor || 'Não informado'}</Text>
         )}
       </View>
       {rotulo === 'CPF' && !editando && (
@@ -151,51 +148,81 @@ function Campo({
   );
 }
 
-// Linha fina entre os itens
 function Divisor() {
   return <View style={styles.divisor} />;
 }
 
 /* ------------------------------------------------------------------
-   TELA DE PERFIL
+   TELA DE PERFIL (PESSOA FÍSICA / CLIENTE)
 ------------------------------------------------------------------ */
 export default function PerfilScreen() {
   const router = useRouter();
+  const { usuario, setUsuario } = useProtegerRota('cliente');
 
-  // perfil = dados salvos | rascunho = o que está sendo editado
   const [perfil, setPerfil] = useState<Perfil>({
-    nome: 'nome da pessoa',
-    cpf: '123.456.789-00',
-    telefone: '(48) 99999-0000',
-    email: 'email.pessoa@voou.com',
+    nome: '',
+    cpf: '',
+    telefone: '',
+    email: '',
   });
   const [rascunho, setRascunho] = useState<Perfil>(perfil);
   const [editando, setEditando] = useState(false);
   const [mostrarCpf, setMostrarCpf] = useState(false);
 
-  // Editando mostra o rascunho; senão mostra o perfil salvo
+  // Carrega os dados do usuário logado na tela
+  useEffect(() => {
+    if (!usuario) return;
+
+    const dadosUsuario: Perfil = {
+      nome: usuario.nome || '',
+      cpf: usuario.cpf || '',
+      telefone: usuario.telefone || '',
+      email: usuario.email || '',
+    };
+    setPerfil(dadosUsuario);
+    setRascunho(dadosUsuario);
+  }, [usuario]);
+
+  if (!usuario) return null;
+
   const atual = editando ? rascunho : perfil;
 
   /* ---------- ações ---------- */
   const iniciarEdicao = () => {
-    setRascunho(perfil); // começa a edição com uma cópia dos dados
+    setRascunho(perfil);
     setEditando(true);
   };
 
   const cancelarEdicao = () => {
-    setEditando(false); // joga o rascunho fora
+    setEditando(false);
   };
 
-  const salvar = () => {
-    setPerfil(rascunho);
-    setEditando(false);
+  const salvar = async () => {
+    try {
+      const atualizado = await atualizarUsuarioLogado({
+        nome: rascunho.nome,
+        cpf: rascunho.cpf,
+        telefone: rascunho.telefone,
+        email: rascunho.email,
+      });
+      setUsuario(atualizado);
+      setPerfil(rascunho);
+      setEditando(false);
+      Alert.alert('Sucesso', 'Seus dados foram atualizados!');
+    } catch {
+      Alert.alert('Erro', 'Não foi possível salvar os dados.');
+    }
+  };
+
+  const sair = async () => {
+    await logoutUsuario();
+    router.replace('/');
   };
 
   const atualizarTexto = (chave: ChaveTexto, texto: string) => {
     setRascunho((r) => ({ ...r, [chave]: texto }));
   };
 
-  /* ---------- data da FlatList ---------- */
   const cpfMascarado = '•••.•••.•••-••';
 
   const dados: ItemCampo[] = [
@@ -246,16 +273,13 @@ export default function PerfilScreen() {
     />
   );
 
-  /* ---------- topo da lista ---------- */
   const Topo = (
     <View style={styles.topo}>
       <Avatar editando={editando} />
-
       <Text style={styles.nome}>{atual.nome}</Text>
     </View>
   );
 
-  /* ---------- rodapé da lista ---------- */
   const Rodape = (
     <View>
       <Divisor />
@@ -271,10 +295,7 @@ export default function PerfilScreen() {
           </Pressable>
         </View>
       ) : (
-        <Pressable
-          style={styles.botaoAmarelo}
-          onPress={() => router.replace('/')}
-        >
+        <Pressable style={styles.botaoAmarelo} onPress={sair}>
           <Text style={styles.botaoAmareloTexto}>Sair</Text>
         </Pressable>
       )}
@@ -315,11 +336,7 @@ export default function PerfilScreen() {
   );
 }
 
-/* ------------------------------------------------------------------
-   ESTILOS
------------------------------------------------------------------- */
 const styles = StyleSheet.create({
-  // flex: 1 para a tela (e a lista) aparecerem
   container: {
     flex: 1,
     backgroundColor: ROXO_FUNDO,
@@ -329,16 +346,6 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingHorizontal: 20,
   },
-cabeçalho: {
-    height: 56,
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-  
-  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -350,8 +357,6 @@ cabeçalho: {
     fontSize: 22,
     fontWeight: 'bold',
   },
-
-  // Card cinza que guarda a lista
   card: {
     flex: 1,
     backgroundColor: CINZA_CARD,
@@ -359,8 +364,6 @@ cabeçalho: {
     padding: 20,
     marginBottom: 60,
   },
-
-  // Topo do card 
   topo: {
     alignItems: 'center',
     marginBottom: 20,
@@ -394,23 +397,6 @@ cabeçalho: {
     textAlign: 'center',
     marginBottom: 12,
   },
-  selo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginTop: 6,
-    marginBottom: 12,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    backgroundColor: '#7B2FF7',
-  },
-  seloTexto: {
-    color: ROXO,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  // Campo
   campo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -438,14 +424,10 @@ cabeçalho: {
     fontSize: 16,
     color: TEXTO,
   },
-
-  // Divisor
   divisor: {
     height: 1,
     backgroundColor: '#D6D6D6',
   },
-
-  // Botões (mesmo estilo do botão "Cadastrar")
   botaoAmarelo: {
     backgroundColor: AMARELO,
     borderRadius: 24,

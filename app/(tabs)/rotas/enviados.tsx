@@ -3,9 +3,13 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../../../components/header';
 import { BotaoVoltar } from '../../botaoVoltar';
+import { useProtegerRota } from '../../rotaServidor/usuarioController';
 
 export default function Enviados() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('cliente');
+
+  if (!usuario) return null;
 
   return (
     <View style={styles.tela}>
@@ -29,7 +33,7 @@ export default function Enviados() {
 
           <Text style={styles.titulo}>Seus envios</Text>
           <Text style={styles.paragrafo}>
-            Tudo o que você enviou, organizado em um só lugar.
+            Olá, {usuario.nome}! Tudo o que você enviou fica organizado em um só lugar.
           </Text>
         </View>
 
@@ -93,14 +97,8 @@ export default function Enviados() {
 }
 
 const styles = StyleSheet.create({
-  tela: {
-    flex: 1,
-    backgroundColor: '#7B2FF7',
-  },
-  decoracao: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
-  },
+  tela: { flex: 1, backgroundColor: '#7B2FF7' },
+  decoracao: { ...StyleSheet.absoluteFillObject, overflow: 'hidden' },
   circuloGrande: {
     position: 'absolute',
     top: 140,
@@ -134,9 +132,7 @@ const styles = StyleSheet.create({
     paddingTop: 34,
     paddingBottom: 112,
   },
-  introducao: {
-    marginBottom: 28,
-  },
+  introducao: { marginBottom: 28 },
   selo: {
     alignSelf: 'flex-start',
     flexDirection: 'row',
@@ -147,19 +143,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,0.14)',
   },
-  seloTexto: {
-    color: '#FFFFFF',
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 1.1,
-  },
-  titulo: {
-    color: '#FFFFFF',
-    fontSize: 34,
-    fontWeight: '800',
-    letterSpacing: -0.7,
-    marginTop: 18,
-  },
+  seloTexto: { color: '#FFFFFF', fontSize: 11, fontWeight: '700', letterSpacing: 1.1 },
+  titulo: { color: '#FFFFFF', fontSize: 34, fontWeight: '800', letterSpacing: -0.7, marginTop: 18 },
   paragrafo: {
     maxWidth: 300,
     color: 'rgba(255,255,255,0.82)',
@@ -167,9 +152,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginTop: 8,
   },
-  lista: {
-    gap: 16,
-  },
+  lista: { gap: 16 },
   cartao: {
     minHeight: 142,
     flexDirection: 'row',
@@ -191,35 +174,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'flex-start',
   },
-  iconeMatriculas: {
-    backgroundColor: '#F8F8F8',
-  },
-  iconeCurriculos: {
-    backgroundColor: '#FFF3D6',
-  },
-  detalhesCartao: {
-    flex: 1,
-    marginLeft: 14,
-    marginRight: 8,
-  },
-  etiqueta: {
-    color: '#7B2FF7',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1,
-    marginBottom: 4,
-  },
-  tituloCartao: {
-    color: '#7B2FF7',
-    fontSize: 20,
-    fontWeight: '800',
-  },
-  descricaoCartao: {
-    color: '#7B2FF7',
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 5,
-  },
+  iconeMatriculas: { backgroundColor: '#F8F8F8' },
+  iconeCurriculos: { backgroundColor: '#FFF3D6' },
+  detalhesCartao: { flex: 1, marginLeft: 14, marginRight: 8 },
+  etiqueta: { color: '#7B2FF7', fontSize: 10, fontWeight: '700', letterSpacing: 1, marginBottom: 4 },
+  tituloCartao: { color: '#7B2FF7', fontSize: 20, fontWeight: '800' },
+  descricaoCartao: { color: '#7B2FF7', fontSize: 13, lineHeight: 18, marginTop: 5 },
   seta: {
     width: 34,
     height: 34,
@@ -235,10 +195,5 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingHorizontal: 4,
   },
-  ajudaTexto: {
-    flex: 1,
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 13,
-    lineHeight: 19,
-  },
+  ajudaTexto: { flex: 1, color: 'rgba(255,255,255,0.8)', fontSize: 13, lineHeight: 19 },
 });

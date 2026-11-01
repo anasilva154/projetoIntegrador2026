@@ -1,0 +1,107 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "tipo": "cliente",
+      "nome": "Ana Silva",
+      "email": "cliente@vooa.com",
+      "cpf": "123.456.789-00",
+      "telefone": "(48) 99999-1234",
+      "senhaHash": "$2b$10$qd9BPUvlN0KUfQ63CKCn7urk312eoRNhP9imkCAKp65sevYc3n5Rq"
+    },
+    {
+      "id": "2",
+      "tipo": "empresa",
+      "nome": "Nova Geração Soluções",
+      "email": "empresa@vooa.com",
+      "cnpj": "12.345.678/0001-00",
+      "telefone": "(48) 3433-0000",
+      "endereco": "Rua Exemplo, 123, próximo ao Senac, Criciúma - SC",
+      "senhaHash": "$2b$10$rKR31kqGps2AeFU9GHWSEOmsAoci.eSPBwzz5IDwGuqtoAOivyF6G"
+    }
+  ],
+  "envios": [
+    {
+      "id": 1001,
+      "tipo": "vaga",
+      "titulo": "Jovem Aprendiz/Auxiliar",
+      "empresa": "Nova Geração Soluções",
+      "area": "Administrativo",
+      "data_envio": "2026-10-15T10:00:00.000Z",
+      "status": "enviado",
+      "nome": "Ana Silva",
+      "email": "cliente@vooa.com",
+      "telefone": "(48) 99999-1234",
+      "idade": "18 anos",
+      "cidade": "Centro",
+      "arquivo_nome": "Curriculo_Ana_Silva.pdf"
+    },
+    {
+      "id": 1002,
+      "tipo": "vaga",
+      "titulo": "Estagiário de TI",
+      "empresa": "Nova Geração Soluções",
+      "area": "Tecnologia da Informação",
+      "data_envio": "2026-10-18T14:30:00.000Z",
+      "status": "visualizado",
+      "nome": "João Pedro",
+      "email": "joao.pedro@example.com",
+      "telefone": "(48) 90000-0002",
+      "idade": "21 anos",
+      "cidade": "Trindade",
+      "arquivo_nome": "Curriculo_Joao_Pedro.pdf"
+    },
+    {
+      "id": 1003,
+      "tipo": "vaga",
+      "titulo": "Auxiliar Administrativo",
+      "empresa": "Grupo Delta Contábil",
+      "area": "Administrativo",
+      "data_envio": "2026-10-20T09:15:00.000Z",
+      "status": "enviado",
+      "nome": "Maria Clara",
+      "email": "maria.clara@example.com",
+      "telefone": "(48) 90000-0003",
+      "idade": "20 anos",
+      "cidade": "Itacorubi",
+      "arquivo_nome": "Curriculo_Maria_Clara.pdf"
+    },
+    {
+      "id": 1004,
+      "tipo": "curso",
+      "titulo": "Informática Básica",
+      "empresa": "Escola Digital Conecta",
+      "area": "Informática",
+      "data_envio": "2026-10-22T11:00:00.000Z",
+      "status": "enviado",
+      "nome": "Ana Silva",
+      "nascimento": "12/03/2008",
+      "cpf": "123.456.789-00",
+      "email": "cliente@vooa.com",
+      "telefone": "(48) 99999-1234",
+      "endereco": "Rua das Flores, 45, Centro, Criciúma",
+      "escolaridade": "Ensino Médio cursando",
+      "turno": "Tarde",
+      "arquivo_nome": "Matricula_Ana_Silva.pdf"
+    },
+    {
+      "id": 1005,
+      "tipo": "curso",
+      "titulo": "Inglês Básico",
+      "empresa": "Escola Global Idiomas",
+      "area": "Idiomas",
+      "data_envio": "2026-10-25T16:00:00.000Z",
+      "status": "aprovado",
+      "nome": "Mariana Costa",
+      "nascimento": "03/06/2004",
+      "cpf": "000.000.000-05",
+      "email": "mariana.costa@example.com",
+      "telefone": "(48) 90000-0005",
+      "endereco": "Av. Centenário, 200, Centro, Criciúma",
+      "escolaridade": "Ensino Médio completo",
+      "turno": "Noite",
+      "arquivo_nome": "Matricula_Mariana_Costa.pdf"
+    }
+  ]
+}
+

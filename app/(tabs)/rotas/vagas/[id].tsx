@@ -1,12 +1,28 @@
+import { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import DadosVagas from '@/app/rotaServidor/dados';
+import { useIsFocused } from '@react-navigation/native';
+import { buscarVagaPorId, type VagaItem } from '@/app/rotaServidor/vagasController';
+import { useProtegerRota } from '@/app/rotaServidor/usuarioController';
 
-
-export default function Vagas() {
+export default function VagaPorId() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const vagas = DadosVagas();
-  const vagaSelecionada = vagas.find((vaga) => vaga.id === id);
+  const { usuario } = useProtegerRota('cliente');
+  const telaEmFoco = useIsFocused();
+  const [vagaSelecionada, setVagaSelecionada] = useState<VagaItem | null>(null);
+
+  useEffect(() => {
+    if (!telaEmFoco || !usuario) return;
+
+    async function carregar() {
+      const encontrada = await buscarVagaPorId(id);
+      setVagaSelecionada(encontrada);
+    }
+
+    carregar();
+  }, [telaEmFoco, usuario, id]);
+
+  if (!usuario) return null;
 
   return (
     <ScrollView style={styles.tela} contentContainerStyle={styles.conteudo}>

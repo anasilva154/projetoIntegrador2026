@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   Animated,
   FlatList,
@@ -9,7 +9,15 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
+import {
+  inicializarUsuarios,
+  obterUsuarioLogado,
+} from '../rotaServidor/usuarioController';
+import { inicializarVagas } from '../rotaServidor/vagasController';
+import { inicializarCursos } from '../rotaServidor/cursosController';
+import { inicializarEnvios } from '../rotaServidor/envios';
 
 function animarPressao(escala: Animated.Value, toValue: number) {
   Animated.spring(escala, {
@@ -100,6 +108,33 @@ function renderItem({ item }: { item: (typeof dados)[number] }) {
 }
 
 export default function Boasvindas() {
+  const router = useRouter();
+  const telaEmFoco = useIsFocused();
+
+  useEffect(() => {
+    if (!telaEmFoco) return;
+
+    async function carregarBaseESessao() {
+      // Inicializa os dados estáticos no AsyncStorage na primeira execução
+      await inicializarUsuarios();
+      await inicializarVagas();
+      await inicializarCursos();
+      await inicializarEnvios();
+
+      // Se já houver usuário logado, direciona para a área correspondente
+      const usuarioLogado = await obterUsuarioLogado();
+      if (usuarioLogado) {
+        if (usuarioLogado.tipo === 'empresa') {
+          router.replace('/curriculo');
+        } else {
+          router.replace('/rotas/inicialpessoa');
+        }
+      }
+    }
+
+    carregarBaseESessao();
+  }, [telaEmFoco, router]);
+
   return (
     <View style={styles.container}>
       <FlatList

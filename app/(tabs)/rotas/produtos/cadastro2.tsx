@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Alert,
   View,
   Text,
   Image,
@@ -11,17 +12,63 @@ import {
   ScrollView,
 } from 'react-native';
 import { Link, useRouter } from 'expo-router';
+import { cadastrarCliente } from '../../../rotaServidor/usuarioController';
 
-export default function Cadastro1() {
+export default function Cadastro2() {
   const router = useRouter();
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [cnpj, setCnpj] = useState('');
+  const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [erro, setErro] = useState('');
 
-  const cadastrar = () => {
-    router.push('/rotas/inicialpessoa');
+  const cadastrar = async () => {
+    if (!nome.trim() || !email.trim() || !cpf.trim() || !senha.trim() || !confirmarSenha.trim()) {
+      const mensagem = 'Preencha todos os campos para concluir o cadastro.';
+      setErro(mensagem);
+      Alert.alert('Campos obrigatórios', mensagem);
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      const mensagem = 'Informe um endereço de e-mail válido.';
+      setErro(mensagem);
+      Alert.alert('E-mail inválido', mensagem);
+      return;
+    }
+
+    if (cpf.replace(/\D/g, '').length !== 11) {
+      const mensagem = 'O CPF deve conter 11 números.';
+      setErro(mensagem);
+      Alert.alert('CPF inválido', mensagem);
+      return;
+    }
+
+    if (senha.length < 4) {
+      const mensagem = 'A senha deve ter pelo menos 4 caracteres.';
+      setErro(mensagem);
+      Alert.alert('Senha curta', mensagem);
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      const mensagem = 'As senhas digitadas não coincidem.';
+      setErro(mensagem);
+      Alert.alert('Senhas diferentes', mensagem);
+      return;
+    }
+
+    try {
+      await cadastrarCliente({ nome, email, cpf, senha });
+      setErro('');
+      router.replace('/rotas/inicialpessoa');
+    } catch (error) {
+      const mensagem =
+        error instanceof Error ? error.message : 'Não foi possível realizar o cadastro.';
+      setErro(mensagem);
+      Alert.alert('Erro no cadastro', mensagem);
+    }
   };
 
   return (
@@ -67,10 +114,10 @@ export default function Cadastro1() {
             <Text style={styles.label}>CPF:</Text>
             <TextInput
               style={styles.input}
-              value={cnpj}
-              onChangeText={setCnpj}
+              value={cpf}
+              onChangeText={setCpf}
               keyboardType="numeric"
-              maxLength={18}
+              maxLength={14}
             />
           </View>
 
@@ -103,6 +150,8 @@ export default function Cadastro1() {
           >
             <Text style={styles.textoBotao}>Cadastrar</Text>
           </TouchableOpacity>
+
+          {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
         </View>
 
         <Text style={styles.rodape}>
@@ -186,6 +235,13 @@ const styles = StyleSheet.create({
     color: cores.branco,
     fontSize: 18,
     fontWeight: '700',
+  },
+  erro: {
+    color: '#C0392B',
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 10,
+    paddingHorizontal: 16,
   },
   rodape: {
     color: cores.branco,

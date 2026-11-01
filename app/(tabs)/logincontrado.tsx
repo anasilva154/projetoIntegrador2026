@@ -1,39 +1,42 @@
-﻿// app/login.tsx
+// app/(tabs)/logincontrado.tsx
 import { Alert, View, Text, TextInput, Pressable, Image, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { loginCliente } from '../rotaServidor/usuarioController';
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
 
-  const logar = () => {
-    if (!email.trim() || !senha.trim()) {
-      const mensagem = 'Preencha todos os campos.';
+  const logar = async () => {
+    if (!cpf.trim() || !senha.trim()) {
+      const mensagem = 'Preencha o CPF e a senha.';
       setErro(mensagem);
       Alert.alert('Campos obrigatórios', mensagem);
       return;
     }
 
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
-      const mensagem = 'Digite um endereço de e-mail válido.';
+    if (cpf.replace(/\D/g, '').length !== 11) {
+      const mensagem = 'Confira se o CPF (11 números) foi informado corretamente.';
       setErro(mensagem);
-      Alert.alert('Informação inválida', mensagem);
+      Alert.alert('CPF inválido', mensagem);
       return;
     }
 
-    // Aqui entra a validação de verdade com o servidor.
-    if (email.trim().toLowerCase() !== 'teste@vooa.com' || senha !== '123456') {
-      const mensagem = 'E-mail ou senha incorretos. Confira os dados e tente novamente.';
+    try {
+      await loginCliente(cpf, senha);
+      setErro('');
+      router.replace('/rotas/inicialpessoa');
+    } catch (error) {
+      const mensagem =
+        error instanceof Error
+          ? error.message
+          : 'Erro ao realizar login. Tente novamente.';
       setErro(mensagem);
       Alert.alert('Informações incorretas', mensagem);
-      return;
     }
-
-    setErro('');
-    router.replace('/perfil'); // troca de tela sem poder voltar
   };
 
   return (
@@ -47,15 +50,26 @@ export default function Login() {
           resizeMode="contain"
         />
 
-        <Text style={styles.label}>E-mail:</Text>
-        <TextInput style={styles.input} value={email} onChangeText={setEmail} />
+        <Text style={styles.label}>CPF:</Text>
+        <TextInput
+          style={styles.input}
+          value={cpf}
+          onChangeText={setCpf}
+          placeholder="Ex: 123.456.789-00"
+          placeholderTextColor="#999"
+          keyboardType="numeric"
+          maxLength={14}
+        />
 
         <Text style={styles.label}>Senha:</Text>
         <TextInput
           style={styles.input}
           value={senha}
           onChangeText={setSenha}
+          placeholder="Digite sua senha"
+          placeholderTextColor="#999"
           secureTextEntry={true}
+          autoCapitalize="none"
         />
 
         {/* Link com asChild: o Pressable vira o elemento clicável */}
@@ -95,7 +109,7 @@ const styles = StyleSheet.create({
   },
   logo: { width: '100%', height: 80, marginBottom: 3, alignSelf: 'center' },
   label: { color: '#111', fontSize: 16, paddingTop: 8, paddingBottom: 4 },
-  input: { backgroundColor: '#F0F0F0', padding: 12, borderRadius: 12, fontSize: 16 },
+  input: { backgroundColor: '#F0F0F0', padding: 12, borderRadius: 12, fontSize: 16, color: '#111' },
   esqueciSenha: { color: '#000000', fontSize: 11, fontWeight: 'bold', textAlign: 'left', marginTop: 8 },
   erro: { color: '#C0392B', fontSize: 11, textAlign: 'center', marginTop: 12 },
   botao: { backgroundColor: '#F5BE35', padding: 12, borderRadius: 30, marginTop: 20 },

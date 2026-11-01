@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
-import DadosCursos from './rotaServidor/dadoscursos';
+import { listarCursos, type CursoItem } from './rotaServidor/cursosController';
+import { useProtegerRota } from './rotaServidor/usuarioController';
 
 const normalizar = (texto: string) =>
   texto
@@ -14,15 +16,35 @@ const normalizar = (texto: string) =>
 
 export default function Cursos() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('cliente');
+  const telaEmFoco = useIsFocused();
 
-  const cursos = useMemo(() => DadosCursos(), []);
+  const [cursos, setCursos] = useState<CursoItem[]>([]);
   const [busca, setBusca] = useState('');
+
+  useEffect(() => {
+    if (!telaEmFoco || !usuario) return;
+
+    async function carregar() {
+      const lista = await listarCursos();
+      setCursos(lista);
+    }
+
+    carregar();
+  }, [telaEmFoco, usuario]);
 
   const cursosFiltrados = useMemo(() => {
     const termo = normalizar(busca);
     if (termo === '') return cursos;
-    return cursos.filter((c: any) => normalizar(String(c.titulo ?? '')).includes(termo));
+    return cursos.filter(
+      (c) =>
+        normalizar(String(c.titulo ?? '')).includes(termo) ||
+        normalizar(String(c.empresa ?? '')).includes(termo) ||
+        normalizar(String(c.categoria ?? '')).includes(termo)
+    );
   }, [cursos, busca]);
+
+  if (!usuario) return null;
 
   return (
     <View style={styles.tela}>
@@ -48,8 +70,8 @@ export default function Cursos() {
 
       <FlatList
         data={cursosFiltrados}
-        keyExtractor={(item: any) => String(item.id)}
-        renderItem={({ item }: { item: any }) => (
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.tituloLinha}>
               <Text style={styles.bolinhaTitulo}>•</Text>
@@ -63,16 +85,21 @@ export default function Cursos() {
 
             <TouchableOpacity
               style={styles.cardSubtitulo}
-              onPress={() => router.push('/cursosinfo')}
+              onPress={() =>
+                router.push({
+                  pathname: '/cursosinfo',
+                  params: { id: String(item.id) },
+                })
+              }
               activeOpacity={0.8}
               accessibilityRole="button"
               accessibilityLabel={`Ver detalhes do curso ${item.titulo}`}
             >
-              {(item.topicos ?? []).slice(0, 4).map((topico: any, index: number) => (
+              {(item.topicos ?? []).slice(0, 4).map((topico, index) => (
                 <View key={index} style={styles.topicoLinha}>
                   <Text style={styles.bolinhaTopico}>•</Text>
                   <Text style={styles.topicoTexto} numberOfLines={1}>
-                    {topico.descricao}
+                    {topico.descricao.replace(/^\s*-\s*/, '')}
                   </Text>
                 </View>
               ))}
@@ -108,7 +135,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#7B2FF7',
   },
-
   buscaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -127,7 +153,6 @@ const styles = StyleSheet.create({
     color: '#000000',
     paddingVertical: 0,
   },
-
   lista: {
     paddingHorizontal: 16,
     paddingBottom: 110,
@@ -140,7 +165,6 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
   },
-
   tituloLinha: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -164,7 +188,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 10,
   },
-
   cardSubtitulo: {
     width: '100%',
     backgroundColor: '#EBEBEB',
@@ -190,7 +213,6 @@ const styles = StyleSheet.create({
     color: '#000',
     lineHeight: 18,
   },
-
   saibaMaisContainer: {
     alignItems: 'flex-end',
     marginTop: 14,
@@ -201,14 +223,12 @@ const styles = StyleSheet.create({
     color: '#9A9A9A',
     textDecorationLine: 'underline',
   },
-
   vazio: {
     textAlign: 'center',
     color: '#FFFFFF',
     fontSize: 15,
     marginTop: 30,
   },
-
   botaoVoltar: {
     position: 'absolute',
     left: 6,

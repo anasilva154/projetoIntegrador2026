@@ -12,7 +12,8 @@ import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/header';
 import { RodapeFlutuante } from '../components/rodapeperfil';
-import { listarEnvios, type Envio } from './rotaServidor/envios';
+import { listarEnviosPorUsuario, type Envio } from './rotaServidor/envios';
+import { useProtegerRota } from './rotaServidor/usuarioController';
 
 type FiltroEnvios = 'todos' | 'vaga' | 'curso';
 const corAmarelaDestaque = '#FFC83D';
@@ -35,6 +36,7 @@ function formatarData(data: string) {
 
 export default function Curriculos() {
   const router = useRouter();
+  const { usuario } = useProtegerRota('cliente');
   const [envios, setEnvios] = useState<Envio[]>([]);
   const [filtro, setFiltro] = useState<FiltroEnvios>('todos');
   const [carregando, setCarregando] = useState(true);
@@ -43,7 +45,7 @@ export default function Curriculos() {
   const telaEmFoco = useIsFocused();
 
   useEffect(() => {
-    if (!telaEmFoco) return;
+    if (!telaEmFoco || !usuario) return;
 
     let ativo = true;
 
@@ -52,7 +54,7 @@ export default function Curriculos() {
       setErro('');
 
       try {
-        const resultado = await listarEnvios();
+        const resultado = await listarEnviosPorUsuario(usuario!.email);
         if (ativo) setEnvios(resultado);
       } catch (error) {
         if (ativo) {
@@ -71,12 +73,14 @@ export default function Curriculos() {
     return () => {
       ativo = false;
     };
-  }, [telaEmFoco, tentativa]);
+  }, [telaEmFoco, tentativa, usuario]);
 
   const enviosFiltrados = useMemo(
     () => envios.filter((envio) => filtro === 'todos' || envio.tipo === filtro),
     [envios, filtro],
   );
+
+  if (!usuario) return null;
 
   return (
     <View style={styles.tela}>
@@ -94,7 +98,7 @@ export default function Curriculos() {
       >
         <Text style={styles.titulo}>Meus envios</Text>
         <Text style={styles.subtitulo}>
-          Consulte os currículos e as matrículas que você já enviou.
+          Consulte os currículos e as matrículas enviados por {usuario.nome}.
         </Text>
 
         <View style={styles.filtros}>
@@ -218,14 +222,8 @@ export default function Curriculos() {
 }
 
 const styles = StyleSheet.create({
-  tela: {
-    flex: 1,
-    backgroundColor: '#7B2FF7',
-  },
-  decoracao: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
-  },
+  tela: { flex: 1, backgroundColor: '#7B2FF7' },
+  decoracao: { ...StyleSheet.absoluteFillObject, overflow: 'hidden' },
   circuloGrande: {
     position: 'absolute',
     top: 150,
@@ -274,31 +272,17 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 20,
   },
-  filtros: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 18,
-  },
+  filtros: { flexDirection: 'row', gap: 8, marginBottom: 18 },
   filtro: {
     paddingHorizontal: 15,
     paddingVertical: 9,
     borderRadius: 18,
     backgroundColor: 'rgba(255,255,255,0.16)',
   },
-  filtroAtivo: {
-    backgroundColor: corAmarelaDestaque,
-  },
-  filtroTexto: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  filtroTextoAtivo: {
-    color: '#25164F',
-  },
-  listaEnvios: {
-    gap: 12,
-  },
+  filtroAtivo: { backgroundColor: corAmarelaDestaque },
+  filtroTexto: { color: '#FFFFFF', fontSize: 13, fontWeight: '700' },
+  filtroTextoAtivo: { color: '#25164F' },
+  listaEnvios: { gap: 12 },
   cartaoEnvio: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -320,30 +304,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FFF3D6',
   },
-  detalhesEnvio: {
-    flex: 1,
-    gap: 3,
-  },
+  detalhesEnvio: { flex: 1, gap: 3 },
   etiquetaEnvio: {
     color: '#8A5B00',
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 0.8,
   },
-  tituloEnvio: {
-    color: '#25164F',
-    fontSize: 16,
-    fontWeight: '800',
-  },
-  metaEnvio: {
-    color: '#6B6B80',
-    fontSize: 12,
-    lineHeight: 17,
-  },
-  estado: {
-    marginTop: 30,
-    marginBottom: 30,
-  },
+  tituloEnvio: { color: '#25164F', fontSize: 16, fontWeight: '800' },
+  metaEnvio: { color: '#6B6B80', fontSize: 12, lineHeight: 17 },
+  estado: { marginTop: 30, marginBottom: 30 },
   estadoCartao: {
     alignItems: 'center',
     gap: 10,
@@ -369,101 +339,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: '#7B2FF7',
   },
-  botaoRecarregarTexto: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  cartaoVazio: {
-    alignItems: 'center',
-    padding: 22,
-    borderRadius: 26,
-    backgroundColor: '#FFFFFF',
-    elevation: 7,
-    shadowColor: '#7B2FF7',
-    shadowOpacity: 0.2,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 7 },
-  },
-  iconePrincipal: {
-    position: 'relative',
-    width: 76,
-    height: 76,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFF3D6',
-    marginBottom: 18,
-  },
-  iconeSelo: {
-    position: 'absolute',
-    right: -5,
-    bottom: -5,
-    width: 27,
-    height: 27,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#7B2FF7',
-    borderWidth: 3,
-    borderColor: '#FFFFFF',
-  },
-  etiquetaStatus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 7,
-    paddingHorizontal: 11,
-    paddingVertical: 6,
-    borderRadius: 15,
-    backgroundColor: '#FFF7E5',
-  },
-  pontoStatus: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: '#D69A16',
-  },
-  etiquetaStatusTexto: {
-    color: '#8A5B00',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.7,
-  },
-  tituloCartao: {
-    color: '#7B2FF7',
-    fontSize: 21,
-    fontWeight: '800',
-    textAlign: 'center',
-    marginTop: 16,
-  },
-  textoCartao: {
-    color: '#7B2FF7',
-    fontSize: 14,
-    lineHeight: 21,
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  divisor: {
-    alignSelf: 'stretch',
-    height: 1,
-    backgroundColor: '#E5E5E5',
-    marginVertical: 19,
-  },
-  dica: {
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-    padding: 13,
-    borderRadius: 16,
-    backgroundColor: '#FFF7E5',
-  },
-  dicaTexto: {
-    flex: 1,
-    color: '#69572D',
-    fontSize: 13,
-    lineHeight: 19,
-  },
+  botaoRecarregarTexto: { color: '#FFFFFF', fontSize: 14, fontWeight: '700' },
   botaoAcao: {
     alignSelf: 'stretch',
     minHeight: 52,
@@ -476,12 +352,7 @@ const styles = StyleSheet.create({
     backgroundColor: corAmarelaDestaque,
     marginTop: 17,
   },
-  textoBotao: {
-    flex: 1,
-    color: '#25164F',
-    fontSize: 15,
-    fontWeight: '700',
-  },
+  textoBotao: { flex: 1, color: '#25164F', fontSize: 15, fontWeight: '700' },
   rodapeInfo: {
     flexDirection: 'row',
     alignItems: 'center',
