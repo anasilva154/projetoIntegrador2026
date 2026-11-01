@@ -38,16 +38,24 @@ export default function Login() {
     }
   };
 
+  const preencherDadosTeste = () => {
+    setCnpj('12.345.678/0001-00');
+    setSenha('123456');
+    setErro('');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Quero contratar</Text>
 
       <View style={styles.card}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <Pressable onPress={preencherDadosTeste}>
+          <Image
+            source={require('../../assets/images/vooalogo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </Pressable>
 
         <Text style={styles.label}>CNPJ:</Text>
         <TextInput

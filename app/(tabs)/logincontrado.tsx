@@ -39,16 +39,24 @@ export default function Login() {
     }
   };
 
+  const preencherDadosTeste = () => {
+    setCpf('123.456.789-00');
+    setSenha('123456');
+    setErro('');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Quero ser contratado</Text>
 
       <View style={styles.card}>
-        <Image
-          source={require('../../assets/images/vooalogo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <Pressable onPress={preencherDadosTeste}>
+          <Image
+            source={require('../../assets/images/vooalogo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </Pressable>
 
         <Text style={styles.label}>CPF:</Text>
         <TextInput
