@@ -1,3 +1,4 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 // app/(tabs)/perfil.tsx
 import { useEffect, useState } from 'react';
 import {
@@ -5,10 +6,10 @@ import {
   View,
   Text,
   FlatList,
-  Pressable,
   TextInput,
   StyleSheet,
   KeyboardTypeOptions,
+  Pressable,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -319,7 +320,7 @@ export default function PerfilScreen() {
           onEditar={editando ? cancelarEdicao : iniciarEdicao}
         />
 
-        <View style={styles.card}>
+        <ContainerAnimado style={styles.card}>
           <FlatList
             data={dados}
             keyExtractor={(item) => item.id}
@@ -329,7 +330,7 @@ export default function PerfilScreen() {
             ItemSeparatorComponent={Divisor}
             keyboardShouldPersistTaps="handled"
           />
-        </View>
+        </ContainerAnimado>
       </View>
 
       <RodapeFlutuante

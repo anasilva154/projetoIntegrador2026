@@ -1,3 +1,4 @@
+import { ContainerAnimado } from '../components/entradaAnimada';
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable } from 'react-native';
 import { useRouter, useIsFocused } from 'expo-router';
@@ -52,7 +53,7 @@ export default function Matriculas() {
         </Text>
 
         {matriculas.length === 0 ? (
-          <View style={styles.cartaoVazio}>
+          <ContainerAnimado style={styles.cartaoVazio}>
             <View style={styles.iconePrincipal}>
               <Ionicons name="school" size={36} color="#7B2FF7" />
               <View style={styles.iconeSelo}>
@@ -89,27 +90,28 @@ export default function Matriculas() {
               <Text style={styles.textoBotao}>Explorar cursos</Text>
               <Ionicons name="arrow-forward" size={18} color="#FFFFFF" />
             </TouchableOpacity>
-          </View>
+          </ContainerAnimado>
         ) : (
           <View style={{ gap: 12 }}>
-            {matriculas.map((item) => (
-              <Pressable
-                key={item.id}
-                style={styles.cartaoItem}
-                onPress={() =>
-                  router.push({
-                    pathname: '/rotas/envios/[id]',
-                    params: { id: String(item.id), dados: JSON.stringify(item) },
-                  })
-                }
-              >
-                <Ionicons name="school-outline" size={28} color="#7B2FF7" />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.itemTitulo}>{item.titulo}</Text>
-                  <Text style={styles.itemSub}>{item.empresa}</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#333" />
-              </Pressable>
+            {matriculas.map((item, index) => (
+              <ContainerAnimado key={item.id} staggerIndex={index}>
+                <Pressable
+                  style={styles.cartaoItem}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/rotas/envios/[id]',
+                      params: { id: String(item.id), dados: JSON.stringify(item) },
+                    })
+                  }
+                >
+                  <Ionicons name="school-outline" size={28} color="#7B2FF7" />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.itemTitulo}>{item.titulo}</Text>
+                    <Text style={styles.itemSub}>{item.empresa}</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#333" />
+                </Pressable>
+              </ContainerAnimado>
             ))}
           </View>
         )}

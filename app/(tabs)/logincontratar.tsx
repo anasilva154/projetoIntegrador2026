@@ -1,4 +1,5 @@
-import { Alert, View, Text, TextInput, Pressable, Image, StyleSheet } from 'react-native';
+import { ContainerAnimado } from '../../components/entradaAnimada';
+import { Alert, View, Text, TextInput, Image, StyleSheet, Pressable } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { loginEmpresa } from '../rotaServidor/usuarioController';
@@ -48,7 +49,7 @@ export default function Login() {
     <View style={styles.container}>
       <Text style={styles.titulo}>Quero contratar</Text>
 
-      <View style={styles.card}>
+      <ContainerAnimado style={styles.card}>
         <Pressable onPress={preencherDadosTeste}>
           <Image
             source={require('../../assets/images/vooalogo.png')}
@@ -91,7 +92,7 @@ export default function Login() {
         </Pressable>
 
         {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
-      </View>
+      </ContainerAnimado>
 
       <Text style={styles.rodape}>
         Não possui login? Faça seu{' '}

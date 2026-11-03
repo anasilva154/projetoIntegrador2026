@@ -1,7 +1,8 @@
+import { ContainerAnimado } from '../../../../components/entradaAnimada';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import { Header } from '../../../../components/header';
 import type { Envio } from '../../../rotaServidor/envios';
 import { useProtegerRota } from '../../../rotaServidor/usuarioController';
@@ -52,7 +53,7 @@ export default function DetalhesEnvio() {
           <Text style={styles.voltarTexto}>Voltar aos envios</Text>
         </Pressable>
 
-        <View style={styles.cartao}>
+        <ContainerAnimado style={styles.cartao}>
           <View style={styles.icone}>
             <Ionicons
               name={envio?.tipo === 'curso' ? 'school-outline' : 'briefcase-outline'}
@@ -85,7 +86,7 @@ export default function DetalhesEnvio() {
               Não foi possível abrir os detalhes deste envio. Volte à lista e tente novamente.
             </Text>
           )}
-        </View>
+        </ContainerAnimado>
       </ScrollView>
     </View>
   );

@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ContainerAnimado } from './entradaAnimada';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 export type Vaga = {
   id: string;
@@ -11,7 +12,7 @@ type Props = { vaga: Vaga };
 
 export function CardVaga({ vaga }: Props) {
   return (
-    <View style={styles.card}>
+    <ContainerAnimado style={styles.card}>
       <View style={styles.linhaTitulo}>
         <Text style={styles.titulo}>• {vaga.titulo}</Text>
       </View>
@@ -33,7 +34,7 @@ export function CardVaga({ vaga }: Props) {
           <Text style={styles.saibaMais}>Saiba mais</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ContainerAnimado>
   );
 }
 

@@ -1,11 +1,12 @@
+import { ContainerAnimado } from './entradaAnimada';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 
 export default function CardFilme() {
   return (
-    <View style={styles.card}>
+    <ContainerAnimado style={styles.card}>
       <Text style={styles.texto}>Card de filme</Text>
-    </View>
+    </ContainerAnimado>
   );
 }
 

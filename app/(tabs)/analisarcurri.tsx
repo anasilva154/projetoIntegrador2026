@@ -1,3 +1,4 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 // app/(tabs)/analisarcurri.tsx
 import { useMemo, useState } from 'react';
 import {
@@ -5,9 +6,9 @@ import {
   View,
   Text,
   TextInput,
-  Pressable,
   Image,
   StyleSheet,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -90,10 +91,10 @@ export default function Candidatos() {
         </View>
       </View>
 
-      <View style={styles.blocoVaga}>
+      <ContainerAnimado style={styles.blocoVaga}>
         <Text style={styles.tituloVaga}>{tituloVaga}</Text>
         <Text style={styles.empresa}>{areaVaga}</Text>
-      </View>
+      </ContainerAnimado>
 
       <View style={styles.linhaQuantidade}>
         <Image

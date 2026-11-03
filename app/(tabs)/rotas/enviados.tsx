@@ -1,3 +1,4 @@
+import { ContainerAnimado } from '../../../components/entradaAnimada';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -38,49 +39,53 @@ export default function Enviados() {
         </View>
 
         <View style={styles.lista}>
-          <TouchableOpacity
-            style={styles.cartao}
-            activeOpacity={0.85}
-            onPress={() => router.push('/matriculas')}
-          >
-            <View style={[styles.iconeContainer, styles.iconeMatriculas]}>
-              <Ionicons name="school-outline" size={27} color="#7B2FF7" />
-            </View>
+          <ContainerAnimado staggerIndex={0}>
+            <TouchableOpacity
+              style={styles.cartao}
+              activeOpacity={0.85}
+              onPress={() => router.push('/matriculas')}
+            >
+              <View style={[styles.iconeContainer, styles.iconeMatriculas]}>
+                <Ionicons name="school-outline" size={27} color="#7B2FF7" />
+              </View>
 
-            <View style={styles.detalhesCartao}>
-              <Text style={styles.etiqueta}>EDUCAÇÃO</Text>
-              <Text style={styles.tituloCartao}>Matrículas</Text>
-              <Text style={styles.descricaoCartao}>
-                Consulte suas solicitações de matrícula.
-              </Text>
-            </View>
+              <View style={styles.detalhesCartao}>
+                <Text style={styles.etiqueta}>EDUCAÇÃO</Text>
+                <Text style={styles.tituloCartao}>Matrículas</Text>
+                <Text style={styles.descricaoCartao}>
+                  Consulte suas solicitações de matrícula.
+                </Text>
+              </View>
 
-            <View style={styles.seta}>
-              <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
-            </View>
-          </TouchableOpacity>
+              <View style={styles.seta}>
+                <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
+              </View>
+            </TouchableOpacity>
+          </ContainerAnimado>
 
-          <TouchableOpacity
-            style={styles.cartao}
-            activeOpacity={0.85}
-            onPress={() => router.push('/curriculos')}
-          >
-            <View style={[styles.iconeContainer, styles.iconeCurriculos]}>
-              <Ionicons name="document-text-outline" size={27} color="#8B5A00" />
-            </View>
+          <ContainerAnimado staggerIndex={1}>
+            <TouchableOpacity
+              style={styles.cartao}
+              activeOpacity={0.85}
+              onPress={() => router.push('/curriculos')}
+            >
+              <View style={[styles.iconeContainer, styles.iconeCurriculos]}>
+                <Ionicons name="document-text-outline" size={27} color="#8B5A00" />
+              </View>
 
-            <View style={styles.detalhesCartao}>
-              <Text style={styles.etiqueta}>OPORTUNIDADES</Text>
-              <Text style={styles.tituloCartao}>Currículos</Text>
-              <Text style={styles.descricaoCartao}>
-                Acompanhe os currículos que você enviou.
-              </Text>
-            </View>
+              <View style={styles.detalhesCartao}>
+                <Text style={styles.etiqueta}>OPORTUNIDADES</Text>
+                <Text style={styles.tituloCartao}>Currículos</Text>
+                <Text style={styles.descricaoCartao}>
+                  Acompanhe os currículos que você enviou.
+                </Text>
+              </View>
 
-            <View style={styles.seta}>
-              <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
-            </View>
-          </TouchableOpacity>
+              <View style={styles.seta}>
+                <Ionicons name="arrow-forward" size={19} color="#7B2FF7" />
+              </View>
+            </TouchableOpacity>
+          </ContainerAnimado>
         </View>
 
         <View style={styles.ajuda}>

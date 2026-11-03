@@ -1,5 +1,6 @@
+import { ContainerAnimado } from '../components/entradaAnimada';
 import { useEffect, useMemo, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
 import { useRouter, useIsFocused } from 'expo-router';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -71,8 +72,8 @@ export default function Cursos() {
       <FlatList
         data={cursosFiltrados}
         keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
+        renderItem={({ item, index }) => (
+          <ContainerAnimado staggerIndex={index} style={styles.card}>
             <View style={styles.tituloLinha}>
               <Text style={styles.bolinhaTitulo}>•</Text>
               <Text style={styles.titulo} numberOfLines={1}>
@@ -108,7 +109,7 @@ export default function Cursos() {
                 <Text style={styles.saibaMais}>Saiba mais</Text>
               </View>
             </TouchableOpacity>
-          </View>
+          </ContainerAnimado>
         )}
         ListEmptyComponent={<Text style={styles.vazio}>Nenhum curso encontrado.</Text>}
         contentContainerStyle={styles.lista}

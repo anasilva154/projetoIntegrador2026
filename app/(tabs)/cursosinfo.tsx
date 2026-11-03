@@ -1,9 +1,10 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 // app/(tabs)/cursosinfo.tsx
 import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter, useIsFocused } from 'expo-router';
 
-import { View, Text, Pressable, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { Header } from '../../components/header';
 import { buscarCursoPorId, type CursoItem } from '../rotaServidor/cursosController';
 import { useProtegerRota } from '../rotaServidor/usuarioController';
@@ -59,7 +60,7 @@ export default function CursoInfo() {
       <Header />
 
       <ScrollView contentContainerStyle={styles.conteudo} showsVerticalScrollIndicator={false}>
-        <View style={styles.card}>
+        <ContainerAnimado style={styles.card}>
           <View>
             <View style={styles.tag}>
               <Text style={styles.txtTag}>CURSO</Text>
@@ -143,7 +144,7 @@ export default function CursoInfo() {
               <Text style={styles.txtBotao}>Matricular-se</Text>
             </Pressable>
           </View>
-        </View>
+        </ContainerAnimado>
       </ScrollView>
 
       <Pressable style={styles.botaoVoltar} onPress={() => router.push('/cursos')} hitSlop={10}>

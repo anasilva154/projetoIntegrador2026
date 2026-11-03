@@ -1,12 +1,13 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 import { useMemo, useState } from 'react';
 import {
   FlatList,
   Image,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -86,10 +87,10 @@ export default function AnalisarMatriculas() {
         </View>
       </View>
 
-      <View style={styles.blocoCurso}>
+      <ContainerAnimado style={styles.blocoCurso}>
         <Text style={styles.tituloCurso}>{curso}</Text>
         {area ? <Text style={styles.areaCurso}>{area}</Text> : null}
-      </View>
+      </ContainerAnimado>
 
       <View style={styles.linhaQuantidade}>
         <Image

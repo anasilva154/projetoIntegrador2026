@@ -1,3 +1,4 @@
+import { ContainerAnimado } from '../../../components/entradaAnimada';
 import React, { useState } from 'react';
 import { Link, useRouter } from 'expo-router';
 import {
@@ -6,11 +7,10 @@ import {
   Text,
   Image,
   TextInput,
-  TouchableOpacity,
   StyleSheet,
-
   StatusBar,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastrarEmpresa } from '../../rotaServidor/usuarioController';
@@ -83,7 +83,7 @@ export default function Cadastro1() {
       >
         <Text style={styles.titulo}>Cadastro para Empresa</Text>
 
-        <View style={styles.card}>
+        <ContainerAnimado style={styles.card}>
           <Image
             source={require('../../../assets/images/vooa.png')}
             style={styles.logo}
@@ -153,7 +153,7 @@ export default function Cadastro1() {
           </TouchableOpacity>
 
           {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
-        </View>
+        </ContainerAnimado>
 
         <Text style={styles.rodape}>
           Já possui cadastro? Vá para o{' '}

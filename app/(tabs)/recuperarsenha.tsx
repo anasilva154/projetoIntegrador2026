@@ -1,5 +1,6 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 // app/(tabs)/recuperarsenha.tsx
-import { View, Text, TextInput, Pressable, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { verificarEmailCadastrado } from '../rotaServidor/usuarioController';
@@ -32,7 +33,7 @@ export default function RecuperarSenha() {
     <View style={styles.container}>
       <View style={styles.espaco} />
 
-      <View style={styles.card}>
+      <ContainerAnimado style={styles.card}>
         <Image
           source={require('../../assets/images/vooalogo.png')}
           style={styles.logo}
@@ -61,7 +62,7 @@ export default function RecuperarSenha() {
         <Pressable style={styles.voltarLink} onPress={() => router.back()}>
           <Text style={styles.voltarTexto}>Voltar para o login</Text>
         </Pressable>
-      </View>
+      </ContainerAnimado>
 
       <Text style={styles.instrucao}>
         Digite seu <Text style={styles.negrito}>e-mail</Text> cadastrado para{'\n'}receber o link de recuperação.

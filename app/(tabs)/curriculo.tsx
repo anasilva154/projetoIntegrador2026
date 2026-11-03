@@ -5,10 +5,10 @@ import {
   View,
   Text,
   TextInput,
-  Pressable,
   Image,
   Modal,
   StyleSheet,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';

@@ -1,15 +1,16 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 // app/(tabs)/perfilempresa.tsx
 import { useEffect, useState } from 'react';
 import {
   View,
   Text,
   FlatList,
-  Pressable,
   TextInput,
   StyleSheet,
   KeyboardTypeOptions,
   Linking,
   Alert,
+  Pressable,
 } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -354,7 +355,7 @@ export default function PerfilEmpresaScreen() {
           onEditar={editando ? cancelarEdicao : iniciarEdicao}
         />
 
-        <View style={styles.card}>
+        <ContainerAnimado style={styles.card}>
           <FlatList
             data={dados}
             keyExtractor={(item) => item.id}
@@ -365,7 +366,7 @@ export default function PerfilEmpresaScreen() {
             contentContainerStyle={{ paddingBottom: 90 }}
             keyboardShouldPersistTaps="handled"
           />
-        </View>
+        </ContainerAnimado>
       </View>
 
       <RodapeFlutuante

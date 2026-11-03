@@ -4,19 +4,20 @@ import { useRouter, useIsFocused } from 'expo-router';
 
 import { RodapeFlutuante } from '../../../../components/rodapeFlutuante';
 import { Header } from '../../../../components/header';
+import { ContainerAnimado } from '../../../../components/entradaAnimada';
 import {
   Alert,
   FlatList,
   KeyboardAvoidingView,
   Modal,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TextInputProps,
   View,
+  Pressable,
 } from 'react-native';
 import {
   adicionarVaga,
@@ -326,8 +327,8 @@ export default function GerenciarOportunidades() {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={topoDaLista}
         contentContainerStyle={styles.lista}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
+        renderItem={({ item, index }) => (
+          <ContainerAnimado staggerIndex={index} style={styles.card}>
             <View style={styles.cardCorpo}>
               <View style={styles.cardInfo}>
                 <Text style={styles.etiquetaTipo}>
@@ -359,7 +360,7 @@ export default function GerenciarOportunidades() {
                 </Pressable>
               </View>
             </View>
-          </View>
+          </ContainerAnimado>
         )}
       />
 

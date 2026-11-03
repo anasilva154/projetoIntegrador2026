@@ -1,3 +1,4 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 // app/(tabs)/vagasinformacao.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter, useIsFocused } from 'expo-router';
@@ -6,14 +7,14 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Header } from '../../components/header';
 import {
   Animated,
-    View,
+  View,
   Text,
-  Pressable,
   Image,
   ScrollView,
   StyleSheet,
   type StyleProp,
   type ViewStyle,
+  Pressable,
 } from 'react-native';
 import { buscarVagaPorId, type VagaItem } from '../rotaServidor/vagasController';
 import { useProtegerRota } from '../rotaServidor/usuarioController';
@@ -105,7 +106,7 @@ export default function Vaga() {
       <Header />
 
       <ScrollView contentContainerStyle={styles.conteudo} showsVerticalScrollIndicator={false}>
-        <View style={styles.card}>
+        <ContainerAnimado style={styles.card}>
           <View>
             <View style={styles.tag}>
               <Text style={styles.txtTag}>VAGA</Text>
@@ -189,7 +190,7 @@ export default function Vaga() {
               <Text style={styles.txtBotao}>Candidatar-se</Text>
             </BotaoAnimado>
           </View>
-        </View>
+        </ContainerAnimado>
       </ScrollView>
 
       <BotaoAnimado

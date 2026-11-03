@@ -1,12 +1,12 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 import React from 'react';
 import {
   View,
   Text,
   Image,
-  TouchableOpacity,
   StyleSheet,
-
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -35,7 +35,7 @@ export default function Index() {
           precisamos saber; Você gostaria de:
         </Text>
 
-        <View style={styles.card}>
+        <ContainerAnimado style={styles.card}>
           <Image
             source={require('../../assets/images/vooa.png')}
             style={styles.logo}
@@ -57,7 +57,7 @@ export default function Index() {
           >
             <Text style={styles.textoBotao}>Ofertar Oportundiades</Text>
           </TouchableOpacity>
-        </View>
+        </ContainerAnimado>
       </View>
     </SafeAreaView>
   );

@@ -1,11 +1,11 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 // app/(tabs)/matricula.tsx
 import { useEffect, useState, type ReactNode } from 'react';
 import {
   Animated,
-    View,
+  View,
   Text,
   TextInput,
-  Pressable,
   Image,
   ScrollView,
   KeyboardAvoidingView,
@@ -15,6 +15,7 @@ import {
   StyleSheet,
   type StyleProp,
   type ViewStyle,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -214,7 +215,7 @@ export default function Matricula() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.cartao}>
+          <ContainerAnimado style={styles.cartao}>
             <View style={styles.cabecalho}>
               <Text style={styles.titulo}>Matricular-se</Text>
               {params.titulo ? (
@@ -370,7 +371,7 @@ export default function Matricula() {
             <BotaoAnimado style={styles.botao} onPress={enviar}>
               <Text style={styles.botaoTexto}>Matricular-se</Text>
             </BotaoAnimado>
-          </View>
+          </ContainerAnimado>
         </ScrollView>
 
         <BotaoAnimado

@@ -1,12 +1,13 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 import {
   Alert,
   Image,
   Linking,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
+  Pressable,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -112,7 +113,7 @@ export default function PdfMatriculaScreen() {
           Confira os dados e o documento enviado pelo aluno.
         </Text>
 
-        <View style={styles.cardDados}>
+        <ContainerAnimado staggerIndex={0} style={styles.cardDados}>
           {dadosMatricula.map((item, index) => (
             <View key={item.rotulo}>
               {index > 0 && <View style={styles.divisor} />}
@@ -125,22 +126,24 @@ export default function PdfMatriculaScreen() {
               </View>
             </View>
           ))}
-        </View>
+        </ContainerAnimado>
 
-        <Pressable style={styles.cardArquivo} onPress={abrirDocumento}>
-          <View style={styles.pdfIcone}>
-            <Text style={styles.pdfIconeTexto}>PDF</Text>
-          </View>
-          <View style={styles.arquivoInfo}>
-            <Text style={styles.arquivoNome} numberOfLines={1}>
-              {matricula.documento.nome}
-            </Text>
-            <Text style={styles.arquivoDetalhe}>
-              {matricula.documento.detalhe}
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={22} color={cores.escuro} />
-        </Pressable>
+        <ContainerAnimado staggerIndex={1}>
+          <Pressable style={styles.cardArquivo} onPress={abrirDocumento}>
+            <View style={styles.pdfIcone}>
+              <Text style={styles.pdfIconeTexto}>PDF</Text>
+            </View>
+            <View style={styles.arquivoInfo}>
+              <Text style={styles.arquivoNome} numberOfLines={1}>
+                {matricula.documento.nome}
+              </Text>
+              <Text style={styles.arquivoDetalhe}>
+                {matricula.documento.detalhe}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={22} color={cores.escuro} />
+          </Pressable>
+        </ContainerAnimado>
       </ScrollView>
 
       <Pressable

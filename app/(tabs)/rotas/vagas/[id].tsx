@@ -1,3 +1,4 @@
+import { ContainerAnimado } from '../../../../components/entradaAnimada';
 import { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useIsFocused } from 'expo-router';
@@ -34,7 +35,7 @@ export default function VagaPorId() {
             <Text style={styles.subtitulo}>Confira os detalhes e as atividades desta oportunidade.</Text>
           </View>
 
-          <View style={styles.cartaoResumo}>
+          <ContainerAnimado staggerIndex={0} style={styles.cartaoResumo}>
             <View style={styles.itemResumo}>
               <Text style={styles.rotuloResumo}>SALÁRIO</Text>
               <Text style={styles.valorResumo}>{vagaSelecionada.salario}</Text>
@@ -44,9 +45,9 @@ export default function VagaPorId() {
               <Text style={styles.rotuloResumo}>IDADE</Text>
               <Text style={styles.valorResumo}>{vagaSelecionada.idade}</Text>
             </View>
-          </View>
+          </ContainerAnimado>
 
-          <View style={styles.secao}>
+          <ContainerAnimado staggerIndex={1} style={styles.secao}>
             <Text style={styles.tituloSecao}>Sobre a vaga</Text>
             <View style={styles.linhaInfo}>
               <Text style={styles.rotulo}>Carga horária</Text>
@@ -56,9 +57,9 @@ export default function VagaPorId() {
               <Text style={styles.rotulo}>Escolaridade</Text>
               <Text style={styles.valor}>{vagaSelecionada.escolaridade}</Text>
             </View>
-          </View>
+          </ContainerAnimado>
 
-          <View style={styles.secao}>
+          <ContainerAnimado staggerIndex={2} style={styles.secao}>
             <Text style={styles.tituloSecao}>Atividades</Text>
             {vagaSelecionada.topicos.map((topico, index) => (
               <View key={`${index}-${topico.descricao}`} style={styles.linhaAtividade}>
@@ -66,17 +67,17 @@ export default function VagaPorId() {
                 <Text style={styles.textoAtividade}>{topico.descricao.replace(/^\s*-\s*/, '')}</Text>
               </View>
             ))}
-          </View>
+          </ContainerAnimado>
 
-          <View style={styles.secao}>
+          <ContainerAnimado staggerIndex={3} style={styles.secao}>
             <Text style={styles.tituloSecao}>Requisitos</Text>
             <Text style={styles.valor}>{vagaSelecionada.requisitos}</Text>
-          </View>
+          </ContainerAnimado>
 
-          <View style={styles.secao}>
+          <ContainerAnimado staggerIndex={4} style={styles.secao}>
             <Text style={styles.tituloSecao}>Benefícios</Text>
             <Text style={styles.valor}>{vagaSelecionada.beneficios}</Text>
-          </View>
+          </ContainerAnimado>
         </>
       ) : (
         <View style={styles.naoEncontrada}>

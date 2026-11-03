@@ -1,11 +1,12 @@
+import { ContainerAnimado } from '../components/entradaAnimada';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
+  Pressable,
 } from 'react-native';
 import { useRouter, useIsFocused } from 'expo-router';
 
@@ -162,43 +163,44 @@ export default function Curriculos() {
           </View>
         ) : (
           <View style={styles.listaEnvios}>
-            {enviosFiltrados.map((envio) => (
-              <Pressable
-                key={envio.id}
-                style={styles.cartaoEnvio}
-                onPress={() =>
-                  router.push({
-                    pathname: '/rotas/envios/[id]',
-                    params: { id: String(envio.id), dados: JSON.stringify(envio) },
-                  })
-                }
-                accessibilityRole="button"
-                accessibilityLabel={`Ver ${envio.tipo === 'curso' ? 'matrícula' : 'currículo'} para ${envio.titulo}`}
-              >
-                <View style={styles.iconeEnvio}>
-                  <Ionicons
-                    name={envio.tipo === 'curso' ? 'school-outline' : 'document-text-outline'}
-                    size={25}
-                    color="#8B5A00"
-                  />
-                </View>
-                <View style={styles.detalhesEnvio}>
-                  <Text style={styles.etiquetaEnvio}>
-                    {envio.tipo === 'curso' ? 'MATRÍCULA' : 'CURRÍCULO'}
-                  </Text>
-                  <Text style={styles.tituloEnvio} numberOfLines={2}>
-                    {envio.titulo}
-                  </Text>
-                  <Text style={styles.metaEnvio}>
-                    {envio.empresa}{envio.nome ? ` · ${envio.nome}` : ''}
-                  </Text>
-                  <Text style={styles.metaEnvio}>
-                    Enviado em {formatarData(envio.data_envio)}
-                    {envio.arquivo_nome ? ` · ${envio.arquivo_nome}` : ''}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#333333" />
-              </Pressable>
+            {enviosFiltrados.map((envio, index) => (
+              <ContainerAnimado key={envio.id} staggerIndex={index}>
+                <Pressable
+                  style={styles.cartaoEnvio}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/rotas/envios/[id]',
+                      params: { id: String(envio.id), dados: JSON.stringify(envio) },
+                    })
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={`Ver ${envio.tipo === 'curso' ? 'matrícula' : 'currículo'} para ${envio.titulo}`}
+                >
+                  <View style={styles.iconeEnvio}>
+                    <Ionicons
+                      name={envio.tipo === 'curso' ? 'school-outline' : 'document-text-outline'}
+                      size={25}
+                      color="#8B5A00"
+                    />
+                  </View>
+                  <View style={styles.detalhesEnvio}>
+                    <Text style={styles.etiquetaEnvio}>
+                      {envio.tipo === 'curso' ? 'MATRÍCULA' : 'CURRÍCULO'}
+                    </Text>
+                    <Text style={styles.tituloEnvio} numberOfLines={2}>
+                      {envio.titulo}
+                    </Text>
+                    <Text style={styles.metaEnvio}>
+                      {envio.empresa}{envio.nome ? ` · ${envio.nome}` : ''}
+                    </Text>
+                    <Text style={styles.metaEnvio}>
+                      Enviado em {formatarData(envio.data_envio)}
+                      {envio.arquivo_nome ? ` · ${envio.arquivo_nome}` : ''}
+                    </Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#333333" />
+                </Pressable>
+              </ContainerAnimado>
             ))}
           </View>
         )}

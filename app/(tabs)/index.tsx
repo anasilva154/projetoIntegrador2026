@@ -4,10 +4,10 @@ import {
   FlatList,
   View,
   Text,
-  Pressable,
   Image,
   StyleSheet,
   Platform,
+  Pressable,
 } from 'react-native';
 import { Link, useRouter, useIsFocused } from 'expo-router';
 

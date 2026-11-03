@@ -1,11 +1,11 @@
+import { ContainerAnimado } from '../../components/entradaAnimada';
 // app/(tabs)/candidatar.tsx
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Animated,
-    View,
+  View,
   Text,
   TextInput,
-  Pressable,
   Image,
   ScrollView,
   KeyboardAvoidingView,
@@ -13,6 +13,7 @@ import {
   StyleSheet,
   type StyleProp,
   type ViewStyle,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -241,7 +242,7 @@ export default function Candidatar() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.cartao}>
+          <ContainerAnimado style={styles.cartao}>
             <View style={styles.cabecalho}>
               <Text style={styles.titulo}>Candidatar-se</Text>
               {params.titulo ? (
@@ -384,7 +385,7 @@ export default function Candidatar() {
             <BotaoAnimado style={styles.botao} onPress={enviar}>
               <Text style={styles.botaoTexto}>Enviar</Text>
             </BotaoAnimado>
-          </View>
+          </ContainerAnimado>
         </ScrollView>
 
         <BotaoAnimado
