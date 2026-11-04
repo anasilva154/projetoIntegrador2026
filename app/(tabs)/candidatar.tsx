@@ -203,7 +203,9 @@ export default function Candidatar() {
         telefone: telefone.trim(),
         idade: idade.trim(),
         cidade: cidade.trim(),
+        mensagem: mensagem.trim(),
         arquivo_nome: anexo.name,
+        arquivo_uri: anexo.uri,
         usuarioEmail: usuario?.email,
       });
       setFeedback({

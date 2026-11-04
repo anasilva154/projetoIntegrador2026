@@ -14,12 +14,14 @@ export type Envio = {
   telefone?: string;
   idade?: string;
   cidade?: string;
+  mensagem?: string;
   nascimento?: string;
   cpf?: string;
   endereco?: string;
   escolaridade?: string;
   turno?: string;
   arquivo_nome?: string;
+  arquivo_uri?: string;
   usuarioEmail?: string;
 };
 
@@ -82,6 +84,43 @@ export async function salvarEnvio(
   );
 
   return novoEnvio;
+}
+
+export async function atualizarEnvioCandidatura(
+  id: number,
+  emailUsuario: string,
+  dados: Pick<
+    Envio,
+    'nome' | 'email' | 'telefone' | 'idade' | 'cidade' | 'mensagem' | 'arquivo_nome' | 'arquivo_uri'
+  >,
+): Promise<Envio> {
+  const envios = await listarEnvios();
+  const indice = envios.findIndex((envio) => envio.id === id);
+
+  if (indice === -1) {
+    throw new Error('Este envio não foi encontrado.');
+  }
+
+  const envio = envios[indice];
+  const emailFormatado = emailUsuario.trim().toLowerCase();
+  const pertenceAoUsuario =
+    envio.usuarioEmail?.trim().toLowerCase() === emailFormatado ||
+    envio.email?.trim().toLowerCase() === emailFormatado;
+
+  if (!pertenceAoUsuario) {
+    throw new Error('Você não tem permissão para editar este envio.');
+  }
+
+  const envioAtualizado: Envio = {
+    ...envio,
+    ...dados,
+    usuarioEmail: envio.usuarioEmail ?? emailUsuario,
+  };
+  const enviosAtualizados = [...envios];
+  enviosAtualizados[indice] = envioAtualizado;
+
+  await AsyncStorage.setItem(CHAVE_ENVIOS, JSON.stringify(enviosAtualizados));
+  return envioAtualizado;
 }
 
 export default function EnviosControllerRota() {
