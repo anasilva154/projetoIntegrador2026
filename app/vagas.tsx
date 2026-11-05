@@ -75,7 +75,6 @@ export default function Vagas() {
         renderItem={({ item, index }) => (
           <ContainerAnimado staggerIndex={index} style={styles.card}>
             <View style={styles.tituloLinha}>
-              <Text style={styles.bolinhaTitulo}>•</Text>
               <Text style={styles.titulo} numberOfLines={1}>
                 {item.titulo}
               </Text>
@@ -169,23 +168,18 @@ const styles = StyleSheet.create({
   tituloLinha: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 12,
-  },
-  bolinhaTitulo: {
-    fontSize: 20,
-    color: '#000',
-    marginRight: 8,
+    marginHorizontal: 16,
   },
   titulo: {
     flex: 1,
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#7B2FF7',
   },
   empresa: {
     fontSize: 14,
-    color: '#A0A0A0',
-    marginLeft: 28,
+    color: '#D99A00',
+    marginHorizontal: 16,
     marginTop: 4,
     marginBottom: 10,
   },
@@ -204,14 +198,14 @@ const styles = StyleSheet.create({
   },
   bolinhaTopico: {
     fontSize: 12,
-    color: '#000',
+    color: '#000000',
     marginRight: 8,
     lineHeight: 18,
   },
   topicoTexto: {
     flex: 1,
     fontSize: 13,
-    color: '#000',
+    color: '#000000',
     lineHeight: 18,
   },
   saibaMaisContainer: {
@@ -221,7 +215,7 @@ const styles = StyleSheet.create({
   saibaMais: {
     fontSize: 13,
     fontWeight: 'bold',
-    color: '#9A9A9A',
+    color: '#D99A00',
     textDecorationLine: 'underline',
   },
   vazio: {

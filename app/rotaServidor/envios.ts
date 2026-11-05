@@ -123,6 +123,30 @@ export async function atualizarEnvioCandidatura(
   return envioAtualizado;
 }
 
+export async function excluirEnvioCandidatura(
+  id: number,
+  emailUsuario: string,
+): Promise<void> {
+  const envios = await listarEnvios();
+  const envio = envios.find((item) => item.id === id);
+
+  if (!envio || envio.tipo !== 'vaga') {
+    throw new Error('Este currículo não foi encontrado.');
+  }
+
+  const emailFormatado = emailUsuario.trim().toLowerCase();
+  const pertenceAoUsuario =
+    envio.usuarioEmail?.trim().toLowerCase() === emailFormatado ||
+    envio.email?.trim().toLowerCase() === emailFormatado;
+
+  if (!pertenceAoUsuario) {
+    throw new Error('Você não tem permissão para excluir este currículo.');
+  }
+
+  const enviosAtualizados = envios.filter((item) => item.id !== id);
+  await AsyncStorage.setItem(CHAVE_ENVIOS, JSON.stringify(enviosAtualizados));
+}
+
 export default function EnviosControllerRota() {
   return null;
 }
