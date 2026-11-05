@@ -366,6 +366,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
+    maxHeight: '70%',
     backgroundColor: CINZA_CARD,
     borderRadius: 24,
     padding: 20,
@@ -440,7 +441,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingVertical: 14,
     alignItems: 'center',
-    marginTop: 38,
+    marginTop: 20,
   },
   botaoAmareloTexto: {
     color: '#fff',

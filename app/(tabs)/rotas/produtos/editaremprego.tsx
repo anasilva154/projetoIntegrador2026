@@ -100,6 +100,7 @@ export default function GerenciarOportunidades() {
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [tipoForm, setTipoForm] = useState<Tipo>('vaga');
   const [form, setForm] = useState<Form>(FORM_VAZIO);
+  const [campoFocado, setCampoFocado] = useState<CampoTexto | null>(null);
 
   // Carrega vagas e cursos salvos no AsyncStorage
   async function carregarDados() {
@@ -255,12 +256,18 @@ export default function GerenciarOportunidades() {
   function campo(chave: CampoTexto, placeholder: string, props: TextInputProps = {}) {
     return (
       <TextInput
-        style={[styles.modalCampo, props.multiline && styles.modalCampoGrande]}
+        style={[
+          styles.modalCampo,
+          props.multiline && styles.modalCampoGrande,
+          campoFocado === chave && styles.modalCampoFocado,
+        ]}
         placeholder={placeholder}
         placeholderTextColor="#777"
         value={form[chave]}
         onChangeText={(texto) => atualizar(chave, texto)}
         {...props}
+        onFocus={() => setCampoFocado(chave)}
+        onBlur={() => setCampoFocado(null)}
       />
     );
   }
@@ -611,13 +618,19 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   modalCampo: {
-    backgroundColor: CINZA_MODAL,
-    borderRadius: 12,
+    backgroundColor: 'transparent',
+    borderBottomWidth: 1,
+    borderBottomColor: '#B8B8B8',
     paddingHorizontal: 12,
     paddingVertical: 10,
     marginBottom: 10,
     fontSize: 14,
     color: MARINHO,
+  },
+  modalCampoFocado: {
+    borderWidth: 1,
+    borderColor: ROXO,
+    borderRadius: 12,
   },
   modalCampoGrande: { minHeight: 80, textAlignVertical: 'top' },
   modalRotulo: {

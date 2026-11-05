@@ -167,7 +167,9 @@ export default function Vaga() {
               />
               <View style={{ flex: 1 }}>
                 <Text style={styles.valorLabel}>Carga horária</Text>
-                <Text style={styles.valorTexto}>{vaga.cargaHoraria || 'A combinar'}</Text>
+                <Text style={styles.valorTexto}>
+                  {(vaga.cargaHoraria || 'A combinar').split('/')[0].trim()}
+                </Text>
               </View>
             </View>
           </View>
@@ -210,26 +212,27 @@ export default function Vaga() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#7B2FF7' },
-  conteudo: { flexGrow: 1, paddingHorizontal: 12, paddingTop: 12, paddingBottom: 12 },
+  conteudo: { flexGrow: 1, paddingHorizontal: 12, paddingTop: 38, paddingBottom: 12 },
   card: {
-    flex: 1,
+    minHeight: '85%',
     backgroundColor: '#fff',
     borderRadius: 22,
     padding: 16,
-    justifyContent: 'space-between',
-    gap: 10,
+    justifyContent: 'flex-start',
+    gap: 23,
   },
   tag: {
     alignSelf: 'flex-start',
     backgroundColor: '#F8F8F8',
     borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 3,
+    paddingHorizontal: 0,
+    paddingTop: 6,
+    paddingBottom: 3,
   },
-  txtTag: { color: '#000', fontWeight: 'bold', fontSize: 11 },
-  titulo: { fontSize: 22, fontWeight: '800', color: '#000', marginTop: 8 },
-  empresa: { fontSize: 14, color: '#000', marginTop: 2 },
-  secao: { fontSize: 16, fontWeight: 'bold', color: '#000', marginBottom: 6 },
+  txtTag: { color: '#D99A00', fontWeight: 'bold', fontSize: 13 },
+  titulo: { fontSize: 22, fontWeight: '800', color: '#7B2FF7', marginTop: 8 },
+  empresa: { fontSize: 14, color: '#D99A00', marginTop: 2 },
+  secao: { fontSize: 16, fontWeight: 'bold', color: '#7B2FF7', marginBottom: 6 },
   itemLinha: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 3 },
   bolinha: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#000000', marginTop: 6 },
   itemTexto: { flex: 1, fontSize: 13, color: '#000', lineHeight: 18 },
@@ -248,15 +251,15 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   valorBloco: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  iconeSalario: { width: 20, height: 20 },
-  iconeCarga: { width: 20, height: 20 },
-  valorLabel: { fontSize: 11, color: '#000' },
-  valorTexto: { fontSize: 13, fontWeight: 'bold', color: '#000' },
+  iconeSalario: { width: 20, height: 20, tintColor: '#000000' },
+  iconeCarga: { marginTop: 3,width: 20, height: 20, tintColor: '#000000' },
+  valorLabel: { fontSize: 11, color: '#D99A00' },
+  valorTexto: { fontSize: 13, fontWeight: 'normal', color: '#000' },
   divisorVertical: { width: 1, height: 32, backgroundColor: '#D9D9D9', marginHorizontal: 8 },
-  botaoWrapper: { alignItems: 'center' },
+  botaoWrapper: { alignItems: 'center', marginTop: 18 },
   botao: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -268,7 +271,7 @@ const styles = StyleSheet.create({
   txtBotao: { fontSize: 17, fontWeight: 'bold', color: '#000' },
   botaoVoltar: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 32,
     left: 6,
     width: 60,
     height: 60,
