@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#7B2FF7',
     paddingHorizontal: 28,
-    paddingTop: 36,
+    paddingTop: 68,
     paddingBottom: 44,
   },
   imagem: {

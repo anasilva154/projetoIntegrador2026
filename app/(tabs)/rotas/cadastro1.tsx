@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   card: {
-    width: '75%',
+    width: '85%',
     backgroundColor: cores.cardCinza,
     borderRadius: 32,
     alignItems: 'center',
@@ -219,6 +219,8 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: cores.inputCinza,
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
     paddingHorizontal: 12,
     fontSize: 15,
     color: cores.texto,
