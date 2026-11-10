@@ -165,6 +165,7 @@ export default function PerfilEmpresaScreen() {
   const [rascunho, setRascunho] = useState<Perfil>(perfil);
   const [editando, setEditando] = useState(false);
   const [mostrarCnpj, setMostrarCnpj] = useState(false);
+  const [confirmacaoSaidaVisivel, setConfirmacaoSaidaVisivel] = useState(false);
 
   // Carrega os dados da empresa logada a partir do AsyncStorage
   useEffect(() => {
@@ -218,8 +219,17 @@ export default function PerfilEmpresaScreen() {
   };
 
   const sair = async () => {
-    await logoutUsuario();
-    router.replace('/' as Href);
+    try {
+      await logoutUsuario();
+      setConfirmacaoSaidaVisivel(false);
+      router.replace('/' as Href);
+    } catch {
+      Alert.alert('Erro', 'Não foi possível sair da conta.');
+    }
+  };
+
+  const confirmarSaida = () => {
+    setConfirmacaoSaidaVisivel(true);
   };
 
   const atualizarTexto = (chave: ChaveTexto, texto: string) => {
@@ -337,7 +347,7 @@ export default function PerfilEmpresaScreen() {
           </Pressable>
         </View>
       ) : (
-        <Pressable style={styles.botaoRoxo} onPress={sair}>
+        <Pressable style={styles.botaoRoxo} onPress={confirmarSaida}>
           <Text style={styles.botaoRoxoTexto}>Sair</Text>
         </Pressable>
       )}
@@ -375,6 +385,39 @@ export default function PerfilEmpresaScreen() {
         aoAdicionar={() => router.push('/(tabs)/rotas/produtos/editaremprego')}
         aoIrParaPerfil={() => router.push('/(tabs)/perfilempresa')}
       />
+
+      {confirmacaoSaidaVisivel && (
+        <View style={styles.modalSaidaFundo}>
+          <Pressable
+            style={styles.modalSaidaBackdrop}
+            onPress={() => setConfirmacaoSaidaVisivel(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar saída"
+          />
+          <View style={styles.modalSaida}>
+            <Text style={styles.modalSaidaTitulo}>Sair</Text>
+            <Text style={styles.modalSaidaTexto}>
+              Tem certeza que deseja sair?
+            </Text>
+            <View style={styles.modalSaidaAcoes}>
+              <Pressable
+                style={styles.modalSaidaCancelar}
+                onPress={() => setConfirmacaoSaidaVisivel(false)}
+                accessibilityRole="button"
+              >
+                <Text style={styles.modalSaidaCancelarTexto}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={styles.modalSaidaConfirmar}
+                onPress={sair}
+                accessibilityRole="button"
+              >
+                <Text style={styles.modalSaidaConfirmarTexto}>Sair</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -463,4 +506,58 @@ const styles = StyleSheet.create({
   botaoRoxoTexto: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   botaoCancelar: { paddingVertical: 12, alignItems: 'center' },
   botaoCancelarTexto: { color: '#777', fontSize: 15, fontWeight: '600' },
+  modalSaidaFundo: {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    zIndex: 1000,
+    elevation: 20,
+  },
+  modalSaidaBackdrop: {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+  },
+  modalSaida: {
+    width: '100%',
+    maxWidth: 360,
+    padding: 24,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+  },
+  modalSaidaTitulo: {
+    color: TEXTO,
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  modalSaidaTexto: { color: TEXTO, fontSize: 16 },
+  modalSaidaAcoes: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 24,
+  },
+  modalSaidaCancelar: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: '#EBEBEB',
+  },
+  modalSaidaCancelarTexto: { color: TEXTO, fontWeight: '600' },
+  modalSaidaConfirmar: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: ROXO,
+  },
+  modalSaidaConfirmarTexto: { color: '#fff', fontWeight: '600' },
 });

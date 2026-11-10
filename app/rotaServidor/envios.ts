@@ -123,6 +123,52 @@ export async function atualizarEnvioCandidatura(
   return envioAtualizado;
 }
 
+export async function atualizarEnvioMatricula(
+  id: number,
+  emailUsuario: string,
+  dados: Pick<
+    Envio,
+    | 'nome'
+    | 'email'
+    | 'telefone'
+    | 'nascimento'
+    | 'cpf'
+    | 'endereco'
+    | 'escolaridade'
+    | 'turno'
+    | 'arquivo_nome'
+    | 'arquivo_uri'
+  >,
+): Promise<Envio> {
+  const envios = await listarEnvios();
+  const indice = envios.findIndex((envio) => envio.id === id);
+
+  if (indice === -1 || envios[indice].tipo !== 'curso') {
+    throw new Error('Esta matrícula não foi encontrada.');
+  }
+
+  const envio = envios[indice];
+  const emailFormatado = emailUsuario.trim().toLowerCase();
+  const pertenceAoUsuario =
+    envio.usuarioEmail?.trim().toLowerCase() === emailFormatado ||
+    envio.email?.trim().toLowerCase() === emailFormatado;
+
+  if (!pertenceAoUsuario) {
+    throw new Error('Você não tem permissão para editar esta matrícula.');
+  }
+
+  const envioAtualizado: Envio = {
+    ...envio,
+    ...dados,
+    usuarioEmail: envio.usuarioEmail ?? emailUsuario,
+  };
+  const enviosAtualizados = [...envios];
+  enviosAtualizados[indice] = envioAtualizado;
+
+  await AsyncStorage.setItem(CHAVE_ENVIOS, JSON.stringify(enviosAtualizados));
+  return envioAtualizado;
+}
+
 export async function excluirEnvioCandidatura(
   id: number,
   emailUsuario: string,
@@ -141,6 +187,30 @@ export async function excluirEnvioCandidatura(
 
   if (!pertenceAoUsuario) {
     throw new Error('Você não tem permissão para excluir este currículo.');
+  }
+
+  const enviosAtualizados = envios.filter((item) => item.id !== id);
+  await AsyncStorage.setItem(CHAVE_ENVIOS, JSON.stringify(enviosAtualizados));
+}
+
+export async function excluirEnvioMatricula(
+  id: number,
+  emailUsuario: string,
+): Promise<void> {
+  const envios = await listarEnvios();
+  const envio = envios.find((item) => item.id === id);
+
+  if (!envio || envio.tipo !== 'curso') {
+    throw new Error('Esta matrícula não foi encontrada.');
+  }
+
+  const emailFormatado = emailUsuario.trim().toLowerCase();
+  const pertenceAoUsuario =
+    envio.usuarioEmail?.trim().toLowerCase() === emailFormatado ||
+    envio.email?.trim().toLowerCase() === emailFormatado;
+
+  if (!pertenceAoUsuario) {
+    throw new Error('Você não tem permissão para excluir esta matrícula.');
   }
 
   const enviosAtualizados = envios.filter((item) => item.id !== id);

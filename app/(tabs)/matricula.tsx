@@ -186,6 +186,7 @@ export default function Matricula() {
         escolaridade: escolaridade.trim(),
         turno: turno.trim(),
         arquivo_nome: documento?.name ?? '',
+        arquivo_uri: documento?.uri,
         usuarioEmail: usuario?.email,
       });
       setEnviado(true);

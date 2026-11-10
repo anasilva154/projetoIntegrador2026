@@ -15,11 +15,11 @@ export default function Index() {
   const router = useRouter();
 
   const serContratado = () => {
-    router.push('/logincontrado');
+    router.push('/rotas/produtos/cadastro2');
   };
 
   const contratar = () => {
-    router.push('/logincontratar');
+    router.push('/rotas/cadastro1');
   };
 
   return (

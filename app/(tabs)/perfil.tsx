@@ -170,6 +170,7 @@ export default function PerfilScreen() {
   const [rascunho, setRascunho] = useState<Perfil>(perfil);
   const [editando, setEditando] = useState(false);
   const [mostrarCpf, setMostrarCpf] = useState(false);
+  const [confirmacaoSaidaVisivel, setConfirmacaoSaidaVisivel] = useState(false);
 
   // Carrega os dados do usuário logado na tela
   useEffect(() => {
@@ -223,7 +224,12 @@ export default function PerfilScreen() {
 
   const sair = async () => {
     await logoutUsuario();
+    setConfirmacaoSaidaVisivel(false);
     router.replace('/');
+  };
+
+  const confirmarSaida = () => {
+    setConfirmacaoSaidaVisivel(true);
   };
 
   const atualizarTexto = (chave: ChaveTexto, texto: string) => {
@@ -302,7 +308,7 @@ export default function PerfilScreen() {
           </Pressable>
         </View>
       ) : (
-        <Pressable style={styles.botaoAmarelo} onPress={sair}>
+        <Pressable style={styles.botaoAmarelo} onPress={confirmarSaida}>
           <Text style={styles.botaoAmareloTexto}>Sair</Text>
         </Pressable>
       )}
@@ -339,6 +345,39 @@ export default function PerfilScreen() {
         aoAdicionar={() => router.push('/curriculos')}
         aoIrParaPerfil={() => router.push('/perfil')}
       />
+
+      {confirmacaoSaidaVisivel && (
+        <View style={styles.modalSaidaFundo}>
+          <Pressable
+            style={styles.modalSaidaBackdrop}
+            onPress={() => setConfirmacaoSaidaVisivel(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar saída"
+          />
+          <View style={styles.modalSaida}>
+            <Text style={styles.modalSaidaTitulo}>Sair</Text>
+            <Text style={styles.modalSaidaTexto}>
+              Tem certeza que deseja sair?
+            </Text>
+            <View style={styles.modalSaidaAcoes}>
+              <Pressable
+                style={styles.modalSaidaCancelar}
+                onPress={() => setConfirmacaoSaidaVisivel(false)}
+                accessibilityRole="button"
+              >
+                <Text style={styles.modalSaidaCancelarTexto}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={styles.modalSaidaConfirmar}
+                onPress={sair}
+                accessibilityRole="button"
+              >
+                <Text style={styles.modalSaidaConfirmarTexto}>Sair</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -457,4 +496,58 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
   },
+  modalSaidaFundo: {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    zIndex: 1000,
+    elevation: 20,
+  },
+  modalSaidaBackdrop: {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+  },
+  modalSaida: {
+    width: '100%',
+    maxWidth: 360,
+    padding: 24,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+  },
+  modalSaidaTitulo: {
+    color: TEXTO,
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  modalSaidaTexto: { color: TEXTO, fontSize: 16 },
+  modalSaidaAcoes: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 24,
+  },
+  modalSaidaCancelar: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: '#EBEBEB',
+  },
+  modalSaidaCancelarTexto: { color: TEXTO, fontWeight: '600' },
+  modalSaidaConfirmar: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: ROXO,
+  },
+  modalSaidaConfirmarTexto: { color: '#fff', fontWeight: '600' },
 });

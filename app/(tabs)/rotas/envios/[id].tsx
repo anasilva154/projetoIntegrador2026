@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -17,24 +18,48 @@ import * as DocumentPicker from 'expo-document-picker';
 import { Header } from '../../../../components/header';
 import {
   atualizarEnvioCandidatura,
+  atualizarEnvioMatricula,
   excluirEnvioCandidatura,
+  excluirEnvioMatricula,
   type Envio,
 } from '../../../rotaServidor/envios';
 import { useProtegerRota } from '../../../rotaServidor/usuarioController';
 
 const LIMITE_MB = 5;
 
-type DadosCandidatura = Pick<
-  Envio,
-  'nome' | 'email' | 'telefone' | 'idade' | 'cidade' | 'mensagem' | 'arquivo_nome' | 'arquivo_uri'
->;
+type DadosEdicao = {
+  nome: string;
+  email: string;
+  telefone: string;
+  idade?: string;
+  cidade?: string;
+  mensagem?: string;
+  nascimento?: string;
+  cpf?: string;
+  endereco?: string;
+  escolaridade?: string;
+  turno?: string;
+  arquivo_nome?: string;
+  arquivo_uri?: string;
+};
 
-const camposCandidatura: { chave: keyof DadosCandidatura; rotulo: string }[] = [
+const camposCandidatura: { chave: keyof DadosEdicao; rotulo: string }[] = [
   { chave: 'nome', rotulo: 'Nome completo' },
   { chave: 'email', rotulo: 'E-mail' },
   { chave: 'telefone', rotulo: 'Telefone' },
   { chave: 'idade', rotulo: 'Idade' },
   { chave: 'cidade', rotulo: 'Bairro onde mora' },
+];
+
+const camposMatricula: { chave: keyof DadosEdicao; rotulo: string }[] = [
+  { chave: 'nome', rotulo: 'Nome completo' },
+  { chave: 'email', rotulo: 'E-mail' },
+  { chave: 'telefone', rotulo: 'Telefone' },
+  { chave: 'nascimento', rotulo: 'Nascimento' },
+  { chave: 'cpf', rotulo: 'CPF' },
+  { chave: 'endereco', rotulo: 'Endereço' },
+  { chave: 'escolaridade', rotulo: 'Escolaridade' },
+  { chave: 'turno', rotulo: 'Turno' },
 ];
 
 function lerEnvio(dados: string | undefined, id: string | undefined): Envio | null {
@@ -68,12 +93,29 @@ export default function DetalhesEnvio() {
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(false);
   const [confirmandoExclusao, setConfirmandoExclusao] = useState(false);
-  const [dadosEdicao, setDadosEdicao] = useState<DadosCandidatura | null>(null);
+  const [dadosEdicao, setDadosEdicao] = useState<DadosEdicao | null>(null);
 
   if (!usuario) return null;
 
   function iniciarEdicao() {
-    if (!envio || envio.tipo !== 'vaga') return;
+    if (!envio) return;
+    if (envio.tipo === 'curso') {
+      setDadosEdicao({
+        nome: envio.nome ?? '',
+        email: envio.email ?? '',
+        telefone: envio.telefone ?? '',
+        nascimento: envio.nascimento ?? '',
+        cpf: envio.cpf ?? '',
+        endereco: envio.endereco ?? '',
+        escolaridade: envio.escolaridade ?? '',
+        turno: envio.turno ?? '',
+        arquivo_nome: envio.arquivo_nome ?? '',
+        arquivo_uri: envio.arquivo_uri,
+      });
+      setEditando(true);
+      return;
+    }
+
     setDadosEdicao({
       nome: envio.nome ?? '',
       email: envio.email ?? '',
@@ -108,6 +150,25 @@ export default function DetalhesEnvio() {
         return;
       }
 
+      async function abrirDocumento() {
+        if (!envio?.arquivo_uri) {
+          Alert.alert(
+            'Documento indisponível',
+            'O arquivo original não está salvo neste envio. Anexe-o novamente ao editar.',
+          );
+          return;
+        }
+
+        try {
+          await Linking.openURL(envio.arquivo_uri);
+        } catch (error) {
+          Alert.alert(
+            'Não foi possível abrir o documento',
+            error instanceof Error ? error.message : 'Tente novamente.',
+          );
+        }
+      }
+
       const tamanho = arquivo.size ?? arquivo.file?.size;
       if (tamanho !== undefined && tamanho > LIMITE_MB * 1024 * 1024) {
         Alert.alert('Arquivo muito grande', `O anexo deve ter no máximo ${LIMITE_MB} MB.`);
@@ -128,13 +189,26 @@ export default function DetalhesEnvio() {
   async function salvarEdicao() {
     if (!envio || !dadosEdicao || !usuario) return;
 
-    if (
-      !dadosEdicao.nome?.trim() ||
-      !dadosEdicao.email?.trim() ||
-      !dadosEdicao.telefone?.trim() ||
-      !dadosEdicao.idade?.trim() ||
-      !dadosEdicao.cidade?.trim()
-    ) {
+    const camposObrigatorios =
+      envio.tipo === 'curso'
+        ? [
+            dadosEdicao.nome,
+            dadosEdicao.email,
+            dadosEdicao.telefone,
+            dadosEdicao.nascimento,
+            dadosEdicao.cpf,
+            dadosEdicao.endereco,
+            dadosEdicao.escolaridade,
+            dadosEdicao.turno,
+          ]
+        : [
+            dadosEdicao.nome,
+            dadosEdicao.email,
+            dadosEdicao.telefone,
+            dadosEdicao.idade,
+            dadosEdicao.cidade,
+          ];
+    if (camposObrigatorios.some((campo) => !campo?.trim())) {
       Alert.alert('Campos obrigatórios', 'Preencha todos os campos obrigatórios.');
       return;
     }
@@ -145,23 +219,40 @@ export default function DetalhesEnvio() {
 
     setSalvando(true);
     try {
-      const atualizado = await atualizarEnvioCandidatura(
-        envio.id,
-        usuario.email,
-        {
+      const dadosNormalizados = {
+        ...dadosEdicao,
+        nome: dadosEdicao.nome?.trim(),
+        email: dadosEdicao.email?.trim(),
+        telefone: dadosEdicao.telefone?.trim(),
+      };
+      const atualizado =
+        envio.tipo === 'curso'
+          ? await atualizarEnvioMatricula(envio.id, usuario.email, {
+              ...dadosNormalizados,
+              nascimento: dadosEdicao.nascimento?.trim(),
+              cpf: dadosEdicao.cpf?.trim(),
+              endereco: dadosEdicao.endereco?.trim(),
+              escolaridade: dadosEdicao.escolaridade?.trim(),
+              turno: dadosEdicao.turno?.trim(),
+            })
+          : await atualizarEnvioCandidatura(envio.id, usuario.email, {
           ...dadosEdicao,
           nome: dadosEdicao.nome.trim(),
           email: dadosEdicao.email.trim(),
           telefone: dadosEdicao.telefone.trim(),
-          idade: dadosEdicao.idade.trim(),
-          cidade: dadosEdicao.cidade.trim(),
+          idade: dadosEdicao.idade?.trim() ?? '',
+          cidade: dadosEdicao.cidade?.trim() ?? '',
           mensagem: dadosEdicao.mensagem?.trim() ?? '',
-        },
-      );
+            });
       setEnvio(atualizado);
       setEditando(false);
       setDadosEdicao(null);
-      Alert.alert('Alterações salvas', 'As informações da candidatura foram atualizadas.');
+      Alert.alert(
+        'Alterações salvas',
+        envio.tipo === 'curso'
+          ? 'As informações da matrícula foram atualizadas.'
+          : 'As informações da candidatura foram atualizadas.',
+      );
     } catch (error) {
       Alert.alert(
         'Não foi possível salvar',
@@ -173,17 +264,21 @@ export default function DetalhesEnvio() {
   }
 
   function confirmarExclusao() {
-    if (!envio || envio.tipo !== 'vaga' || !usuario || excluindo) return;
+    if (!envio || !usuario || excluindo) return;
     setConfirmandoExclusao(true);
   }
 
-  async function excluirCurriculo() {
-    if (!envio || envio.tipo !== 'vaga' || !usuario || excluindo) return;
+  async function excluirEnvio() {
+    if (!envio || !usuario || excluindo) return;
 
     setConfirmandoExclusao(false);
     setExcluindo(true);
     try {
-      await excluirEnvioCandidatura(envio.id, usuario.email);
+      if (envio.tipo === 'curso') {
+        await excluirEnvioMatricula(envio.id, usuario.email);
+      } else {
+        await excluirEnvioCandidatura(envio.id, usuario.email);
+      }
       router.replace('/curriculos');
     } catch (error) {
       Alert.alert(
@@ -269,7 +364,22 @@ export default function DetalhesEnvio() {
                         </Text>
                       </Pressable>
                     ) : (
-                      <Text style={styles.valor}>{envio.arquivo_nome || 'Não informado'}</Text>
+                      envio.arquivo_uri ? (
+                        <Pressable
+                          style={styles.anexoBotao}
+                          onPress={abrirDocumento}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Abrir ${envio.arquivo_nome || 'documento anexado'}`}
+                        >
+                          <Ionicons name="document-text-outline" size={20} color="#7B2FF7" />
+                          <Text style={styles.anexoTexto}>
+                            {envio.arquivo_nome || 'Abrir documento anexado'}
+                          </Text>
+                          <Ionicons name="open-outline" size={18} color="#7B2FF7" />
+                        </Pressable>
+                      ) : (
+                        <Text style={styles.valor}>{envio.arquivo_nome || 'Não informado'}</Text>
+                      )
                     )}
                   </View>
                   <View style={styles.campo}>
@@ -347,23 +457,110 @@ export default function DetalhesEnvio() {
                 </>
               ) : (
                 <>
-                  {[
-                    ['Nome', envio.nome],
-                    ['E-mail', envio.email],
-                    ['Telefone', envio.telefone],
-                    ['Nascimento', envio.nascimento],
-                    ['CPF', envio.cpf],
-                    ['Endereço', envio.endereco],
-                    ['Escolaridade', envio.escolaridade],
-                    ['Turno', envio.turno],
-                    ['Documento', envio.arquivo_nome],
-                  ].map(([rotulo, valor]) =>
-                    valor ? (
-                      <View key={rotulo} style={styles.campo}>
-                        <Text style={styles.rotulo}>{rotulo}</Text>
-                        <Text style={styles.valor}>{valor}</Text>
-                      </View>
-                    ) : null,
+                  <View style={styles.divisor} />
+                  <Text style={styles.secao}>INFORMAÇÕES ENVIADAS</Text>
+                  {camposMatricula.map(({ chave, rotulo }) => (
+                    <View key={chave} style={styles.campo}>
+                      <Text style={styles.rotulo}>{rotulo}</Text>
+                      {editando ? (
+                        <TextInput
+                          style={styles.input}
+                          value={dadosEdicao?.[chave] ?? ''}
+                          onChangeText={(valor) =>
+                            setDadosEdicao((atual) =>
+                              atual ? { ...atual, [chave]: valor } : atual,
+                            )
+                          }
+                          keyboardType={
+                            chave === 'email' || chave === 'endereco'
+                              ? 'default'
+                              : chave === 'telefone' || chave === 'cpf'
+                                ? 'phone-pad'
+                                : 'default'
+                          }
+                          autoCapitalize={chave === 'email' ? 'none' : 'words'}
+                        />
+                      ) : (
+                        <Text style={styles.valor}>
+                          {envio[chave] || 'Não informado'}
+                        </Text>
+                      )}
+                    </View>
+                  ))}
+                  <View style={styles.campo}>
+                    <Text style={styles.rotulo}>Documento</Text>
+                    {editando ? (
+                      <Pressable style={styles.anexoBotao} onPress={selecionarAnexo}>
+                        <Ionicons name="document-attach-outline" size={20} color="#7B2FF7" />
+                        <Text style={styles.anexoTexto}>
+                          {dadosEdicao?.arquivo_nome || 'Selecionar documento'}
+                        </Text>
+                      </Pressable>
+                    ) : (
+                      envio.arquivo_uri ? (
+                        <Pressable
+                          style={styles.anexoBotao}
+                          onPress={abrirDocumento}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Abrir ${envio.arquivo_nome || 'documento anexado'}`}
+                        >
+                          <Ionicons name="document-text-outline" size={20} color="#7B2FF7" />
+                          <Text style={styles.anexoTexto}>
+                            {envio.arquivo_nome || 'Abrir documento anexado'}
+                          </Text>
+                          <Ionicons name="open-outline" size={18} color="#7B2FF7" />
+                        </Pressable>
+                      ) : (
+                        <Text style={styles.valor}>{envio.arquivo_nome || 'Não informado'}</Text>
+                      )
+                    )}
+                  </View>
+                  {editando ? (
+                    <View style={styles.acoes}>
+                      <Pressable
+                        style={[styles.botao, styles.botaoAcao, styles.botaoCancelar]}
+                        onPress={() => {
+                          setEditando(false);
+                          setDadosEdicao(null);
+                        }}
+                        disabled={salvando}
+                      >
+                        <Text style={styles.textoBotaoAcao}>Cancelar</Text>
+                      </Pressable>
+                      <Pressable
+                        style={[styles.botao, styles.botaoAcao]}
+                        onPress={salvarEdicao}
+                        disabled={salvando}
+                      >
+                        {salvando ? (
+                          <ActivityIndicator color="#2B1A4D" />
+                        ) : (
+                          <Text style={styles.textoBotaoAcao}>Salvar alterações</Text>
+                        )}
+                      </Pressable>
+                    </View>
+                  ) : (
+                    <View style={styles.acoes}>
+                      <Pressable
+                        style={[styles.botao, styles.botaoAcao, styles.botaoEditar]}
+                        onPress={iniciarEdicao}
+                        accessibilityRole="button"
+                      >
+                        <Text style={styles.textoBotaoAcao}>Editar</Text>
+                      </Pressable>
+                      <Pressable
+                        style={[styles.botao, styles.botaoAcao, styles.botaoExcluir]}
+                        onPress={confirmarExclusao}
+                        disabled={excluindo}
+                        accessibilityRole="button"
+                      >
+                        {excluindo ? (
+                          <ActivityIndicator color="#B42318" />
+                        ) : (
+                          <Text style={styles.textoBotaoExcluir}>Excluir matrícula</Text>
+                        )}
+                      </Pressable>
+                    </View>
                   )}
                 </>
               )}
@@ -386,7 +583,7 @@ export default function DetalhesEnvio() {
         style={styles.botaoVoltar}
         onPress={() => router.replace('/curriculos')}
         accessibilityRole="button"
-        accessibilityLabel="Voltar para currículos"
+        accessibilityLabel="Voltar para todos os envios"
         hitSlop={10}
       >
         <Image
@@ -407,9 +604,11 @@ export default function DetalhesEnvio() {
             <View style={styles.confirmacaoIcone}>
               <Ionicons name="trash-outline" size={25} color="#B42318" />
             </View>
-            <Text style={styles.confirmacaoTitulo}>Excluir currículo?</Text>
+            <Text style={styles.confirmacaoTitulo}>
+              Excluir {envio?.tipo === 'curso' ? 'matrícula' : 'currículo'}?
+            </Text>
             <Text style={styles.confirmacaoMensagem}>
-              Esta ação removerá o currículo e as informações desta candidatura dos seus envios.
+              Esta ação removerá este envio e suas informações permanentemente.
             </Text>
             <View style={styles.acoesConfirmacao}>
               <Pressable
@@ -421,7 +620,7 @@ export default function DetalhesEnvio() {
               </Pressable>
               <Pressable
                 style={[styles.botaoConfirmacao, styles.botaoConfirmarExclusao]}
-                onPress={() => void excluirCurriculo()}
+                onPress={() => void excluirEnvio()}
                 accessibilityRole="button"
               >
                 <Text style={styles.textoConfirmarExclusao}>Excluir</Text>
